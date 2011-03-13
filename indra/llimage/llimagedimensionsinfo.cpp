@@ -90,7 +90,7 @@ bool LLImageDimensionsInfo::getImageDimensionsTga()
 	mWidth = read_short();
 	mHeight = read_short();	
 
-    llinfos << "Tga header reads width: " << mWidth << " and height: " << mHeight << llendl;
+    //llinfos << "Tga header reads width: " << mWidth << " and height: " << mHeight << llendl;
 
 	return true;
 }
