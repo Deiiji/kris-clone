@@ -425,7 +425,6 @@ S32 LLTextureEntry::setMediaTexGen(U8 media)
 {
 	S32 result = TEM_CHANGE_NONE;
 	result |= setTexGen(media & TEM_TEX_GEN_MASK);
-		mMediaFlags = media;
 	result |= setMediaFlags(media & TEM_MEDIA_MASK);
 	return result;
 }

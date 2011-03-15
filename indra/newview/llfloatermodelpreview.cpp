@@ -310,6 +310,7 @@ BOOL LLFloaterModelPreview::postBuild()
 	childSetCommitCallback("upload_joints", onUploadJointsCommit, this);
 
 	childSetCommitCallback("import_scale", onImportScaleCommit, this);
+	childSetCommitCallback("pelvis_offset", onPelvisOffsetCommit, this);
 
 	childSetCommitCallback("lod_file_or_limit", refresh, this);
 	childSetCommitCallback("physics_load_radio", refresh, this);
@@ -318,6 +319,9 @@ BOOL LLFloaterModelPreview::postBuild()
 
 	childDisable("upload_skin");
 	childDisable("upload_joints");
+
+	childDisable("pelvis_offset");
+
 	childDisable("ok_btn");
 
 	mViewOptionMenuButton = getChild<LLMenuButton>("options_gear_btn");
@@ -454,6 +458,18 @@ void LLFloaterModelPreview::onImportScaleCommit(LLUICtrl*,void* userdata)
 	}
 
 	fp->mModelPreview->calcResourceCost();
+	fp->mModelPreview->refresh();
+}
+//static
+void LLFloaterModelPreview::onPelvisOffsetCommit( LLUICtrl*, void* userdata )
+{
+	LLFloaterModelPreview *fp =(LLFloaterModelPreview*)userdata;
+
+	if (!fp->mModelPreview)
+	{
+		return;
+	}
+
 	fp->mModelPreview->refresh();
 }
 
