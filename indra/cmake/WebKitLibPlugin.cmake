@@ -62,13 +62,8 @@ elseif (LINUX)
         llqtwebkit
 
         qgif
-#        qico
         qjpeg
-#        qpng
-#        qtiff
-#        qsvg
 
-#        QtSvg
         QtWebKit
         QtOpenGL
         QtNetwork
@@ -80,9 +75,5 @@ elseif (LINUX)
         X11
         Xrender
         GL
-
-#        sqlite3
-#        Xi
-#        SM
         )
 endif (WINDOWS)

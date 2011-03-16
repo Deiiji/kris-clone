@@ -84,6 +84,8 @@ public:
 
 	LLPanelNearByMedia* getNearbyMediaPanel() { return mPanelNearByMedia; }
 
+	void setXMPPStatus(std::string& status, std::string& tooltip);
+
 private:
 	
 	void onClickBuyCurrency();
@@ -98,6 +100,7 @@ private:
 
 private:
 	LLTextBox	*mTextTime;
+	LLTextBox	*mXMPPStatus;
 
 	LLStatGraph *mSGBandwidth;
 	LLStatGraph *mSGPacketLoss;

@@ -35,6 +35,7 @@
 // Store these in pre-built std::strings to avoid memory allocations in
 // LLSD map lookups
 static const std::string USERNAME("username");
+static const std::string ID("id");
 static const std::string DISPLAY_NAME("display_name");
 static const std::string LEGACY_FIRST_NAME("legacy_first_name");
 static const std::string LEGACY_LAST_NAME("legacy_last_name");
@@ -43,7 +44,8 @@ static const std::string DISPLAY_NAME_EXPIRES("display_name_expires");
 static const std::string DISPLAY_NAME_NEXT_UPDATE("display_name_next_update");
 
 LLAvatarName::LLAvatarName()
-:	mUsername(),
+:	mAgentID(),
+	mUsername(),
 	mDisplayName(),
 	mLegacyFirstName(),
 	mLegacyLastName(),
@@ -64,6 +66,7 @@ bool LLAvatarName::operator<(const LLAvatarName& rhs) const
 LLSD LLAvatarName::asLLSD() const
 {
 	LLSD sd;
+	sd[ID] = mAgentID;
 	sd[USERNAME] = mUsername;
 	sd[DISPLAY_NAME] = mDisplayName;
 	sd[LEGACY_FIRST_NAME] = mLegacyFirstName;
@@ -76,6 +79,7 @@ LLSD LLAvatarName::asLLSD() const
 
 void LLAvatarName::fromLLSD(const LLSD& sd)
 {
+	mAgentID = sd[ID].asUUID();
 	mUsername = sd[USERNAME].asString();
 	mDisplayName = sd[DISPLAY_NAME].asString();
 	mLegacyFirstName = sd[LEGACY_FIRST_NAME].asString();

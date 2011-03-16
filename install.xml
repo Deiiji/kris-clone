@@ -326,6 +326,39 @@
           </map>
         </map>
       </map>
+       <key>strophe</key>
+      <map>
+        <key>copyright</key>
+        <string>2005-2009 Collecta, Inc.</string>
+        <key>description</key>
+        <string>A Jabber/XMPP library</string>
+        <key>license</key>
+        <string>mit</string>
+        <key>packages</key>
+        <map>
+          <key>darwin</key>
+          <map>
+            <key>md5sum</key>
+            <string>75bc1123c4df3854e883e0fceaad2e77</string>
+            <key>url</key>
+            <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/Darwin/installer/libstrophe-LL0-darwin-20110215.tar.bz2</uri>
+          </map>
+          <key>linux</key>
+          <map>
+            <key>md5sum</key>
+            <string>538ab8e213130e03a34c8c3605aecdb1</string>
+            <key>url</key>
+            <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/Linux/installer/libstrophe-LL0-linux-20110216.tar.bz2</uri>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>md5sum</key>
+            <string>c5ca26e2f207d5a58f64085f2949289a</string>
+            <key>url</key>
+            <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/CYGWIN/installer/libstrophe-LL0-windows-20110215.tar.bz2</uri>
+	     </map>
+        </map>
+      </map>
       <key>dbghelp</key>
       <map>
         <key>copyright</key>

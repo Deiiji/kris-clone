@@ -698,6 +698,21 @@ protected:
 public:
 	LLDynamicArray<LLGroupData> mGroups;
 
+	typedef boost::function<void(const LLGroupData&, GroupMembershipChange)> group_change_cb_t;
+	typedef boost::signals2::signal<void(const LLGroupData&, GroupMembershipChange)>	group_change_signal_t;
+
+	boost::signals2::connection addGroupChangeCallback(
+		const group_change_cb_t& cb) {
+		return mGroupChangeSignal.connect(cb);
+	}
+
+	void onGroupChange(const LLGroupData& gd, GroupMembershipChange c) const {
+		mGroupChangeSignal(gd, c);
+	}
+	
+private:
+	group_change_signal_t mGroupChangeSignal;
+
 	//--------------------------------------------------------------------
 	// Group Title
 	//--------------------------------------------------------------------

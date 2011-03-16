@@ -48,7 +48,7 @@ if (WINDOWS)
 
   set(CMAKE_CXX_STANDARD_LIBRARIES "")
   set(CMAKE_C_STANDARD_LIBRARIES "")
-# KL we like Fast n Small and aware of address spaces over 2GB :)
+# KL we like Fast and aware of address spaces over 2GB :)
   add_definitions(
       /DLL_WINDOWS=1
       /DDOM_DYNAMIC
@@ -57,7 +57,7 @@ if (WINDOWS)
       /GA
       /GS
       /Oi
-      /Os
+      /Ot
       /TP
       /W2
       /c

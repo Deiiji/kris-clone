@@ -46,6 +46,7 @@
 #include "lluuid.h"
 #include "llvoiceclient.h"
 #include "llviewercontrol.h"	// for gSavedSettings
+#include "llviewerxmppclient.h"	// for LLXMPPListItem
 
 static LLDefaultChildRegistry::Register<LLAvatarList> r("avatar_list");
 
@@ -248,6 +249,18 @@ void LLAvatarList::addAvalineItem(const LLUUID& item_id, const LLUUID& session_i
 	item->showExtraInformation(mShowExtraInformation);
 	item->showSpeakingIndicator(mShowSpeakingIndicator);
 	item->setOnline(false);
+
+	addItem(item, item_id);
+	mIDs.push_back(item_id);
+	sort();
+}
+
+void LLAvatarList::addXMPPItem(const LLUUID& item_id, const LLUUID& session_id, const std::string& item_name)
+{
+	LL_DEBUGS("XMPP") << "Adding XMPP item into the list: " << item_id << "|" << item_name << ", session: " << session_id << LL_ENDL;
+	LLXMPPListItem* item = new LLXMPPListItem();
+	item->setAvatarId(item_id, session_id, true, false);
+	item->setName(item_name);
 
 	addItem(item, item_id);
 	mIDs.push_back(item_id);

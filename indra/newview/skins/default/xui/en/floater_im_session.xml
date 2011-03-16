@@ -68,6 +68,19 @@
           image_overlay="TabIcon_Close_Off"
           width="25"
           name="slide_right_btn" />
+        <text
+         top="0"
+         left="29"
+         follows="left|top"
+         font="SansSerifSmall"
+         text_color="White"
+         use_ellipses="true"
+         height="20"
+         label="Subject"
+         layout="topleft"
+         name="chat_subject"
+         width="200">
+        </text>
         <chat_history
 	 font="SansSerifSmall"
          follows="left|right|top|bottom"

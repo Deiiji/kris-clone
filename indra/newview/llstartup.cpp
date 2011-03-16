@@ -196,10 +196,12 @@
 #endif
 
 #include "llstreamtitles.h" // S21
+#include "llviewerxmppclient.h"
 //
 // exported globals
 //
 bool gAgentMovementCompleted = false;
+LLViewerXMPPClient *xmpp = NULL;
 S32  gMaxAgentGroups;
 
 std::string SCREEN_HOME_FILENAME = "screen_home.bmp";
@@ -1295,6 +1297,9 @@ bool idle_startup()
 		gXferManager->registerCallbacks(gMessageSystem);
 
 		LLStartUp::initNameCache();
+
+		// hostname is set in process_login_success_response
+		xmpp = LLViewerXMPPClient::connect(gUserCredential, gAPRPoolp);
 
 		// update the voice settings *after* gCacheName initialization
 		// so that we can construct voice UI that relies on the name cache
@@ -3179,6 +3184,24 @@ bool process_login_success_response()
 		LL_INFOS("LLStartup") << "using gMaxAgentGroups default: "
 							  << gMaxAgentGroups << LL_ENDL;
 	}
+
+	char *env_xmpp_host = getenv("XMPP_HOST");
+	std::string xmpp_host = response["xmpp_host"];
+	if (env_xmpp_host) {
+		LL_INFOS("XMPP") << "using XMPP_HOST from environment: "
+		                 << env_xmpp_host << LL_ENDL;
+		std::string xmpp_host = std::string(env_xmpp_host);
+		LLViewerXMPPClient::setServer(xmpp_host);
+	}
+	else if (!xmpp_host.empty()) {
+		LL_INFOS("XMPP") << "using XMPP_HOST from login.cgi: "
+		                 << xmpp_host << LL_ENDL;
+		LLViewerXMPPClient::setServer(xmpp_host);
+	}
+	else {
+		LL_INFOS("XMPP") << "no XMPP_HOST found, using legacy chat only" << LL_ENDL;
+	}
+
 		
 	bool success = false;
 	// JC: gesture loading done below, when we have an asset system

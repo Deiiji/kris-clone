@@ -1847,15 +1847,15 @@
                  parameter="character" />
             </menu_item_check>
             <menu_item_check
-             label="SurfacePath"
-             name="SurfacePath"
+             label="Surface Patch"
+             name="Surface Patch"
              shortcut="control|alt|shift|5">
                 <menu_item_check.on_check
                  function="Advanced.CheckRenderType"
-                 parameter="surfacePath" />
+                 parameter="surfacePatch" />
                 <menu_item_check.on_click
                  function="Advanced.ToggleRenderType"
-                 parameter="surfacePath" />
+                 parameter="surfacePatch" />
             </menu_item_check>
             <menu_item_check
              label="Sky"
@@ -3708,15 +3708,6 @@
 
         <menu_item_separator/>
 
-        <menu_item_check
-         label="Show Admin Menu"
-         name="View Admin Options">
-            <menu_item_check.on_check
-             function="Advanced.CheckViewAdminOptions"
-             parameter="ViewAdminOptions" />
-            <menu_item_check.on_click
-             function="Advanced.ToggleViewAdminOptions" />
-        </menu_item_check>
         <menu_item_call
          label="Request Admin Status"
          name="Request Admin Options"
@@ -3731,7 +3722,15 @@
             <menu_item_call.on_click
              function="Advanced.LeaveAdminStatus" />
         </menu_item_call>
-	
+		<menu_item_check
+         label="Show Admin Menu"
+         name="View Admin Options">
+            <menu_item_check.on_check
+             function="Advanced.CheckViewAdminOptions"
+             parameter="ViewAdminOptions" />
+            <menu_item_check.on_click
+             function="Advanced.ToggleViewAdminOptions" />
+        </menu_item_check>
     </menu>
     <menu
      create_jump_keys="true"

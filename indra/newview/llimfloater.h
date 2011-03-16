@@ -34,6 +34,7 @@
 
 class LLAvatarName;
 class LLLineEditor;
+class LLTextBox;
 class LLPanelChatControlPanel;
 class LLChatHistory;
 class LLInventoryItem;
@@ -88,6 +89,8 @@ public:
 	// called when docked floater's position has been set by chiclet
 	void setPositioned(bool b) { mPositioned = b; };
 
+	void setSubject(const std::string& subject);
+
 	void onVisibilityChange(const LLSD& new_visibility);
 	void processIMTyping(const LLIMInfo* im_info, BOOL typing);
 	void processAgentListUpdates(const LLSD& body);
@@ -115,6 +118,9 @@ public:
 	static void onIMChicletCreated(const LLUUID& session_id);
 
 	virtual LLTransientFloaterMgr::ETransientGroup getGroup() { return LLTransientFloaterMgr::IM; }
+
+	// STONE XMPP HACK:
+	LLPanelChatControlPanel* mControlPanel;
 
 protected:
 	/* virtual */
@@ -162,7 +168,7 @@ private:
 
 	static void confirmLeaveCallCallback(const LLSD& notification, const LLSD& response);
 
-	LLPanelChatControlPanel* mControlPanel;
+	// LLPanelChatControlPanel* mControlPanel;
 	LLUUID mSessionID;
 	S32 mLastMessageIndex;
 
@@ -170,6 +176,7 @@ private:
 	LLUUID mOtherParticipantUUID;
 	LLChatHistory* mChatHistory;
 	LLLineEditor* mInputEditor;
+	LLTextBox* mSubjectLine;
 	bool mPositioned;
 
 	std::string mSavedTitle;

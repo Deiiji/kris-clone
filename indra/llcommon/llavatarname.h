@@ -52,6 +52,8 @@ public:
 	// *TODO: Eliminate this in favor of username only
 	std::string getLegacyName() const;
 
+	LLUUID mAgentID;
+
 	// "bobsmith123" or "james.linden", US-ASCII only
 	std::string mUsername;
 

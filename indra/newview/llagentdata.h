@@ -31,4 +31,10 @@
 extern LLUUID gAgentID;
 extern LLUUID gAgentSessionID;
 
+enum GroupMembershipChange {
+	GroupRemove,
+	GroupAdd,
+	GroupChange,
+};
+		
 #endif

@@ -202,6 +202,8 @@
 // Include for security api initialization
 #include "llsecapi.h"
 #include "llmachineid.h"
+
+#include "llviewerxmppclient.h"
 #include "llmainlooprepeater.h"
 
 // *FIX: These extern globals should be cleaned up.
@@ -307,7 +309,7 @@ BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
 // Internal globals... that should be removed.
-static std::string gArgs = "Build 6 RC2";
+static std::string gArgs = "Build 6 RC3";
 
 const std::string MARKER_FILE_NAME("SecondLife.exec_marker");
 const std::string ERROR_MARKER_FILE_NAME("SecondLife.error_marker");
@@ -4085,6 +4087,8 @@ void LLAppViewer::idle()
 			gAudiop->idle(max_audio_decode_time);
 		}
 	}
+
+	if (xmpp) xmpp->check_for_inbound_chat();
 	
 	// Handle shutdown process, for example, 
 	// wait for floaters to close, send quit message,

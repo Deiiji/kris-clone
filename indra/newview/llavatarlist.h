@@ -100,6 +100,7 @@ public:
 	virtual S32 notifyParent(const LLSD& info);
 
 	void addAvalineItem(const LLUUID& item_id, const LLUUID& session_id, const std::string& item_name);
+	void addXMPPItem(const LLUUID& item_id, const LLUUID& session_id, const std::string& item_name);
 	void handleDisplayNamesOptionChanged();
 
 protected:
