@@ -2733,7 +2733,6 @@ void LLAgent::processAgentDropGroup(LLMessageSystem *msg, void **)
 	if (index != -1)
 	{
 		gAgent.mGroups.remove(index);
-		gAgent.onGroupChange(gd, GroupRemove);
 		if (gAgent.getGroupID() == group_id)
 		{
 			gAgent.mGroupID.setNull();
@@ -2811,7 +2810,6 @@ class LLAgentDropGroupViewerNode : public LLHTTPNode
 			if (index != -1)
 			{
 				gAgent.mGroups.remove(index);
-				gAgent.onGroupChange(gd, GroupRemove);
 				if (gAgent.getGroupID() == group_id)
 				{
 					gAgent.mGroupID.setNull();
@@ -2885,8 +2883,6 @@ void LLAgent::processAgentGroupDataUpdate(LLMessageSystem *msg, void **)
 				gAgent.mGroups.remove(index);
 			}
 			gAgent.mGroups.put(group);
-			gAgent.onGroupChange(group, index == -1
-								 ? GroupAdd : GroupChange);
 		}
 		if (need_floater_update)
 		{
@@ -2948,8 +2944,6 @@ class LLAgentGroupDataUpdateViewerNode : public LLHTTPNode
 					gAgent.mGroups.remove(index);
 				}
 				gAgent.mGroups.put(group);
-				gAgent.onGroupChange(group, index == -1
-									 ? GroupAdd : GroupChange);
 			}
 			if (need_floater_update)
 			{

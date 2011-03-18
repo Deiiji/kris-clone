@@ -697,7 +697,7 @@ protected:
 	BOOL			isGroupMember() const 		{ return !mGroupID.isNull(); } 
 public:
 	LLDynamicArray<LLGroupData> mGroups;
-
+    // Keep this section for XMPP code for now 2.6.1 merge issues
 	typedef boost::function<void(const LLGroupData&, GroupMembershipChange)> group_change_cb_t;
 	typedef boost::signals2::signal<void(const LLGroupData&, GroupMembershipChange)>	group_change_signal_t;
 
@@ -712,7 +712,7 @@ public:
 	
 private:
 	group_change_signal_t mGroupChangeSignal;
-
+    // Keep this section - end
 	//--------------------------------------------------------------------
 	// Group Title
 	//--------------------------------------------------------------------
