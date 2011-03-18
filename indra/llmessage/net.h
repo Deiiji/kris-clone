@@ -30,7 +30,7 @@
 class LLTimer;
 class LLHost;
 
-#define NET_BUFFER_SIZE (0x4000) // KL was x2000(8192 dec) trying x4000(16384 dec) see what occurs.
+#define NET_BUFFER_SIZE (0x2000)
 
 // Request a free local port from the operating system
 #define NET_USE_OS_ASSIGNED_PORT 0
