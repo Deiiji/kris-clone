@@ -406,8 +406,8 @@ public:
 	BOOL blockMouseEvent(S32 x, S32 y) const;
 
 	// See LLMouseHandler virtuals for screenPointToLocal and localPointToScreen
-	BOOL localPointToOtherView( S32 x, S32 y, S32 *other_x, S32 *other_y, LLView* other_view) const;
-	BOOL localRectToOtherView( const LLRect& local, LLRect* other, LLView* other_view ) const;
+	BOOL localPointToOtherView( S32 x, S32 y, S32 *other_x, S32 *other_y, const LLView* other_view) const;
+	BOOL localRectToOtherView( const LLRect& local, LLRect* other, const LLView* other_view ) const;
 	void screenRectToLocal( const LLRect& screen, LLRect* local ) const;
 	void localRectToScreen( const LLRect& local, LLRect* screen ) const;
 	
@@ -543,11 +543,13 @@ private:
 	LLView*		mParentView;
 	child_list_t mChildList;
 
-	std::string	mName;
 	// location in pixels, relative to surrounding structure, bottom,left=0,0
+	BOOL		mVisible;
 	LLRect		mRect;
 	LLRect		mBoundingRect;
+	
 	std::string mLayout;
+	std::string	mName;
 	
 	U32			mReshapeFlags;
 
@@ -568,8 +570,6 @@ private:
 
 	LLRootHandle<LLView> mHandle;
 	BOOL		mLastVisible;
-
-	BOOL		mVisible;
 
 	S32			mNextInsertionOrdinal;
 

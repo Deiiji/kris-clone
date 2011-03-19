@@ -71,6 +71,14 @@
                           user_resize="false" 
                           name="hud container"
                           width="500">
+<!-- tentative inclusion -->			  
+	   <view top="0"
+                    follows="all"
+                    height="500"
+                    left="0"
+                    mouse_opaque="false"
+                    name="floater_snap_region"
+                    width="500"/>		  
 <!-- sidebar starts -->
               <layout_stack border_size="0"
                             follows="right|top|bottom"
