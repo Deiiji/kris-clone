@@ -1212,12 +1212,15 @@ void LLViewerFetchedTexture::cleanup()
 
 void LLViewerFetchedTexture::setForSculpt()
 {
+	static const S32 MAX_INTERVAL = 8 ; //frames
+
 	mForSculpt = TRUE ;
 	if(isForSculptOnly() && !getBoundRecently())
 	{
 		destroyGLTexture() ; //sculpt image does not need gl texture.
 	}
 	checkCachedRawSculptImage() ;
+	setMaxVirtualSizeResetInterval(MAX_INTERVAL) ;
 }
 
 BOOL LLViewerFetchedTexture::isForSculptOnly() const
@@ -1418,8 +1421,15 @@ BOOL LLViewerFetchedTexture::createTexture(S32 usename/*= 0*/)
 			mOrigWidth = mRawImage->getWidth();
 			mOrigHeight = mRawImage->getHeight();
 
-			// leave black border, do not scale image content
-			mRawImage->expandToPowerOfTwo(MAX_IMAGE_SIZE, FALSE);
+			
+			if (mBoostLevel == BOOST_PREVIEW)
+			{ 
+				mRawImage->biasedScaleToPowerOfTwo(1024);
+			}
+			else
+			{ // leave black border, do not scale image content
+				mRawImage->expandToPowerOfTwo(MAX_IMAGE_SIZE, FALSE);
+			}
 			
 			mFullWidth = mRawImage->getWidth();
 			mFullHeight = mRawImage->getHeight();
@@ -2858,7 +2868,7 @@ BOOL LLViewerFetchedTexture::insertToAtlas()
 	}
 
 	//process the waiting_list
-	for(ll_face_list_t::iterator iter = waiting_list.begin(); iter != waiting_list.end(); ++iter)
+	for(std::vector<LLFace*>::iterator iter = waiting_list.begin(); iter != waiting_list.end(); ++iter)
 	{
 		facep = (LLFace*)*iter ;	
 		groupp = facep->getDrawable()->getSpatialGroup() ;

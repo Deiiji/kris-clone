@@ -255,6 +255,7 @@ private:
 	void adjustParticipant(const LLUUID& speaker_id);
 
 	LLSpeakerMgr*		mSpeakerMgr;
+	//LLAvatarList*		mAvatarList; // kl don't merge redefinition clashes with xmpp
 
 	std::set<LLUUID>	mModeratorList;
 	std::set<LLUUID>	mModeratorToRemoveList;

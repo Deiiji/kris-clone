@@ -57,7 +57,6 @@ const F32 CAMERA_BUTTON_DELAY = 0.0f;
 #define PRESETS "preset_views_list"
 #define CONTROLS "controls"
 
-
 bool LLFloaterCamera::sFreeCamera = false;
 bool LLFloaterCamera::sAppearanceEditing = false;
 

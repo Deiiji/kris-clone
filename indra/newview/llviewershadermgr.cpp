@@ -515,9 +515,14 @@ void LLViewerShaderMgr::setShaders()
 			{ //hardware skinning not possible, neither is deferred rendering
 				mVertexShaderLevel[SHADER_AVATAR] = 0;
 				mVertexShaderLevel[SHADER_DEFERRED] = 0;
-				gSavedSettings.setBOOL("RenderDeferred", FALSE);
-				gSavedSettings.setBOOL("RenderAvatarCloth", FALSE);
-				gSavedSettings.setBOOL("RenderAvatarVP", FALSE);
+
+				if (gSavedSettings.getBOOL("RenderAvatarVP"))
+				{
+					gSavedSettings.setBOOL("RenderDeferred", FALSE);
+					gSavedSettings.setBOOL("RenderAvatarCloth", FALSE);
+					gSavedSettings.setBOOL("RenderAvatarVP", FALSE);
+				}
+
 				loadShadersAvatar(); // unloads
 				loadShadersObject();
 			}
