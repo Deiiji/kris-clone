@@ -38,7 +38,9 @@
 #include "lltexteditor.h"
 
 // newview includes
+#include "llagent.h"
 #include "llagentcamera.h"
+#include "llavataractions.h"
 #include "llchiclet.h"
 #include "llfloatercamera.h"
 #include "llhints.h"
@@ -418,10 +420,6 @@ void LLBottomTray::setVisible(BOOL visible)
 	{
 		LLPanel::setVisible(visible);
 	}
-	if(visible)
-		gFloaterView->setSnapOffsetBottom(getRect().getHeight());
-	else
-		gFloaterView->setSnapOffsetBottom(0);
 }
 
 S32 LLBottomTray::notifyParent(const LLSD& info)
