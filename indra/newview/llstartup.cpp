@@ -1680,7 +1680,7 @@ bool idle_startup()
 			// on with this install.
 			gSavedSettings.setBOOL("ShowStartLocation", TRUE);
 			
-			LLSideTray::getInstance()->showPanel("panel_home", LLSD());
+			//LLSideTray::getInstance()->showPanel("panel_home", LLSD());
 
 		}
 
