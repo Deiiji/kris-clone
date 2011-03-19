@@ -1292,6 +1292,42 @@ bool		LLSideTray::isPanelActive(const std::string& panel_name)
 	return (panel->getName() == panel_name);
 }
 
+void LLSideTray::setTabDocked(const std::string& tab_name, bool dock)
+{
+	LLSideTrayTab* tab = getTab(tab_name);
+	if (!tab)
+	{	// not a docked tab, look through detached tabs
+		for(child_vector_iter_t tab_it = mDetachedTabs.begin(), tab_end_it = mDetachedTabs.end();
+			tab_it != tab_end_it;
+			++tab_it)
+		{
+			if ((*tab_it)->getName() == tab_name)
+			{
+				tab = *tab_it;
+				break;
+			}
+		}
+
+	}
+
+	if (tab)
+	{
+		bool tab_attached = isTabAttached(tab_name);
+		LLFloater* floater_tab = LLFloaterReg::getInstance("side_bar_tab", tab_name);
+		if (!floater_tab) return;
+
+		if (dock && !tab_attached)
+		{
+			tab->dock(floater_tab);
+		}
+		else if (!dock && tab_attached)
+		{
+			tab->undock(floater_tab);
+		}
+	}
+}
+
+
 void	LLSideTray::updateSidetrayVisibility()
 {
 	// set visibility of parent container based on collapsed state

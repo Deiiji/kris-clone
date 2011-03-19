@@ -1955,7 +1955,7 @@ bool LLAppViewer::loadSettingsFromDirectory(const std::string& location_key,
 		it != end_it;
 		++it)
 	{
-		// skip settings groups that aren't the one we requested
+		// skip settings groups that aren't the one we requested.
 		if (it->name() != location_key) continue;
 
 		ELLPath path_index = (ELLPath)it->path_index();
@@ -2192,31 +2192,6 @@ bool LLAppViewer::initConfiguration()
 
 	// - load overrides from user_settings 
 	loadSettingsFromDirectory("User");
-
-	if (gSavedSettings.getBOOL("FirstRunThisInstall"))
-	{
-		gSavedSettings.setString("SessionSettingsFile", "settings.xml"); // KL no _minimal yet
-	}
-
-	if (clp.hasOption("sessionsettings"))
-	{
-		std::string session_settings_filename = clp.getOption("sessionsettings")[0];		
-		gSavedSettings.setString("SessionSettingsFile", session_settings_filename);
-		llinfos	<< "Using session settings filename: " 
-			<< session_settings_filename << llendl;
-	}
-	loadSettingsFromDirectory("Session");
-
-	if (clp.hasOption("usersessionsettings"))
-	{
-		std::string user_session_settings_filename = clp.getOption("usersessionsettings")[0];		
-		gSavedSettings.setString("UserSessionSettingsFile", user_session_settings_filename);
-		llinfos	<< "Using user session settings filename: " 
-			<< user_session_settings_filename << llendl;
-
-	}
-	loadSettingsFromDirectory("UserSession");
-
 	// - apply command line settings 
 	clp.notify(); 
 

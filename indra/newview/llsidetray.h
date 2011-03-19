@@ -112,6 +112,8 @@ public:
     LLPanel*	getActivePanel	();
     bool		isPanelActive	(const std::string& panel_name);
 
+	void		setTabDocked(const std::string& tab_name, bool dock);
+
 	/*
 	 * get the panel of given type T (don't show it or do anything else with it)
 	 */
