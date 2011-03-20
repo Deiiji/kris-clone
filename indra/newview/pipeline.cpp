@@ -191,7 +191,6 @@ static LLFastTimer::DeclareTimer FTM_STATESORT_POSTSORT("Post Sort");
 std::string gPoolNames[] = 
 {
 	// Correspond to LLDrawpool enum render type
-	"NONE",
 	"POOL_SIMPLE",
 	"POOL_GROUND",
 	"POOL_FULLBRIGHT",
@@ -206,7 +205,8 @@ std::string gPoolNames[] =
 	"POOL_VOIDWATER",
 	"POOL_WATER",
 	"POOL_GLOW",
-	"POOL_ALPHA"
+	"POOL_ALPHA",
+	"NUM_RENDER_TYPES"
 };
 
 void drawBox(const LLVector3& c, const LLVector3& r);
