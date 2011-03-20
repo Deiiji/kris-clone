@@ -169,13 +169,13 @@
                width="1024"
                visible="false"/>
 	      <panel 
-	             follows="left|right|top"
+	      follows="left|top"
                height="19"
-               left="480"
+               left="0"
 	       mouse_opaque="false"
                name="topinfo_bar_container"
                tab_stop="false"
-               top="0"
+               top="20"
                visible="false"
                width="1024"/>    
        </panel>

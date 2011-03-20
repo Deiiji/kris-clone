@@ -24,7 +24,7 @@
  * $/LicenseInfo$
  */
 
-#include "llviewerprecompiledheaders.h" // must be first include
+#include "llviewerprecompiledheaders.h" // must be first include.
 
 #define LLBOTTOMTRAY_CPP
 #include "llbottomtray.h"
