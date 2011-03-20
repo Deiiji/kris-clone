@@ -43,6 +43,7 @@
 #include "material_codes.h"
 #include "timing.h"
 #include "v3color.h"
+#include "v4color.h"	//better add alpha headers here to let ALPHA pool work nicer
 #include "llui.h" 
 #include "llglheaders.h"
 #include "llrender.h"
