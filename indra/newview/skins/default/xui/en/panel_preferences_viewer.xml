@@ -29,13 +29,13 @@
    width="524">
   
 	<check_box
-	control_name="ShowNetStats"
+	control_name="UseHTTPInventory"
 	height="16"
 	initial_value="true"
-	label="Show Network Stats (top right)"
+	label="Allow http inventory instead of UDP"
 	layout="topleft"
 	left="200"
-	name="ShowNetStats"
+	name="Usefetchlib2"
 	top="25"
 	width="256" />
 
@@ -406,9 +406,20 @@
 	left="5"
 	name="ParticipantListShowIcons"
 	top_pad="1"
-	width="256" /> 
-     </panel>
+	width="256" />
+   <check_box
+	control_name="OpenSidePanelsInFloaters"
+	height="16"
+	initial_value="false"
+	label="SideBar Panels Open as Floaters"
+	layout="topleft"
+	left="5"
+	name="SidebarPanelsFloaters"
+	top_pad="1"
+	width="256" />
+
    
  </layout_panel>
-</layout_stack>     
+ </layout_stack>
 </panel>
+  

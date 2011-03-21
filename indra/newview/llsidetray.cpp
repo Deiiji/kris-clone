@@ -209,6 +209,7 @@ void LLSideTrayTab::reshape		(S32 width, S32 height, BOOL called_from_parent )
 		// not fully constructed yet
 		return;
 	}
+
 	S32 title_height = title_panel->getRect().getHeight();
 	title_panel->setOrigin( 0, height - title_height );
 	title_panel->reshape(width,title_height);
@@ -571,6 +572,7 @@ LLSideTray::LLSideTray(const Params& params)
 	{
 		LLTransientFloaterMgr::getInstance()->addControlView(side_bar_tabs);
 	}
+
 	LLPanel::Params p;
 	p.name = "buttons_panel";
 	p.mouse_opaque = false;
@@ -663,8 +665,16 @@ LLPanel* LLSideTray::openChildPanel(LLSideTrayTab* tab, const std::string& panel
 
 	std::string tab_name = tab->getName();
 
+	bool tab_attached = isTabAttached(tab_name);
+
+	if (tab_attached && LLUI::sSettingGroups["config"]->getBOOL("OpenSidePanelsInFloaters"))
+	{
+		tab->toggleTabDocked();
+		tab_attached = false;
+	}
+
 	// Select tab and expand Side Tray only when a tab is attached.
-	if (isTabAttached(tab_name))
+	if (tab_attached)
 	{
 		selectTabByName(tab_name);
 		if (mCollapsed)
@@ -675,7 +685,7 @@ LLPanel* LLSideTray::openChildPanel(LLSideTrayTab* tab, const std::string& panel
 		LLFloater* floater_tab = LLFloaterReg::getInstance("side_bar_tab", tab_name);
 		if (!floater_tab) return NULL;
 
-		// Restore the floater if it was minimized.
+		// KL the new code opens a floater but fucks up the logic FloaterReg Toggle cannot handle it!
 		if (floater_tab->isMinimized())
 		{
 			floater_tab->setMinimized(FALSE);
@@ -1186,22 +1196,42 @@ void LLSideTray::reshape(S32 width, S32 height, BOOL called_from_parent)
  */
 LLPanel*	LLSideTray::showPanel		(const std::string& panel_name, const LLSD& params)
 {
+	LLPanel* new_panel = NULL;
+
 	// Look up the tab in the list of detached tabs.
 	child_vector_const_iter_t child_it;
 	for ( child_it = mDetachedTabs.begin(); child_it != mDetachedTabs.end(); ++child_it)
 	{
-		LLPanel* panel = openChildPanel(*child_it, panel_name, params);
-		if (panel) return panel;
-			}
+		new_panel = openChildPanel(*child_it, panel_name, params);
+		if (new_panel) break;
+	}
 
 	// Look up the tab in the list of attached tabs.
 	for ( child_it = mTabs.begin(); child_it != mTabs.end(); ++child_it)
-			{
-		LLPanel* panel = openChildPanel(*child_it, panel_name, params);
-		if (panel) return panel;
+	{
+		new_panel = openChildPanel(*child_it, panel_name, params);
+		if (new_panel) break;
 	}
-	return NULL;
+
+	return new_panel;
 }
+
+void LLSideTray::hidePanel(const std::string& panel_name)
+{
+	LLPanel* panelp = getPanel(panel_name);
+	if (panelp)
+	{
+		if(isTabAttached(panel_name))
+		{
+			collapseSideBar();
+		}
+		else
+		{
+			LLFloaterReg::hideInstance("side_bar_tab", panel_name);
+		}
+	}
+}
+
 
 void LLSideTray::togglePanel(LLPanel* &sub_panel, const std::string& panel_name, const LLSD& params)
 {
