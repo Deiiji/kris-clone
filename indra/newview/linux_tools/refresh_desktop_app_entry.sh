@@ -14,7 +14,7 @@ function install_desktop_entry()
 [Desktop Entry]\n\
 Name=Kirstens Viewer S21\n\
 Comment=Client for the On-line Virtual World, Second Life\n\
-Exec=${installation_prefix}/Runme-kirstens-s21\n\
+Exec=${installation_prefix}/Runme-kirstens-S21\n\
 Icon=${installation_prefix}/secondlife_icon.png\n\
 Terminal=false\n\
 Type=Application\n\
