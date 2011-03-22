@@ -96,7 +96,9 @@ public:
 	LLModelLoader(std::string filename, S32 lod, LLModelPreview* preview);
 
 	virtual void run();
-	
+	bool doLoadModel();
+	void loadModelCallback();
+
 	void loadTextures() ; //called in the main thread.
 	void processElement(daeElement* element);
 	std::vector<LLImportMaterial> getMaterials(LLModel* model, domInstance_geometry* instance_geo);
@@ -117,9 +119,8 @@ public:
 	void handlePivotPoint( daeElement* pRoot );
 	bool isNodeAPivotPoint( domNode* pNode );
 	
-	void setLoadState( U32 state ) { mState = state; }
-	U32 getLoadState( void ) { return mState; }
-	
+	void setLoadState(U32 state);
+
 	//map of avatar joints as named in COLLADA assets to internal joint names
 	std::map<std::string, std::string> mJointMap;
 	std::deque<std::string> mMasterJointList;
@@ -287,6 +288,8 @@ public:
 	void clearMaterials();
 	U32 calcResourceCost();
 	void rebuildUploadData();
+	void saveUploadData(bool save_skinweights, bool save_joint_poisitions);
+	void saveUploadData(const std::string& filename, bool save_skinweights, bool save_joint_poisitions);
 	void clearIncompatible(S32 lod);
 	void updateStatusMessages();
 	void clearGLODGroup();
@@ -294,13 +297,19 @@ public:
 	const bool getModelPivot( void ) const { return mHasPivot; }
 	void setHasPivot( bool val ) { mHasPivot = val; }
 	void setModelPivot( const LLVector3& pivot ) { mModelPivot = pivot; }
+	const bool isRigValid( void ) const { return mRigValid; }
+	void setRigValid( bool rigValid ) { mRigValid = rigValid; }
 	
 	static void	textureLoadedCallback( BOOL success, LLViewerFetchedTexture *src_vi, LLImageRaw* src, LLImageRaw* src_aux, S32 discard_level, BOOL final, void* userdata );
 	
 	boost::signals2::connection setDetailsCallback( const details_signal_t::slot_type& cb ){  return mDetailsSignal.connect(cb);  }
 	boost::signals2::connection setModelLoadedCallback( const model_loaded_signal_t::slot_type& cb ){  return mModelLoadedSignal.connect(cb);  }
 	
+	void setLoadState( U32 state ) { mLoadState = state; }
+	U32 getLoadState() { return mLoadState; }
+		
  protected:
+	friend class LLModelLoader;
 	friend class LLFloaterModelPreview;
 	friend class LLFloaterModelWizard;
 	friend class LLFloaterModelPreview::DecompRequest;
@@ -324,7 +333,8 @@ public:
 	U32			mResourceCost;
 	std::string mLODFile[LLModel::NUM_LODS];
 	bool		mLoading;
-
+	U32			mLoadState;
+	
 	std::map<std::string, bool> mViewOption;
 
 	//GLOD object parameters (must rebuild object if these change)
@@ -359,6 +369,10 @@ public:
 	
 	LLVector3	mModelPivot;
 	bool		mHasPivot;
+	
+	float		mPelvisZOffset;
+	
+	bool		mRigValid;
 };
 
 

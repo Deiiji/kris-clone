@@ -70,10 +70,11 @@ BOOL LLBottomtrayButton::handleHover(S32 x, S32 y, MASK mask)
 {
 	if (mCanDrag)
 	{
-	S32 screenX, screenY;
-	localPointToScreen(x, y, &screenX, &screenY);
-	// pass hover to bottomtray
-	LLBottomTray::getInstance()->onDraggableButtonHover(screenX, screenY);
+		// pass hover to bottomtray
+		S32 screenX, screenY;
+		localPointToScreen(x, y, &screenX, &screenY);
+		LLBottomTray::getInstance()->onDraggableButtonHover(screenX, screenY);
+
 		return TRUE;
 	}
 	else
@@ -1456,7 +1457,7 @@ void LLBottomTray::processExtendButton(EResizeState processed_object_type, S32& 
 
 	if (possible_extend_width > 0)
 	{
-		// let calculate real width to extend.
+		// let calculate real width to extend
 
 		// 1. apply all possible width
 		available_width -= possible_extend_width;
