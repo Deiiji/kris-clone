@@ -60,6 +60,7 @@ LLModel::LLModel(LLVolumeParams& params, F32 detail)
 	, mPelvisOffset( 0.0f )
 {
 	mDecompID = -1;
+	mLocalID = -1;
 }
 
 LLModel::~LLModel()
@@ -968,7 +969,7 @@ void LLModel::normalizeVolumeFaces()
 		LLVector4a size;
 		size.setSub(max, min);
 
-		// Prevent division by zero. We dont want any wormholes opening up now do we?
+		// Prevent division by zero.
 		F32 x = size[0];
 		F32 y = size[1];
 		F32 z = size[2];
