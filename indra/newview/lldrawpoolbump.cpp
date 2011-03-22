@@ -660,7 +660,7 @@ BOOL LLDrawPoolBump::bindBumpMap(U8 bump_code, LLViewerTexture* texture, F32 vsi
 
 		return TRUE;
 	}
-	
+
 	return FALSE;
 }
 
