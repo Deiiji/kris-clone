@@ -412,7 +412,7 @@ BOOL LLImageJ2COJ::getMetadata(LLImageJ2C &base)
 	opj_event_mgr_t event_mgr;		/* event manager */
 	opj_image_t *image = NULL;
 
-	opj_dinfo_t* dinfo = NULL;	/* handle to a decompressor */
+	opj_dinfo_t *dinfo = NULL;	/* handle to a decompressor */
 	opj_cio_t *cio = NULL;
 
 
