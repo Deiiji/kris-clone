@@ -71,7 +71,7 @@
                           user_resize="false" 
                           name="hud container"
                           width="500">
-<!-- tentative inclusion -->			  
+<!-- effects floater sizing -->			  
 	   <view top="0"
                     follows="all"
                     height="500"

@@ -71,6 +71,14 @@
                           user_resize="false" 
                           name="hud container"
                           width="500">
+<!-- effects floater sizing -->			  
+	   <view top="0"
+                    follows="all"
+                    height="500"
+                    left="0"
+                    mouse_opaque="false"
+                    name="floater_snap_region"
+                    width="500"/>		  
 <!-- sidebar starts -->
               <layout_stack border_size="0"
                             follows="right|top|bottom"
@@ -161,13 +169,13 @@
                width="1024"
                visible="false"/>
 	      <panel 
-	             follows="left|right|top"
+	      follows="left|top"
                height="19"
-               left="480"
+               left="0"
 	       mouse_opaque="false"
                name="topinfo_bar_container"
                tab_stop="false"
-               top="0"
+               top="20"
                visible="false"
                width="1024"/>    
        </panel>
