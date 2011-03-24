@@ -833,7 +833,6 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 		if (to_texture)
 		{
 			gGL.setColorMask(true, true);
-					
 			if (LLPipeline::sRenderDeferred && !LLPipeline::sUnderWaterRender)
 			{
 				gPipeline.mDeferredScreen.bindTarget();
@@ -1441,41 +1440,49 @@ void render_disconnected_background()
 		std::string temp_str;
 		temp_str = gDirUtilp->getLindenUserDir() + gDirUtilp->getDirDelimiter() + SCREEN_LAST_FILENAME;
 
-		LLPointer<LLImageBMP> image_bmp = new LLImageBMP;
-		if( !image_bmp->load(temp_str) )
+		try
 		{
-			//llinfos << "Bitmap load failed" << llendl;
-			return;
-		}
-		
-		LLPointer<LLImageRaw> raw = new LLImageRaw;
-		if (!image_bmp->decode(raw, 0.0f))
-		{
-			llinfos << "Bitmap decode failed" << llendl;
-			gDisconnectedImagep = NULL;
-			return;
-		}
+			LLPointer<LLImageBMP> image_bmp = new LLImageBMP;
+			if( !image_bmp->load(temp_str) )
+			{
+				//llinfos << "Bitmap load failed" << llendl;
+				return;
+			}
+			
+			LLPointer<LLImageRaw> raw = new LLImageRaw;
+			if (!image_bmp->decode(raw, 0.0f))
+			{
+				llinfos << "Bitmap decode failed" << llendl;
+				gDisconnectedImagep = NULL;
+				return;
+			}
 
-		U8 *rawp = raw->getData();
-		S32 npixels = (S32)image_bmp->getWidth()*(S32)image_bmp->getHeight();
-		for (S32 i = 0; i < npixels; i++)
-		{
-			S32 sum = 0;
-			sum = *rawp + *(rawp+1) + *(rawp+2);
-			sum /= 3;
-			*rawp = ((S32)sum*6 + *rawp)/7;
-			rawp++;
-			*rawp = ((S32)sum*6 + *rawp)/7;
-			rawp++;
-			*rawp = ((S32)sum*6 + *rawp)/7;
-			rawp++;
-		}
+			U8 *rawp = raw->getData();
+			S32 npixels = (S32)image_bmp->getWidth()*(S32)image_bmp->getHeight();
+			for (S32 i = 0; i < npixels; i++)
+			{
+				S32 sum = 0;
+				sum = *rawp + *(rawp+1) + *(rawp+2);
+				sum /= 3;
+				*rawp = ((S32)sum*6 + *rawp)/7;
+				rawp++;
+				*rawp = ((S32)sum*6 + *rawp)/7;
+				rawp++;
+				*rawp = ((S32)sum*6 + *rawp)/7;
+				rawp++;
+			}
 
-		
-		raw->expandToPowerOfTwo();
-		gDisconnectedImagep = LLViewerTextureManager::getLocalTexture(raw.get(), FALSE );
-		gStartTexture = gDisconnectedImagep;
-		gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
+			
+			raw->expandToPowerOfTwo();
+			gDisconnectedImagep = LLViewerTextureManager::getLocalTexture(raw.get(), FALSE );
+			gStartTexture = gDisconnectedImagep;
+			gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
+		}
+		catch(std::bad_alloc)
+		{
+			llwarns << "Loading last bitmap failed due to memory failure." << llendl ;
+			return ; //do not crash the viewer.
+		}
 	}
 
 	// Make sure the progress view always fills the entire window.

@@ -76,6 +76,7 @@ LLStat LLViewerTextureList::sFormattedMemStat(32, TRUE);
 LLViewerTextureList gTextureList;
 static LLFastTimer::DeclareTimer FTM_PROCESS_IMAGES("Process Images");
 
+U32 main_thread_id = 0 ;
 ///////////////////////////////////////////////////////////////////////////////
 
 LLViewerTextureList::LLViewerTextureList() 
@@ -88,6 +89,8 @@ LLViewerTextureList::LLViewerTextureList()
 
 void LLViewerTextureList::init()
 {
+	main_thread_id = LLThread::currentID() ;
+
 	sNumImages = 0;
 	mMaxResidentTexMemInMegaBytes = 0;
 	mMaxTotalTextureMemInMegaBytes = 0 ;
@@ -109,6 +112,9 @@ void LLViewerTextureList::init()
 void LLViewerTextureList::doPreloadImages()
 {
 	LL_DEBUGS("ViewerImages") << "Preloading images..." << LL_ENDL;
+	
+	llassert_always(mImageList.empty()) ;
+	llassert_always(mUUIDMap.empty()) ;
 	
 	// Set the "missing asset" image
 	LLViewerFetchedTexture::sMissingAssetImagep = LLViewerTextureManager::getFetchedTextureFromFile("missing_asset.tga", MIPMAP_NO, LLViewerFetchedTexture::BOOST_UI);
@@ -877,7 +883,9 @@ void LLViewerTextureList::decodeAllImages(F32 max_time)
 {
 	LLTimer timer;
 	if(gNoRender) return;
-	
+
+	llassert_always(main_thread_id == LLThread::currentID());
+
 	// Update texture stats and priorities
 	std::vector<LLPointer<LLViewerFetchedTexture> > image_list;
 	for (image_priority_list_t::iterator iter = mImageList.begin();
@@ -1096,6 +1104,25 @@ S32 LLViewerTextureList::getMaxVideoRamSetting(bool get_recommended)
 		
 	max_texmem = llclamp(max_texmem, getMinVideoRamSetting(), MAX_VIDEO_RAM_IN_MEGA_BYTES); 
 	
+	//check the availability of physics memory
+	{
+		U32 avail_physics_mem, avail_virtual_mem ;
+		LLMemoryInfo::getAvailableMemoryKB(avail_physics_mem, avail_virtual_mem) ;
+
+		avail_physics_mem >>= 10 ; //convert to MB
+		if(avail_physics_mem <= 256) //256MB
+		{
+			max_texmem = llmin(max_texmem, 64); //max texture memory is 64MB
+		}
+		else if(avail_physics_mem <= 512) //512MB
+		{
+			max_texmem = llmin(max_texmem, 128); //max texture memory is 128MB
+		}
+		else if(avail_physics_mem <= 1024) //1024MB
+		{
+			max_texmem = llmin(max_texmem, 256); //max texture memory is 256MB
+		}
+	}
 	return max_texmem;
 }
 

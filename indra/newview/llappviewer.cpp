@@ -1092,6 +1092,7 @@ bool LLAppViewer::mainLoop()
     LLSD newFrame;
 
 	const F32 memory_check_interval = 1.0f ; //second
+	const U32 low_memory_threshold_KB = 128 * 1024 ; //128MB
 
 	// Handle messages
 	while (!LLApp::isExiting())
@@ -1112,6 +1113,11 @@ bool LLAppViewer::mainLoop()
 			}
 			llcallstacks << "Available physical mem(KB): " << mAvailPhysicalMemInKB << llcallstacksendl ;
 			llcallstacks << "Available virtual mem(KB): " << mAvailVirtualMemInKB << llcallstacksendl ;
+
+			if(low_memory_threshold_KB > mAvailPhysicalMemInKB || low_memory_threshold_KB > mAvailVirtualMemInKB)
+			{
+				forceToRelieveMemory() ;
+			}
 		}
 
 		try
@@ -1345,29 +1351,17 @@ bool LLAppViewer::mainLoop()
 		}
 		catch(std::bad_alloc)
 		{			
-			{
-				llinfos << "Available physical memory(KB) at the beginning of the frame: " << mAvailPhysicalMemInKB << llendl ;
-				llinfos << "Available virtual memory(KB) at the beginning of the frame: " << mAvailVirtualMemInKB << llendl ;
-
-				LLMemoryInfo::getAvailableMemoryKB(mAvailPhysicalMemInKB, mAvailVirtualMemInKB) ;
-
-				llinfos << "Current available physical memory(KB): " << mAvailPhysicalMemInKB << llendl ;
-				llinfos << "Current available virtual memory(KB): " << mAvailVirtualMemInKB << llendl ;
-			}
+			outputMemoryStatistics() ;
 
 			//stop memory leaking simulation
 			LLFloaterMemLeak* mem_leak_instance =
 				LLFloaterReg::findTypedInstance<LLFloaterMemLeak>("mem_leaking");
 			if(mem_leak_instance)
-			{
-				mem_leak_instance->stop() ;				
+			{	
 				llwarns << "Bad memory allocation in LLAppViewer::mainLoop()!" << llendl ;
 			}
 			else
 			{
-				//output possible call stacks to log file.
-				LLError::LLCallStacks::print() ;
-
 				llerrs << "Bad memory allocation in LLAppViewer::mainLoop()!" << llendl ;
 			}
 		}
@@ -1384,13 +1378,7 @@ bool LLAppViewer::mainLoop()
 		{
 			llwarns << "Bad memory allocation when saveFinalSnapshot() is called!" << llendl ;
 
-			//stop memory leaking simulation
-			LLFloaterMemLeak* mem_leak_instance =
-				LLFloaterReg::findTypedInstance<LLFloaterMemLeak>("mem_leaking");
-			if(mem_leak_instance)
-			{
-				mem_leak_instance->stop() ;				
-			}	
+			outputMemoryStatistics() ;
 		}
 	}
 	
@@ -1401,6 +1389,56 @@ bool LLAppViewer::mainLoop()
 	llinfos << "Exiting main_loop" << llendflush;
 
 	return true;
+}
+
+//when the memory pool is in danger, 
+//we force to minimize memory consumption to avoid immediate crash
+void LLAppViewer::forceToRelieveMemory()
+{
+	static const F32 MIN_TIME_INTERVAL = 600.f ; //10 minutes
+	static LLFrameTimer timer;
+	
+	if(timer.getElapsedTimeF32() < MIN_TIME_INTERVAL)
+	{
+		return ; // do not execute this function too often
+	}
+	timer.reset() ;
+
+	llinfos << "Before relieving memory..." << llendl ;
+	outputMemoryStatistics() ;
+	//-------------------------------------------------------------
+
+	//re-do VBO to eliminate possible rendering leaking in driver.
+	gPipeline.resetVertexBuffers() ;
+	LLVertexBuffer::initClass(LLVertexBuffer::sEnableVBOs, LLVertexBuffer::sDisableVBOMapping) ;
+
+	//-------------------------------------------------------------
+	llinfos << "After relieving memory..." << llendl ;
+	outputMemoryStatistics() ;
+}
+
+void LLAppViewer::outputMemoryStatistics()
+{
+	//stop memory leaking simulation
+	LLFloaterMemLeak* mem_leak_instance =
+		LLFloaterReg::findTypedInstance<LLFloaterMemLeak>("mem_leaking");
+	if(mem_leak_instance)
+	{
+		llinfos << "memory leaking simulation is on" << llendl ;
+		mem_leak_instance->stop() ;				
+	}	
+
+	//system memory info
+	LLMemoryInfo::getAvailableMemoryKB(mAvailPhysicalMemInKB, mAvailVirtualMemInKB) ;
+	llinfos << "Current availabe physical memory(KB): " << mAvailPhysicalMemInKB << llendl ;
+	llinfos << "Current availabe virtual memory(KB): " << mAvailVirtualMemInKB << llendl ;
+		
+	//texture memory info
+	llinfos << "Total textures in memeory (MB) " << BYTES_TO_MEGA_BYTES(LLViewerTexture::sTotalTextureMemoryInBytes) << llendl ;
+	llinfos << "Total raw images in memory (MB) " << (LLImageRaw::sGlobalRawMemory >> 20) << llendl ;
+
+	//output possible call stacks to log file.
+	LLError::LLCallStacks::print() ;
 }
 
 void LLAppViewer::flushVFSIO()
@@ -1769,8 +1807,7 @@ bool LLAppViewer::cleanup()
 			gDirUtilp->getExpandedFilename(LL_PATH_LOGS, baseline_name),
 			gDirUtilp->getExpandedFilename(LL_PATH_LOGS, current_name),
 			gDirUtilp->getExpandedFilename(LL_PATH_LOGS, report_name));
-	}	
-
+	}
 	LLMetricPerformanceTesterBasic::cleanClass() ;
 
 	llinfos << "Cleaning up Media and Textures" << llendflush;
@@ -2257,6 +2294,7 @@ bool LLAppViewer::initConfiguration()
     {
 		LLVersionInfo::resetChannel(clp.getOption("channel")[0]);
 	}
+	
 
 	// If we have specified crash on startup, set the global so we'll trigger the crash at the right time
 	if(clp.hasOption("crashonstartup"))
@@ -2267,12 +2305,12 @@ bool LLAppViewer::initConfiguration()
 	if (clp.hasOption("logperformance"))
 	{
 		LLFastTimer::sLog = TRUE;
-		LLFastTimer::sLogName = std::string("performance");		
+		LLFastTimer::sLogName = std::string("performance");
 	}
 	
 	if (clp.hasOption("logmetrics"))
- 	{
- 		LLFastTimer::sMetricLog = TRUE ;
+	{
+		LLFastTimer::sMetricLog = TRUE ;
 		// '--logmetrics' can be specified with a named test metric argument so the data gathering is done only on that test
 		// In the absence of argument, every metric is gathered (makes for a rather slow run and hard to decipher report...)
 		std::string test_name = clp.getOption("logmetrics")[0];

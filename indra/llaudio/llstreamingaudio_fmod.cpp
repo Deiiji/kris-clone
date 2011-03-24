@@ -309,6 +309,7 @@ int LLAudioStreamManagerFMOD::startStream()
 
 	// Make sure the stream is set to 2D mode.
 	FSOUND_Stream_SetMode(mInternetStream, FSOUND_2D);
+	FSOUND_SetSurround(FSOUND_ALL, TRUE); // since we are in software mode, lets try this see if its ok :)
 	FSOUND_Stream_Net_SetMetadataCallback(mInternetStream, metadataCallback, this); // S21
 
 	return FSOUND_Stream_PlayEx(FSOUND_FREE, mInternetStream, NULL, true);
