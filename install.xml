@@ -1404,10 +1404,10 @@ anguage Infrstructure (CLI) international standard</string>
           <key>linux</key>
           <map>
             <key>md5sum</key>
-            <string>61c634efa50d5f523092edbf33c1d120</string>
+            <string>33d00d451db9c6c513c7df227d1f6e7a</string>
             <key>url</key>
-            <uri>http://sourceforge.net/projects/sythos/files/openjpeg-2.0.5-linux-20110313.tar.bz2</uri>
-          </map>
+            <uri>http://sourceforge.net/projects/sythos/files/openjpeg-2.0.3-linux-20101022.tar.bz2/download</uri>
+          </map>          
           <key>linux64</key>
           <map>
             <key>md5sum</key>
