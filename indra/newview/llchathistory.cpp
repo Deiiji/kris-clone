@@ -57,7 +57,7 @@
 #include "llstring.h"
 
 #include "llviewercontrol.h" // DisplayNames
-#include "llviewerobjectlist.h" // S21 MS for zoom in visible
+#include "llviewerobjectlist.h" // S21 possibly redundant now post merge 2.6.3
 
 #include "llsidetray.h"//for blocked objects panel
 
@@ -139,10 +139,7 @@ public:
 
 		if (level == "profile")
 		{
-			LLSD params;
-			params["object_id"] = getAvatarId();
-
-			LLFloaterReg::showInstance("inspect_object", params);
+			LLFloaterReg::showInstance("inspect_remote_object", mObjectData);
 		}
 		// S21 MS
 		else if (level == "zoom")
@@ -240,7 +237,7 @@ public:
 		
 		if (mSourceType == CHAT_SOURCE_OBJECT)
 		{
-			LLFloaterReg::showInstance("inspect_object", LLSD().with("object_id", mAvatarID));
+			LLFloaterReg::showInstance("inspect_remote_object", mObjectData);
 		}
 		else if (mSourceType == CHAT_SOURCE_AGENT)
 		{
@@ -262,7 +259,7 @@ public:
 
 	const LLUUID&		getAvatarId () const { return mAvatarID;}
 
-	void setup(const LLChat& chat,const LLStyle::Params& style_params) 
+	void setup(const LLChat& chat, const LLStyle::Params& style_params, const LLSD& args)
 	{
 		mAvatarID = chat.mFromID;
 		mSessionID = chat.mSessionID;
@@ -343,7 +340,8 @@ public:
 
 
 		setTimeField(chat);
-		
+
+		// Set up the icon.
 		LLAvatarIconCtrl* icon = getChild<LLAvatarIconCtrl>("avatar_icon");
 
 		if(mSourceType != CHAT_SOURCE_AGENT ||	mAvatarID.isNull())
@@ -362,6 +360,30 @@ public:
 				break;
 			case CHAT_SOURCE_UNKNOWN: 
 				icon->setValue(LLSD("Unknown_Icon"));
+		}
+
+		// In case the message came from an object, save the object info
+		// to be able properly show its profile.
+		if ( chat.mSourceType == CHAT_SOURCE_OBJECT)
+		{
+			std::string slurl = args["slurl"].asString();
+			if (slurl.empty())
+			{
+				LLViewerRegion *region = LLWorld::getInstance()->getRegionFromPosAgent(chat.mPosAgent);
+				if(region)
+				{
+					LLSLURL region_slurl(region->getName(), chat.mPosAgent);
+					slurl = region_slurl.getLocationString();
+				}
+			}
+
+			LLSD payload;
+			payload["object_id"]	= chat.mFromID;
+			payload["name"]			= chat.mFromName;
+			payload["owner_id"]		= chat.mOwnerID;
+			payload["slurl"]		= LLWeb::escapeURL(slurl);
+
+			mObjectData = payload;
 		}
 	}
 
@@ -564,6 +586,7 @@ protected:
 	static LLUICtrl*	sInfoCtrl;
 
 	LLUUID			    mAvatarID;
+	LLSD				mObjectData;
 	EChatSourceType		mSourceType;
 	std::string			mFrom;
 	LLUUID				mSessionID;
@@ -673,10 +696,10 @@ LLView* LLChatHistory::getSeparator()
 	return separator;
 }
 
-LLView* LLChatHistory::getHeader(const LLChat& chat,const LLStyle::Params& style_params)
+LLView* LLChatHistory::getHeader(const LLChat& chat,const LLStyle::Params& style_params, const LLSD& args)
 {
 	LLChatHistoryHeader* header = LLChatHistoryHeader::createInstance(mMessageHeaderFilename);
-	header->setup(chat,style_params);
+	header->setup(chat, style_params, args);
 	return header;
 }
 
@@ -794,21 +817,7 @@ void LLChatHistory::appendMessage(const LLChat& chat, const LLSD &args, const LL
 			if ( chat.mSourceType == CHAT_SOURCE_OBJECT && chat.mFromID.notNull())
 			{
 				// for object IMs, create a secondlife:///app/objectim SLapp
-				std::string url = LLSLURL("objectim", chat.mFromID, "").getSLURLString();
-				url += "?name=" + chat.mFromName;
-				url += "&owner=" + chat.mOwnerID.asString();
-
-				std::string slurl = args["slurl"].asString();
-				if (slurl.empty())
-				{
-				    LLViewerRegion *region = LLWorld::getInstance()->getRegionFromPosAgent(chat.mPosAgent);
-				    if(region)
-				      {
-					LLSLURL region_slurl(region->getName(), chat.mPosAgent);
-					slurl = region_slurl.getLocationString();
-				      }
-				}
-				url += "&slurl=" + LLURI::escape(slurl);
+				std::string url = LLViewerChat::getSenderSLURL(chat, args);
 
 				// set the link for the object name to be the objectim SLapp
 				// (don't let object names with hyperlinks override our objectim Url)
@@ -858,7 +867,7 @@ void LLChatHistory::appendMessage(const LLChat& chat, const LLSD &args, const LL
 		}
 		else
 		{
-			view = getHeader(chat, style_params);
+			view = getHeader(chat, style_params, args);
 			if (mEditor->getText().size() == 0)
 				p.top_pad = 0;
 			else

@@ -40,7 +40,7 @@ class LLFloaterMediaBrowser :
 	public LLViewerMediaObserver
 {
 public:
-    //LOG_CLASS(LLFloaterMediaBrowser);
+    LOG_CLASS(LLFloaterMediaBrowser);
 	LLFloaterMediaBrowser(const LLSD& key);
 
 	static void create(const std::string &url, const std::string& target, const std::string& uuid = LLStringUtil::null);

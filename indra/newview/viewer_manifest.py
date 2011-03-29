@@ -255,12 +255,6 @@ class WindowsManifest(ViewerManifest):
 
             self.enable_crt_manifest_check()
             
-            # Get kdu dll, continue if missing.
-            try:
-                self.path('llkdu.dll', dst='llkdu.dll')
-            except RuntimeError:
-                print "Skipping llkdu.dll"
-
             # Get llcommon and deps. If missing assume static linkage and continue.
             try:
                 self.path('llcommon.dll')
@@ -636,21 +630,21 @@ class DarwinManifest(ViewerManifest):
                 libdir = "../../libraries/universal-darwin/lib_release"
                 dylibs = {}
 
-                # need to get the kdu dll from any of the build directories as well
-                for lib in "llkdu", "llcommon":
-                    libfile = "lib%s.dylib" % lib
-                    try:
-                        self.path(self.find_existing_file(os.path.join(os.pardir,
-                                                                       lib,
-                                                                       self.args['configuration'],
-                                                                       libfile),
-                                                          os.path.join(libdir, libfile)),
-                                  dst=libfile)
-                    except RuntimeError:
-                        print "Skipping %s" % libfile
-                        dylibs[lib] = False
-                    else:
-                        dylibs[lib] = True
+                # Need to get the llcommon dll from any of the build directories as well
+                lib = "llcommon"
+                libfile = "lib%s.dylib" % lib
+                try:
+                    self.path(self.find_existing_file(os.path.join(os.pardir,
+                                                                    lib,
+                                                                    self.args['configuration'],
+                                                                    libfile),
+                                                      os.path.join(libdir, libfile)),
+                                                      dst=libfile)
+                except RuntimeError:
+                    print "Skipping %s" % libfile
+                    dylibs[lib] = False
+                else:
+                    dylibs[lib] = True
 
                 if dylibs["llcommon"]:
                     for libfile in ("libapr-1.0.3.7.dylib",
@@ -957,12 +951,6 @@ class Linux_i686Manifest(LinuxManifest):
             self.path("libtcmalloc_minimal.so", "libtcmalloc_minimal.so") #formerly called google perf tools
             self.path("libtcmalloc_minimal.so.0", "libtcmalloc_minimal.so.0") #formerly called google perf tools
             try:
-                    self.path("libkdu.so")
-                    pass
-            except:
-                    print "Skipping libkdu.so - not found"
-                    pass
-            try:
                     self.path("libfmod-3.75.so")
                     pass
             except:
@@ -986,7 +974,7 @@ class Linux_i686Manifest(LinuxManifest):
             print "* Going strip-crazy on the packaged binaries, since this is a RELEASE build"
             self.run_command("find %(d)r/bin %(d)r/lib -type f | xargs --no-run-if-empty strip -S" % {'d': self.get_dst_prefix()} ) # makes some small assumptions about our packaged dir structure
 
-	# wooooot... now i can continue to upgrade linux32 packages without broken x86_64
+
 class Linux_x86_64Manifest(LinuxManifest):
     def construct(self):
         super(Linux_x86_64Manifest, self).construct()

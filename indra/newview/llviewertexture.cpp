@@ -835,7 +835,7 @@ BOOL LLViewerTexture::createGLTexture(S32 discard_level, const LLImageRaw* image
 	llassert(mGLTexturep.notNull()) ;	
 
 	BOOL ret = mGLTexturep->createGLTexture(discard_level, imageraw, usename, to_create, category) ;
-	
+
 	if(ret)
 	{
 		mFullWidth = mGLTexturep->getCurrentWidth() ;
@@ -2690,8 +2690,6 @@ void LLViewerFetchedTexture::forceToSaveRawImage(S32 desired_discard, bool from_
 { 
 	if(!mForceToSaveRawImage || mDesiredSavedRawDiscardLevel < 0 || mDesiredSavedRawDiscardLevel > desired_discard)
 	{
-		llassert_always(from_callback || mBoostLevel == LLViewerTexture::BOOST_PREVIEW) ;
-
 		mForceToSaveRawImage = TRUE ;
 		mDesiredSavedRawDiscardLevel = desired_discard ;
 	

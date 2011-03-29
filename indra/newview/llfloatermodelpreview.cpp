@@ -322,8 +322,6 @@ BOOL LLFloaterModelPreview::postBuild()
 	childDisable("upload_skin");
 	childDisable("upload_joints");
 
-	childDisable("pelvis_offset");
-
 	childDisable("ok_btn");
 
 	mViewOptionMenuButton = getChild<LLMenuButton>("options_gear_btn");
@@ -391,7 +389,11 @@ LLFloaterModelPreview::~LLFloaterModelPreview()
 		gAgentAvatarp->resetJointPositions();
 	}
 
-	delete mModelPreview;
+	
+	if ( mModelPreview )
+	{
+		delete mModelPreview;
+	}
 
 	if (mGLName)
 	{
@@ -1558,7 +1560,7 @@ bool LLModelLoader::doLoadModel()
 						//a skinned asset attached to a node in a file that contains an entire skeleton,
 						//but does not use the skeleton).
 						mPreview->setRigValid( doesJointArrayContainACompleteRig( model->mJointList ) );
-							if ( !skeletonWithNoRootNode && !model->mJointList.empty() && mPreview->isRigValid() ) 
+						if ( !skeletonWithNoRootNode && !model->mJointList.empty() && mPreview->isRigValid() ) 
 						{
 							mResetJoints = true;
 						}
@@ -1873,16 +1875,13 @@ void LLModelLoader::loadModelCallback()
 {
 	if (mPreview)
 	{
-		mPreview->loadModelCallback(mLod);
-		mPreview->mModelLoader = NULL;
+		mPreview->loadModelCallback(mLod);	
 	}
 
 	while (!isStopped())
 	{ //wait until this thread is stopped before deleting self
 		apr_sleep(100);
 	}
-
-	delete this;
 }
 
 void LLModelLoader::handlePivotPoint( daeElement* pRoot )
@@ -2457,7 +2456,8 @@ LLModelPreview::LLModelPreview(S32 width, S32 height, LLFloater* fmp)
 LLModelPreview::~LLModelPreview()
 {
 	if (mModelLoader)
-	{
+	{	
+		delete mModelLoader;
 		mModelLoader->mPreview = NULL;
 	}
 	//*HACK : *TODO : turn this back on when we understand why this crashes
@@ -2494,8 +2494,13 @@ U32 LLModelPreview::calcResourceCost()
 	U32 num_hulls = 0;
 
 	F32 debug_scale = mFMP ? mFMP->childGetValue("import_scale").asReal() : 1.f;
-	mPelvisZOffset = mFMP ? mFMP->childGetValue("pelvis_offset").asReal() : 32.0f;
+	mPelvisZOffset = mFMP ? mFMP->childGetValue("pelvis_offset").asReal() : 3.0f;
 	
+	if ( mFMP && mFMP->childGetValue("upload_joints").asBoolean() )
+	{
+		gAgentAvatarp->setPelvisOffset( mPelvisZOffset );
+	}
+
 	F32 streaming_cost = 0.f;
 	F32 physics_cost = 0.f;
 	for (U32 i = 0; i < mUploadData.size(); ++i)
@@ -2990,8 +2995,12 @@ void LLModelPreview::loadModelCallback(S32 lod)
 
 void LLModelPreview::resetPreviewTarget()
 {
-	mPreviewTarget = (mModelLoader->mExtents[0] + mModelLoader->mExtents[1]) * 0.5f;
-	mPreviewScale = (mModelLoader->mExtents[1] - mModelLoader->mExtents[0]) * 0.5f;
+	if ( mModelLoader )
+	{
+		mPreviewTarget = (mModelLoader->mExtents[0] + mModelLoader->mExtents[1]) * 0.5f;
+		mPreviewScale = (mModelLoader->mExtents[1] - mModelLoader->mExtents[0]) * 0.5f;
+	}
+
 	setPreviewTarget(mPreviewScale.magVec()*2.f);
 }
 
@@ -4510,9 +4519,12 @@ void LLModelPreview::setPreviewLOD(S32 lod)
 		mFMP->childSetTextArg("lod_table_footer", "[DETAIL]", mFMP->getString(lod_name[mPreviewLOD]));
 		mFMP->childSetText("lod_file", mLODFile[mPreviewLOD]);
 
-		// the wizard has two lod drop downs
+		// the wizard has three lod drop downs
 		LLComboBox* combo_box2 = mFMP->getChild<LLComboBox>("preview_lod_combo2");
 		combo_box2->setCurrentByIndex((NUM_LOD-1)-mPreviewLOD); // combo box list of lods is in reverse order
+		
+		LLComboBox* combo_box3 = mFMP->getChild<LLComboBox>("preview_lod_combo3");
+		combo_box3->setCurrentByIndex((NUM_LOD-1)-mPreviewLOD); // combo box list of lods is in reverse order
 
 		LLColor4 highlight_color = LLUIColorTable::instance().getColor("MeshImportTableHighlightColor");
 		LLColor4 normal_color = LLUIColorTable::instance().getColor("MeshImportTableNormalColor");

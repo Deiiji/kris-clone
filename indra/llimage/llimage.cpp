@@ -52,13 +52,11 @@ LLMutex* LLImage::sMutex = NULL;
 void LLImage::initClass()
 {
 	sMutex = new LLMutex(NULL);
-	LLImageJ2C::openDSO();
 }
 
 //static
 void LLImage::cleanupClass()
 {
-	LLImageJ2C::closeDSO();
 	delete sMutex;
 	sMutex = NULL;
 }
@@ -169,7 +167,7 @@ U8* LLImageBase::allocateData(S32 size)
 	{
 		deleteData(); // virtual
 		mBadBufferAllocation = false ;
-		mData = new U8[size]; // KL
+		mData = new U8[size];
 		if (!mData)
 		{
 			llwarns << "allocate image data: " << size << llendl;

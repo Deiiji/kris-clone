@@ -357,7 +357,7 @@ void LLVertexBuffer::initClass(bool use_vbo, bool no_vbo_mapping)
 	sEnableVBOs = use_vbo && gGLManager.mHasVertexBufferObject ;
 	if(sEnableVBOs)
 	{
-		//llassert_always(glBindBufferARB) ; //double check the extention for VBO is loaded. KL this client can disable DO NOT assert!
+		//llassert_always(glBindBufferARB) ; //double check the extention for VBO is loaded.
 
 		llinfos << "VBO is enabled." << llendl ;
 	}

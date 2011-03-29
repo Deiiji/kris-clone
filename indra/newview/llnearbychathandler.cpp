@@ -56,7 +56,7 @@ LLToastPanelBase* createToastPanel()
 
 class LLNearbyChatScreenChannel: public LLScreenChannelBase
 {
-	//LOG_CLASS(LLNearbyChatScreenChannel);
+	LOG_CLASS(LLNearbyChatScreenChannel);
 public:
 	typedef std::vector<LLHandle<LLToast> > toast_vec_t;
 	typedef std::list<LLHandle<LLToast> > toast_list_t;
@@ -558,6 +558,7 @@ void LLNearbyChatHandler::processChat(const LLChat& chat_msg, const LLSD &args)
 	}
 	*/
 
+	// Add a nearby chat toast.
 	LLUUID id;
 	id.generate();
 
@@ -583,6 +584,10 @@ void LLNearbyChatHandler::processChat(const LLChat& chat_msg, const LLSD &args)
 		notification["text_color"] = r_color_name;
 		notification["color_alpha"] = r_color_alpha;
 		notification["font_size"] = (S32)LLViewerChat::getChatFontSize() ;
+
+		// Pass sender info so that it can be rendered properly (STORM-1021).
+		notification["sender_slurl"] = LLViewerChat::getSenderSLURL(chat_msg, args);
+
 		channel->addNotification(notification);	
 	}
 
