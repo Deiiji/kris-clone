@@ -108,19 +108,13 @@ U32 get_volume_memory_size(const LLVolume* volume)
 	return indices*2+vertices*11+sizeof(LLVolume)+sizeof(LLVolumeFace)*volume->getNumVolumeFaces();
 }
 
-LLVertexBuffer* get_vertex_buffer_from_mesh(LLCDMeshData& mesh, F32 scale = 1.f)
+void get_vertex_buffer_from_mesh(LLCDMeshData& mesh, LLModel::PhysicsMesh& res, F32 scale = 1.f)
 {
-	LLVertexBuffer* buff = new LLVertexBuffer(LLVertexBuffer::MAP_VERTEX | LLVertexBuffer::MAP_NORMAL, 0);
-	buff->allocateBuffer(mesh.mNumTriangles*3, 0, true);
-
-	LLStrider<LLVector3> pos;
-	LLStrider<LLVector3> norm;
+	res.mPositions.clear();
+	res.mNormals.clear();
 	
-	buff->getVertexStrider(pos);
-	buff->getNormalStrider(norm);
-
 	const F32* v = mesh.mVertexBase;
-	
+
 	if (mesh.mIndexType == LLCDMeshData::INT_16)
 	{
 		U16* idx = (U16*) mesh.mIndexBase;
@@ -139,13 +133,13 @@ LLVertexBuffer* get_vertex_buffer_from_mesh(LLCDMeshData& mesh, F32 scale = 1.f)
 			LLVector3 n = (v1-v0)%(v2-v0);
 			n.normalize();
 
-			*pos++ = v0*scale;
-			*pos++ = v1*scale;
-			*pos++ = v2*scale;
+			res.mPositions.push_back(v0*scale);
+			res.mPositions.push_back(v1*scale);
+			res.mPositions.push_back(v2*scale);
 
-			*norm++ = n;
-			*norm++ = n;
-			*norm++ = n;			
+			res.mNormals.push_back(n);
+			res.mNormals.push_back(n);
+			res.mNormals.push_back(n);			
 		}
 	}
 	else
@@ -166,17 +160,15 @@ LLVertexBuffer* get_vertex_buffer_from_mesh(LLCDMeshData& mesh, F32 scale = 1.f)
 			LLVector3 n = (v1-v0)%(v2-v0);
 			n.normalize();
 
-			*(pos++) = v0*scale;
-			*(pos++) = v1*scale;
-			*(pos++) = v2*scale;
+			res.mPositions.push_back(v0*scale);
+			res.mPositions.push_back(v1*scale);
+			res.mPositions.push_back(v2*scale);
 
-			*(norm++) = n;
-			*(norm++) = n;
-			*(norm++) = n;			
+			res.mNormals.push_back(n);
+			res.mNormals.push_back(n);
+			res.mNormals.push_back(n);			
 		}
 	}
-
-	return buff;
 }
 
 S32 LLMeshRepoThread::sActiveHeaderRequests = 0;
@@ -1111,66 +1103,9 @@ bool LLMeshRepoThread::skinInfoReceived(const LLUUID& mesh_id, U8* data, S32 dat
 	}
 	
 	{
-		LLMeshSkinInfo info;
+		LLMeshSkinInfo info(skin);
 		info.mMeshID = mesh_id;
 
-		if (skin.has("joint_names"))
-		{
-			for (U32 i = 0; i < skin["joint_names"].size(); ++i)
-			{
-				info.mJointNames.push_back(skin["joint_names"][i]);
-			}
-		}
-
-		if (skin.has("inverse_bind_matrix"))
-		{
-			for (U32 i = 0; i < skin["inverse_bind_matrix"].size(); ++i)
-			{
-				LLMatrix4 mat;
-				for (U32 j = 0; j < 4; j++)
-				{
-					for (U32 k = 0; k < 4; k++)
-					{
-						mat.mMatrix[j][k] = skin["inverse_bind_matrix"][i][j*4+k].asReal();
-					}
-				}
-
-				info.mInvBindMatrix.push_back(mat);
-			}
-		}
-
-		if (skin.has("bind_shape_matrix"))
-		{
-			for (U32 j = 0; j < 4; j++)
-			{
-				for (U32 k = 0; k < 4; k++)
-				{
-					info.mBindShapeMatrix.mMatrix[j][k] = skin["bind_shape_matrix"][j*4+k].asReal();
-				}
-			}
-		}
-
-		if (skin.has("alt_inverse_bind_matrix"))
-		{
-			for (U32 i = 0; i < skin["alt_inverse_bind_matrix"].size(); ++i)
-			{
-				LLMatrix4 mat;
-				for (U32 j = 0; j < 4; j++)
-				{
-					for (U32 k = 0; k < 4; k++)
-					{
-						mat.mMatrix[j][k] = skin["alt_inverse_bind_matrix"][i][j*4+k].asReal();
-					}
-				}
-				
-				info.mAlternateBindMatrix.push_back(mat);
-			}
-		}
-
-		if (skin.has("pelvis_offset"))
-		{
-			info.mPelvisOffset = skin["pelvis_offset"].asReal();
-		}
 		//llinfos<<"info pelvis offset"<<info.mPelvisOffset<<llendl;
 		mSkinInfoQ.push(info);
 	}
@@ -1196,119 +1131,8 @@ bool LLMeshRepoThread::decompositionReceived(const LLUUID& mesh_id, U8* data, S3
 	}
 	
 	{
-		LLMeshDecomposition* d = new LLMeshDecomposition();
+		LLModel::Decomposition* d = new LLModel::Decomposition(decomp);
 		d->mMeshID = mesh_id;
-
-		if (decomp.has("HullList"))
-		{
-			// updated for const-correctness. gcc is picky about this type of thing - Nyx
-			const LLSD::Binary& hulls = decomp["HullList"].asBinary();
-			const LLSD::Binary& position = decomp["Position"].asBinary();
-
-			U16* p = (U16*) &position[0];
-
-			d->mHull.resize(hulls.size());
-
-			LLVector3 min;
-			LLVector3 max;
-			LLVector3 range;
-
-			min.setValue(decomp["Min"]);
-			max.setValue(decomp["Max"]);
-			range = max-min;
-
-			for (U32 i = 0; i < hulls.size(); ++i)
-			{
-				U16 count = (hulls[i] == 0) ? 256 : hulls[i];
-				
-				for (U32 j = 0; j < count; ++j)
-				{
-					d->mHull[i].push_back(LLVector3(
-						(F32) p[0]/65535.f*range.mV[0]+min.mV[0],
-						(F32) p[1]/65535.f*range.mV[1]+min.mV[1],
-						(F32) p[2]/65535.f*range.mV[2]+min.mV[2]));
-					p += 3;
-				}		 
-
-			}
-				
-			//get mesh for decomposition
-			for (U32 i = 0; i < d->mHull.size(); ++i)
-			{
-				LLCDHull hull;
-				hull.mNumVertices = d->mHull[i].size();
-				hull.mVertexBase = d->mHull[i][0].mV;
-				hull.mVertexStrideBytes = 12;
-
-				LLCDMeshData mesh;
-				LLCDResult res = LLCD_OK;
-				if (LLConvexDecomposition::getInstance() != NULL)
-				{
-					res = LLConvexDecomposition::getInstance()->getMeshFromHull(&hull, &mesh);
-				}
-				if (res != LLCD_OK)
-				{
-					llwarns << "could not get mesh from hull from convex decomposition lib." << llendl;
-					return false;
-				}
-
-
-				d->mMesh.push_back(get_vertex_buffer_from_mesh(mesh));
-			}	
-		}
-
-		if (decomp.has("Hull"))
-		{
-			const LLSD::Binary& position = decomp["Hull"].asBinary();
-
-			U16* p = (U16*) &position[0];
-
-			LLVector3 min;
-			LLVector3 max;
-			LLVector3 range;
-
-			min.setValue(decomp["Min"]);
-			max.setValue(decomp["Max"]);
-			range = max-min;
-
-			U16 count = position.size()/6;
-			
-			for (U32 j = 0; j < count; ++j)
-			{
-				d->mBaseHull.push_back(LLVector3(
-					(F32) p[0]/65535.f*range.mV[0]+min.mV[0],
-					(F32) p[1]/65535.f*range.mV[1]+min.mV[1],
-					(F32) p[2]/65535.f*range.mV[2]+min.mV[2]));
-				p += 3;
-			}		 
-				
-			//get mesh for decomposition
-			LLCDHull hull;
-			hull.mNumVertices = d->mBaseHull.size();
-			hull.mVertexBase = d->mBaseHull[0].mV;
-			hull.mVertexStrideBytes = 12;
-
-			LLCDMeshData mesh;
-			LLCDResult res = LLCD_OK;
-			if (LLConvexDecomposition::getInstance() != NULL)
-			{
-				res = LLConvexDecomposition::getInstance()->getMeshFromHull(&hull, &mesh);
-			}
-			if (res != LLCD_OK)
-			{
-				llwarns << "could not get mesh from hull from convex decomposition lib." << llendl;
-				return false;
-			}
-
-			d->mBaseHullMesh = get_vertex_buffer_from_mesh(mesh);
-		}
-		else
-		{
-			//empty vertex buffer to indicate decomposition has been fetched
-			//but contains no base hull
-			d->mBaseHullMesh = new LLVertexBuffer(0, 0);
-		}
-
 		mDecompositionQ.push(d);
 	}
 
@@ -1319,12 +1143,12 @@ bool LLMeshRepoThread::physicsShapeReceived(const LLUUID& mesh_id, U8* data, S32
 {
 	LLSD physics_shape;
 
-	LLMeshDecomposition* d = new LLMeshDecomposition();
+	LLModel::Decomposition* d = new LLModel::Decomposition();
 	d->mMeshID = mesh_id;
 
 	if (data == NULL)
 	{ //no data, no physics shape exists
-		d->mPhysicsShapeMesh = new LLVertexBuffer(0,0);
+		d->mPhysicsShapeMesh.clear();
 	}
 	else
 	{
@@ -1348,33 +1172,22 @@ bool LLMeshRepoThread::physicsShapeReceived(const LLUUID& mesh_id, U8* data, S32
 				index_count += face.mNumIndices;
 			}
 
-			d->mPhysicsShapeMesh = new LLVertexBuffer(LLVertexBuffer::MAP_VERTEX, 0);
+			d->mPhysicsShapeMesh.clear();
 
-			d->mPhysicsShapeMesh->allocateBuffer(vertex_count, index_count, true);
+			std::vector<LLVector3>& pos = d->mPhysicsShapeMesh.mPositions;
+			std::vector<LLVector3>& norm = d->mPhysicsShapeMesh.mNormals;
 
-			LLStrider<LLVector3> pos;
-			LLStrider<U16> idx;
-
-			d->mPhysicsShapeMesh->getVertexStrider(pos);
-			d->mPhysicsShapeMesh->getIndexStrider(idx);
-
-			S32 idx_offset = 0;
 			for (S32 i = 0; i < volume->getNumVolumeFaces(); ++i)
 			{
 				const LLVolumeFace& face = volume->getVolumeFace(i);
-				if (idx_offset + face.mNumIndices > 65535)
-				{ //avoid 16-bit index overflow
-					continue;
-				}
-
-				LLVector4a::memcpyNonAliased16(pos[idx_offset].mV, face.mPositions[0].getF32ptr(), face.mNumVertices*sizeof(LLVector4a));
 			
 				for (S32 i = 0; i < face.mNumIndices; ++i)
 				{
-					*idx++ = face.mIndices[i] + idx_offset;
-				}
+					U16 idx = face.mIndices[i];
 
-				idx_offset += face.mNumVertices;
+					pos.push_back(LLVector3(face.mPositions[idx].getF32ptr()));
+					norm.push_back(LLVector3(face.mNormals[idx].getF32ptr()));				
+				}			
 			}
 		}
 	}
@@ -1722,8 +1535,6 @@ void LLMeshRepoThread::notifyLoadedMeshes()
 
 S32 LLMeshRepoThread::getActualMeshLOD(const LLVolumeParams& mesh_params, S32 lod) 
 { //only ever called from main thread
-	lod = llclamp(lod, 0, 3);
-
 	LLMutexLock lock(mHeaderMutex);
 	mesh_header_map::iterator iter = mMeshHeader.find(mesh_params.getSculptID());
 
@@ -1731,40 +1542,48 @@ S32 LLMeshRepoThread::getActualMeshLOD(const LLVolumeParams& mesh_params, S32 lo
 	{
 		LLSD& header = iter->second;
 
-		if (header.has("404"))
-		{
-			return -1;
-		}
-
-		if (header[header_lod[lod]]["size"].asInteger() > 0)
-		{
-			return lod;
-		}
-
-		//search down to find the next available lower lod
-		for (S32 i = lod-1; i >= 0; --i)
-		{
-			if (header[header_lod[i]]["size"].asInteger() > 0)
-			{
-				return i;
-			}
-		}
-
-		//search up to find then ext available higher lod
-		for (S32 i = lod+1; i < 4; ++i)
-		{
-			if (header[header_lod[i]]["size"].asInteger() > 0)
-			{
-				return i;
-			}
-		}
-
-		//header exists and no good lod found, treat as 404
-		header["404"] = 1;
-		return -1;
+		return LLMeshRepository::getActualMeshLOD(header, lod);
 	}
 
 	return lod;
+}
+
+//static
+S32 LLMeshRepository::getActualMeshLOD(LLSD& header, S32 lod)
+{
+	lod = llclamp(lod, 0, 3);
+
+	if (header.has("404"))
+	{
+		return -1;
+	}
+
+	if (header[header_lod[lod]]["size"].asInteger() > 0)
+	{
+		return lod;
+	}
+
+	//search down to find the next available lower lod
+	for (S32 i = lod-1; i >= 0; --i)
+	{
+		if (header[header_lod[i]]["size"].asInteger() > 0)
+		{
+			return i;
+		}
+	}
+
+	//search up to find then ext available higher lod
+	for (S32 i = lod+1; i < 4; ++i)
+	{
+		if (header[header_lod[i]]["size"].asInteger() > 0)
+		{
+			return i;
+		}
+	}
+
+	//header exists and no good lod found, treat as 404
+	header["404"] = 1;
+	return -1;
 }
 
 U32 LLMeshRepoThread::getResourceCost(const LLUUID& mesh_id)
@@ -2485,33 +2304,7 @@ void LLMeshRepository::notifySkinInfoReceived(LLMeshSkinInfo& info)
 	mLoadingSkins.erase(info.mMeshID);
 }
 
-void LLMeshDecomposition::merge(const LLMeshDecomposition* rhs)
-{
-	if (!rhs)
-	{
-		return;
-	}
-
-	if (mMeshID != rhs->mMeshID)
-	{
-		llerrs << "Attempted to merge with decomposition of some other mesh." << llendl;
-	}
-
-	if (mBaseHull.empty())
-	{ //take base hull and decomposition from rhs
-		mHull = rhs->mHull;
-		mBaseHull = rhs->mBaseHull;
-		mMesh = rhs->mMesh;
-		mBaseHullMesh = rhs->mBaseHullMesh;
-	}
-
-	if (mPhysicsShapeMesh.isNull())
-	{ //take physics shape mesh from rhs
-		mPhysicsShapeMesh = rhs->mPhysicsShapeMesh;
-	}
-}
-
-void LLMeshRepository::notifyDecompositionReceived(LLMeshDecomposition* decomp)
+void LLMeshRepository::notifyDecompositionReceived(LLModel::Decomposition* decomp)
 {
 	decomposition_map::iterator iter = mDecompositionMap.find(decomp->mMeshID);
 	if (iter == mDecompositionMap.end())
@@ -2653,7 +2446,7 @@ void LLMeshRepository::fetchPhysicsShape(const LLUUID& mesh_id)
 {
 	if (mesh_id.notNull())
 	{
-		LLMeshDecomposition* decomp = NULL;
+		LLModel::Decomposition* decomp = NULL;
 		decomposition_map::iterator iter = mDecompositionMap.find(mesh_id);
 		if (iter != mDecompositionMap.end())
 		{
@@ -2661,7 +2454,7 @@ void LLMeshRepository::fetchPhysicsShape(const LLUUID& mesh_id)
 		}
 		
 		//decomposition block hasn't been fetched yet
-		if (!decomp || decomp->mPhysicsShapeMesh.isNull())
+		if (!decomp || decomp->mPhysicsShapeMesh.empty())
 		{
 			LLMutexLock lock(mMeshMutex);
 			//add volume to list of loading meshes
@@ -2676,9 +2469,9 @@ void LLMeshRepository::fetchPhysicsShape(const LLUUID& mesh_id)
 
 }
 
-const LLMeshDecomposition* LLMeshRepository::getDecomposition(const LLUUID& mesh_id)
+LLModel::Decomposition* LLMeshRepository::getDecomposition(const LLUUID& mesh_id)
 {
-	LLMeshDecomposition* ret = NULL;
+	LLModel::Decomposition* ret = NULL;
 
 	if (mesh_id.notNull())
 	{
@@ -2689,7 +2482,7 @@ const LLMeshDecomposition* LLMeshRepository::getDecomposition(const LLUUID& mesh
 		}
 		
 		//decomposition block hasn't been fetched yet
-		if (!ret || ret->mBaseHullMesh.isNull())
+		if (!ret || ret->mBaseHullMesh.empty())
 		{
 			LLMutexLock lock(mMeshMutex);
 			//add volume to list of loading meshes
@@ -2727,12 +2520,12 @@ bool LLMeshRepository::hasPhysicsShape(const LLUUID& mesh_id)
 	return mesh.has("physics_shape") && mesh["physics_shape"].has("size") && (mesh["physics_shape"]["size"].asInteger() > 0);
 }
 
-const LLSD& LLMeshRepository::getMeshHeader(const LLUUID& mesh_id)
+LLSD& LLMeshRepository::getMeshHeader(const LLUUID& mesh_id)
 {
 	return mThread->getMeshHeader(mesh_id);
 }
 
-const LLSD& LLMeshRepoThread::getMeshHeader(const LLUUID& mesh_id)
+LLSD& LLMeshRepoThread::getMeshHeader(const LLUUID& mesh_id)
 {
 	static LLSD dummy_ret;
 	if (mesh_id.notNull())
@@ -2790,12 +2583,10 @@ void LLMeshUploadThread::sendCostRequest(LLMeshUploadData& data)
 	//write model file to memory buffer
 	std::stringstream ostr;
 
-	LLModel::convex_hull_decomposition& decomp =
+	LLModel::Decomposition& decomp =
 		data.mModel[LLModel::LOD_PHYSICS].notNull() ? 
-		data.mModel[LLModel::LOD_PHYSICS]->mConvexHullDecomp : 
-		data.mBaseModel->mConvexHullDecomp;
-
-	LLModel::hull dummy_hull;
+		data.mModel[LLModel::LOD_PHYSICS]->mPhysics : 
+		data.mBaseModel->mPhysics;
 
 	LLSD header = LLModel::writeModel(
 		ostr,
@@ -2805,7 +2596,6 @@ void LLMeshUploadThread::sendCostRequest(LLMeshUploadData& data)
 		data.mModel[LLModel::LOD_LOW],
 		data.mModel[LLModel::LOD_IMPOSTOR], 
 		decomp,
-		dummy_hull,
 		mUploadSkin,
 		mUploadJoints,
 		true);
@@ -2891,10 +2681,12 @@ void LLMeshUploadThread::doUploadModel(LLMeshUploadData& data)
 	{
 		std::stringstream ostr;
 
-		LLModel::convex_hull_decomposition& decomp =
+		LLModel::Decomposition& decomp =
 			data.mModel[LLModel::LOD_PHYSICS].notNull() ? 
-			data.mModel[LLModel::LOD_PHYSICS]->mConvexHullDecomp : 
-			data.mBaseModel->mConvexHullDecomp;
+			data.mModel[LLModel::LOD_PHYSICS]->mPhysics : 
+			data.mBaseModel->mPhysics;
+
+		decomp.mBaseHull = mHullMap[data.mBaseModel];
 
 		LLModel::writeModel(
 			ostr,  
@@ -2904,7 +2696,6 @@ void LLMeshUploadThread::doUploadModel(LLMeshUploadData& data)
 			data.mModel[LLModel::LOD_LOW],
 			data.mModel[LLModel::LOD_IMPOSTOR], 
 			decomp,
-			mHullMap[data.mBaseModel],
 			mUploadSkin,
 			mUploadJoints);
 
@@ -3152,16 +2943,35 @@ void LLMeshRepository::uploadError(LLSD& args)
 }
 
 //static
-F32 LLMeshRepository::getStreamingCost(const LLSD& header, F32 radius)
+F32 LLMeshRepository::getStreamingCost(LLSD& header, F32 radius, S32* bytes, S32* bytes_visible, S32 lod)
 {
-	F32 dlowest = llmin(radius/0.06f, 256.f);
-	F32 dlow = llmin(radius/0.24f, 256.f);
-	F32 dmid = llmin(radius/1.0f, 256.f);
+	F32 dlowest = llmin(radius/0.03f, 256.f);
+	F32 dlow = llmin(radius/0.06f, 256.f);
+	F32 dmid = llmin(radius/0.24f, 256.f);
 	
 	F32 bytes_lowest = header["lowest_lod"]["size"].asReal()/1024.f;
 	F32 bytes_low = header["low_lod"]["size"].asReal()/1024.f;
 	F32 bytes_mid = header["medium_lod"]["size"].asReal()/1024.f;
 	F32 bytes_high = header["high_lod"]["size"].asReal()/1024.f;
+
+	if (bytes)
+	{
+		*bytes = 0;
+		*bytes += header["lowest_lod"]["size"].asInteger();
+		*bytes += header["low_lod"]["size"].asInteger();
+		*bytes += header["medium_lod"]["size"].asInteger();
+		*bytes += header["high_lod"]["size"].asInteger();
+	}
+
+
+	if (bytes_visible)
+	{
+		lod = LLMeshRepository::getActualMeshLOD(header, lod);
+		if (lod >= 0 && lod <= 3)
+		{
+			*bytes_visible = header[header_lod[lod]]["size"].asInteger();
+		}
+	}
 
 	if (bytes_high == 0.f)
 	{
@@ -3412,7 +3222,7 @@ void LLPhysicsDecomp::doDecomposition()
 			// if LLConvexDecomposition is a stub, num_hulls should have been set to 0 above, and we should not reach this code
 			LLConvexDecomposition::getInstance()->getMeshFromStage(stage, i, &mesh);
 
-			mCurRequest->mHullMesh[i] = get_vertex_buffer_from_mesh(mesh);
+			get_vertex_buffer_from_mesh(mesh, mCurRequest->mHullMesh[i]);
 			
 			mMutex->lock();
 			mCurRequest->mHull[i] = p;
@@ -3685,4 +3495,47 @@ LLSD LLImportMaterial::asLLSD()
 	ret["fullbright"] = mFullbright;
 	
 	return ret;
+}
+
+void LLMeshRepository::buildPhysicsMesh(LLModel::Decomposition& decomp)
+{
+	decomp.mMesh.resize(decomp.mHull.size());
+
+	for (U32 i = 0; i < decomp.mHull.size(); ++i)
+	{
+		LLCDHull hull;
+		hull.mNumVertices = decomp.mHull[i].size();
+		hull.mVertexBase = decomp.mHull[i][0].mV;
+		hull.mVertexStrideBytes = 12;
+
+		LLCDMeshData mesh;
+		LLCDResult res = LLCD_OK;
+		if (LLConvexDecomposition::getInstance() != NULL)
+		{
+			res = LLConvexDecomposition::getInstance()->getMeshFromHull(&hull, &mesh);
+		}
+		if (res == LLCD_OK)
+		{
+			get_vertex_buffer_from_mesh(mesh, decomp.mMesh[i]);
+		}
+	}
+
+	if (!decomp.mBaseHull.empty() && decomp.mBaseHullMesh.empty())
+	{ //get mesh for base hull
+		LLCDHull hull;
+		hull.mNumVertices = decomp.mBaseHull.size();
+		hull.mVertexBase = decomp.mBaseHull[0].mV;
+		hull.mVertexStrideBytes = 12;
+
+		LLCDMeshData mesh;
+		LLCDResult res = LLCD_OK;
+		if (LLConvexDecomposition::getInstance() != NULL)
+		{
+			res = LLConvexDecomposition::getInstance()->getMeshFromHull(&hull, &mesh);
+		}
+		if (res == LLCD_OK)
+		{
+			get_vertex_buffer_from_mesh(mesh, decomp.mBaseHullMesh);
+		}
+	}
 }
