@@ -28,74 +28,12 @@
 
 #include "llmemtype.h"
 
-#if 0  //DON'T use ll_aligned_foo now that we use tcmalloc everywhere (tcmalloc aligns automatically at appropriate intervals)
-inline void* ll_aligned_malloc( size_t size, int align )
-{
-	void* mem = malloc( size + (align - 1) + sizeof(void*) );
-	char* aligned = ((char*)mem) + sizeof(void*);
-	aligned += align - ((uintptr_t)aligned & (align - 1));
+//extern S32 gTotalDAlloc;
+//extern S32 gTotalDAUse;
+//extern S32 gDACount;
 
-	((void**)aligned)[-1] = mem;
-	return aligned;
-}
-
-inline void ll_aligned_free( void* ptr )
-{
-	free( ((void**)ptr)[-1] );
-}
-
-inline void* ll_aligned_malloc_16(size_t size) // returned hunk MUST be freed with ll_aligned_free_16().
-{
-#if defined(LL_WINDOWS)
-	return _mm_malloc(size, 16);
-#elif defined(LL_DARWIN)
-	return malloc(size); // default osx malloc is 16 byte aligned.
-#else
-	void *rtn;
-	if (LL_LIKELY(0 == posix_memalign(&rtn, 16, size)))
-		return rtn;
-	else // bad alignment requested, or out of memory
-		return NULL;
-#endif
-}
-
-inline void ll_aligned_free_16(void *p)
-{
-#if defined(LL_WINDOWS)
-	_mm_free(p);
-#elif defined(LL_DARWIN)
-	return free(p);
-#else
-	free(p); // posix_memalign() is compatible with heap deallocator
-#endif
-}
-
-inline void* ll_aligned_malloc_32(size_t size) // returned hunk MUST be freed with ll_aligned_free_32().
-{
-#if defined(LL_WINDOWS)
-	return _mm_malloc(size, 32);
-#elif defined(LL_DARWIN)
-	return ll_aligned_malloc( size, 32 );
-#else
-	void *rtn;
-	if (LL_LIKELY(0 == posix_memalign(&rtn, 32, size)))
-		return rtn;
-	else // bad alignment requested, or out of memory
-		return NULL;
-#endif
-}
-
-inline void ll_aligned_free_32(void *p)
-{
-#if defined(LL_WINDOWS)
-	_mm_free(p);
-#elif defined(LL_DARWIN)
-	ll_aligned_free( p );
-#else
-	free(p); // posix_memalign() is compatible with heap deallocator
-#endif
-}
-#endif
+//extern void* ll_allocate (size_t size);
+extern void ll_release (void *p);
 
 class LL_COMMON_API LLMemory
 {
