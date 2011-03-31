@@ -158,6 +158,12 @@ protected:
 						   LLAssetType::EType type,
 						   void* user_data, S32 status, LLExtStat ext_status);
 
+static void onAssetLoadComplete(LLVFS *vfs,
+	const LLUUID& asset_uuid,
+	LLAssetType::EType type,
+	void* user_data, S32 status, LLExtStat ext_status);
+	static bool hasLoadingAssets(LLMultiGesture* gesture);
+
 private:
 	// Active gestures.
 	// NOTE: The gesture pointer CAN BE NULL.  This means that
@@ -172,6 +178,7 @@ private:
 	callback_map_t mCallbackMap;
 	std::vector<LLMultiGesture*> mPlaying;	
 	BOOL mValid;
+	std::set<LLUUID> mLoadingAssets;
 };
 
 #endif

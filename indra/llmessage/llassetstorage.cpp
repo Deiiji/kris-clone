@@ -398,6 +398,11 @@ BOOL LLAssetStorage::hasLocalAsset(const LLUUID &uuid, const LLAssetType::EType 
 bool LLAssetStorage::findInStaticVFSAndInvokeCallback(const LLUUID& uuid, LLAssetType::EType type,
 													  LLGetAssetCallback callback, void *user_data)
 {
+	if (user_data)
+	{
+		llassert(callback != NULL)
+	}
+	
 	BOOL exists = mStaticVFS->getExists(uuid, type);
 	if (exists)
 	{
@@ -432,9 +437,18 @@ void LLAssetStorage::getAssetData(const LLUUID uuid, LLAssetType::EType type, LL
 
 	llinfos << "ASSET_TRACE requesting " << uuid << " type " << LLAssetType::lookup(type) << llendl;
 
+	if (user_data)
+	{
+		llassert(callback != NULL)
+	}
+
 	if (mShutDown)
 	{
 		llinfos << "ASSET_TRACE cancelled " << uuid << " type " << LLAssetType::lookup(type) << " shutting down" << llendl;
+			if (callback)
+			{
+			callback(mVFS, uuid, type, user_data, LL_ERR_ASSET_REQUEST_FAILED, LL_EXSTAT_NONE);
+			}
 		return; // don't get the asset or do any callbacks, we are shutting down
 	}
 		
