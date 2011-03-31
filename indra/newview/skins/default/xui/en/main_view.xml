@@ -86,7 +86,6 @@
                             right="500"
                             top="69" 
                             bottom="388" 
-                            min_width="370"
                             mouse_opaque="false"
                             name="sidebar"
                             orientation="horizontal"
@@ -101,7 +100,6 @@
                                 mouse_opaque="false"
                                 name="side_bar_tabs"
                                 tab_stop="false"
-                                user_resize="true"
                                 right="0"
                                 top="0"
                                 width="32"/>

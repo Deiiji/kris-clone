@@ -43,7 +43,7 @@ void fallbackDestroyLLImageJ2CImpl(LLImageJ2CImpl* impl);
 const char* fallbackEngineInfoLLImageJ2CImpl();
 
 
-//static
+// static
 std::string LLImageJ2C::getEngineInfo()
 {
     return fallbackEngineInfoLLImageJ2CImpl();
