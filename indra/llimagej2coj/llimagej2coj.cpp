@@ -120,7 +120,7 @@ BOOL LLImageJ2COJ::decodeImpl(LLImageJ2C &base, LLImageRaw &raw_image, F32 decod
 	opj_event_mgr_t event_mgr;		/* event manager */
 	opj_image_t *image = NULL;
 
-	opj_dinfo_t* dinfo = NULL;	/* handle to a decompressor */
+	opj_dinfo_t *dinfo = NULL;	/* handle to a decompressor */
 	opj_cio_t *cio = NULL;
 
 
