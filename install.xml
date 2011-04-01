@@ -306,7 +306,7 @@
           <key>linux</key>
           <map>
             <key>md5sum</key>
-            <string>cb99a14289b178e83cc8ea1fbe689a49</string>
+            <string>29f67bff87833fa5eb3e981a22842fa7</string>
             <key>url</key>
             <uri>http://sourceforge.net/projects/sythos/files/curl-7.21.1-linux-20110401.tar.bz2</uri>
           </map>
