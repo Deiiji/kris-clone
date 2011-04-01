@@ -76,7 +76,6 @@ LLStat LLViewerTextureList::sFormattedMemStat(32, TRUE);
 LLViewerTextureList gTextureList;
 static LLFastTimer::DeclareTimer FTM_PROCESS_IMAGES("Process Images");
 
-U32 main_thread_id = 0 ;
 ///////////////////////////////////////////////////////////////////////////////
 
 LLViewerTextureList::LLViewerTextureList() 
@@ -89,8 +88,6 @@ LLViewerTextureList::LLViewerTextureList()
 
 void LLViewerTextureList::init()
 {
-	main_thread_id = LLThread::currentID() ;
-
 	sNumImages = 0;
 	mMaxResidentTexMemInMegaBytes = 0;
 	mMaxTotalTextureMemInMegaBytes = 0 ;
@@ -112,9 +109,6 @@ void LLViewerTextureList::init()
 void LLViewerTextureList::doPreloadImages()
 {
 	LL_DEBUGS("ViewerImages") << "Preloading images..." << LL_ENDL;
-	
-	llassert_always(mImageList.empty()) ;
-	llassert_always(mUUIDMap.empty()) ;
 	
 	// Set the "missing asset" image
 	LLViewerFetchedTexture::sMissingAssetImagep = LLViewerTextureManager::getFetchedTextureFromFile("missing_asset.tga", MIPMAP_NO, LLViewerFetchedTexture::BOOST_UI);
@@ -883,9 +877,7 @@ void LLViewerTextureList::decodeAllImages(F32 max_time)
 {
 	LLTimer timer;
 	if(gNoRender) return;
-
-	llassert_always(main_thread_id == LLThread::currentID());
-
+	
 	// Update texture stats and priorities
 	std::vector<LLPointer<LLViewerFetchedTexture> > image_list;
 	for (image_priority_list_t::iterator iter = mImageList.begin();
