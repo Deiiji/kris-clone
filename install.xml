@@ -306,9 +306,9 @@
           <key>linux</key>
           <map>
             <key>md5sum</key>
-            <string>a20e73f2e7d6a032ff25a5161b1b7394</string>
+            <string>cb99a14289b178e83cc8ea1fbe689a49</string>
             <key>url</key>
-            <uri>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/curl-7.20.1-linux-20100527.tar.bz2</uri>
+            <uri>http://sourceforge.net/projects/sythos/files/curl-7.21.1-linux-20110401.tar.bz2</uri>
           </map>
           <key>linux64</key>
           <map>
@@ -1160,9 +1160,9 @@ anguage Infrstructure (CLI) international standard</string>
           <key>linux</key>
           <map>
             <key>md5sum</key>
-            <string>5d743c93b970abe685b185de83001a6e</string>
+            <string>b2dda46b99a073521c37c2bbe91b64e0</string>
             <key>url</key>
-            <uri>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/llqtwebkit-linux-qt4.6-20100923.tar.bz2</uri>
+            <uri>http://sourceforge.net/projects/sythos/files/llqtwebkit-linux-20110401.tar.bz2</uri>
           </map>
           <key>windows</key>
           <map>
@@ -1406,7 +1406,7 @@ anguage Infrstructure (CLI) international standard</string>
             <key>md5sum</key>
             <string>33d00d451db9c6c513c7df227d1f6e7a</string>
             <key>url</key>
-            <uri>http://sourceforge.net/projects/sythos/files/openjpeg-2.0.3-linux-20101022.tar.bz2/download</uri>
+            <uri>http://sourceforge.net/projects/sythos/files/openjpeg-2.0.3-linux-20101022.tar.bz2</uri>
           </map>          
           <key>linux64</key>
           <map>
