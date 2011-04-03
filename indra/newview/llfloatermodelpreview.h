@@ -66,7 +66,7 @@ public:
 		GENERATING_VERTEX_BUFFERS,
 		GENERATING_LOD,
 		DONE,
-		ERROR_PARSING, //basically loading failed
+		ERROR_PARSING //basically loading failed
 	} eLoadState;
 
 	U32 mState;
@@ -162,6 +162,8 @@ public:
 	
 	static void onBrowseLOD(void* data);
 	
+	static void onReset(void* data);
+
 	static void onUpload(void* data);
 	
 	static void onClearMaterials(void* data);

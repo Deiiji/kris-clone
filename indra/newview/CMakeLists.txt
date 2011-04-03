@@ -390,6 +390,7 @@ set(viewer_SOURCE_FILES
     llparcelselection.cpp
     llparticipantlist.cpp
     llpatchvertexarray.cpp
+    llphysicsmotion.cpp
     llphysicsshapebuilderutil.cpp
     llplacesinventorybridge.cpp
     llplacesinventorypanel.cpp
@@ -414,6 +415,7 @@ set(viewer_SOURCE_FILES
     llscreenchannel.cpp
     llscriptfloater.cpp
     llscrollingpanelparam.cpp
+    llscrollingpanelparambase.cpp
     llsearchcombobox.cpp
     llsearchhistory.cpp
     llsecapi.cpp
@@ -937,6 +939,7 @@ set(viewer_HEADER_FILES
     llparcelselection.h
     llparticipantlist.h
     llpatchvertexarray.h
+    llphysicsmotion.h
     llphysicsshapebuilderutil.h
     llplacesinventorybridge.h
     llplacesinventorypanel.h
@@ -963,6 +966,7 @@ set(viewer_HEADER_FILES
     llscreenchannel.h
     llscriptfloater.h
     llscrollingpanelparam.h
+    llscrollingpanelparambase.h
     llsearchcombobox.h
     llsearchhistory.h
     llsecapi.h

@@ -333,17 +333,6 @@
       <key>Value</key>
       <integer>1</integer>
     </map>
-  <key>AudioVirtualSurround</key>
-  <map>
-    <key>Comment</key>
-    <string>Enable audio virtual surround (software)</string>
-    <key>Persist</key>
-    <integer>1</integer>
-    <key>Type</key>
-    <string>Boolean</string>
-    <key>Value</key>
-    <integer>1</integer>
-  </map>
   <key>AuditTexture</key>
   <map>
     <key>Comment</key>
@@ -652,7 +641,28 @@
       <key>Value</key>
       <integer>10</integer>
     </map>
-
+    <key>AvatarPhysics</key>
+    <map>
+      <key>Comment</key>
+      <string>Enable avatar physics.</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>1</integer>
+    </map>
+  <key>AvatarPhysicsTest</key>
+  <map>
+    <key>Comment</key>
+    <string>Simulate continuous physics behavior on all nearby avatars.</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>Boolean</string>
+    <key>Value</key>
+    <integer>0</integer>
+  </map>
     <key>AvatarSex</key>
     <map>
       <key>Comment</key>
@@ -4029,7 +4039,7 @@
       <key>Type</key>
       <string>String</string>
       <key>Value</key>
-      <string>http://viewer-help.secondlife.com/[LANGUAGE]/Second%20Life%20Beta%20Viewer/2.2.0.210127/[TOPIC][DEBUG_MODE]</string>
+      <string>http://viewer-help.secondlife.com/[LANGUAGE]/Second%20Life%20Release/2.6.0.225006/[TOPIC][DEBUG_MODE]</string>
     </map>
     <key>HomeSidePanelURL</key>
     <map>
@@ -7249,6 +7259,17 @@
       <string>S32</string>
       <key>Value</key>
       <integer>12</integer>
+    </map>
+    <key>RenderAvatarPhysicsLODFactor</key>
+    <map>
+      <key>Comment</key>
+      <string>Controls level of detail of avatar physics (such as breast physics).</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>F32</string>
+      <key>Value</key>
+      <integer>1.0</integer>
     </map>
     <key>RenderAvatarVP</key>
     <map>
@@ -12645,6 +12666,17 @@
       <key>Value</key>
       <real>0.40000000596</real>
     </map>
+	<key>moapbeacon</key>
+	<map>
+		<key>Comment</key>
+		<string>Beacon / Highlight media on a prim sources</string>
+		<key>Persist</key>
+		<integer>1</integer>
+		<key>Type</key>
+		<string>Boolean</string>
+		<key>Value</key>
+		<integer>0</integer>
+	</map>
     <key>particlesbeacon</key>
     <map>
       <key>Comment</key>

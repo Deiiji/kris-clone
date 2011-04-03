@@ -279,11 +279,6 @@ BOOL LLFloaterModelPreview::postBuild()
 		return FALSE;
 	}
 
-
-
-
-
-
 	childSetAction("lod_browse", onBrowseLOD, this);
 
 	childSetCommitCallback("cancel_btn", onCancel, this);
@@ -305,6 +300,8 @@ BOOL LLFloaterModelPreview::postBuild()
 	//childSetLabelArg("ok_btn", "[AMOUNT]", llformat("%d",sUploadAmount));
 	childSetAction("ok_btn", onUpload, this);
 	childDisable("ok_btn");
+
+	childSetAction("reset_btn", onReset, this);
 
 	childSetAction("clear_materials", onClearMaterials, this);
 
@@ -384,8 +381,6 @@ BOOL LLFloaterModelPreview::postBuild()
 LLFloaterModelPreview::~LLFloaterModelPreview()
 {
 	sInstance = NULL;
-
-	const LLModelLoader *model_loader = mModelPreview->mModelLoader;
 	
 	if ( mModelPreview && mModelPreview->getResetJointFlag() )
 	{
@@ -579,7 +574,14 @@ void LLFloaterModelPreview::draw()
 
 	if (!mModelPreview->mLoading)
 	{
-		childSetTextArg("status", "[STATUS]", getString("status_idle"));
+		if ( mModelPreview->getLoadState() > LLModelLoader::ERROR_PARSING )
+		{		
+			childSetTextArg("status", "[STATUS]", getString(LLModel::getStatusString(mModelPreview->getLoadState() - LLModelLoader::ERROR_PARSING)));
+		}
+		else
+		{
+			childSetTextArg("status", "[STATUS]", getString("status_idle"));
+		}
 	}
 
 	childSetTextArg("prim_cost", "[PRIM_COST]", llformat("%d", mModelPreview->mResourceCost));
@@ -1285,6 +1287,12 @@ bool LLModelLoader::doLoadModel()
 		{
 			LLPointer<LLModel> model = LLModel::loadModelFromDomMesh(mesh);
 			
+			if(model->getStatus() != LLModel::NO_ERRORS)
+			{
+				setLoadState(ERROR_PARSING + model->getStatus()) ;
+				return true ; //abort
+			}
+
 			if (model.notNull() && validate_model(model))
 			{
 				mModelList.push_back(model);
@@ -1877,6 +1885,8 @@ bool LLModelLoader::loadFromSLM(const std::string& filename)
 		mScene[cur_instance.mTransform].push_back(cur_instance);
 		stretch_extents(cur_instance.mModel, cur_instance.mTransform, mExtents[0], mExtents[1], mFirstTransform);
 	}
+	
+	setLoadState( DONE );
 
 	return true;
 }
@@ -2502,7 +2512,7 @@ U32 LLModelPreview::calcResourceCost()
 
 	if (mFMP && mModelLoader)
 	{
-		if ( getLoadState() != LLModelLoader::ERROR_PARSING )
+		if ( getLoadState() < LLModelLoader::ERROR_PARSING )
 		{
 			mFMP->childEnable("ok_btn");
 		}
@@ -2856,7 +2866,7 @@ void LLModelPreview::loadModel(std::string filename, S32 lod)
 
 	setPreviewLOD(lod);
 
-	if ( getLoadState() == LLModelLoader::ERROR_PARSING )
+	if ( getLoadState() >= LLModelLoader::ERROR_PARSING )
 	{
 		mFMP->childDisable("ok_btn");
 	}
@@ -2938,7 +2948,13 @@ void LLModelPreview::loadModelCallback(S32 lod)
 	LLMutexLock lock(this);
 	if (!mModelLoader)
 	{
+		mLoading = false ;
 		return;
+	}
+	if(getLoadState() >= LLModelLoader::ERROR_PARSING)
+	{
+		mLoading = false ;
+		return ;
 	}
 
 	mModelLoader->loadTextures() ;
@@ -3675,7 +3691,7 @@ void LLModelPreview::updateStatusMessages()
 		}
 	}
 
-	bool errorStateFromLoader = getLoadState() == LLModelLoader::ERROR_PARSING ? true : false;
+	bool errorStateFromLoader = getLoadState() >= LLModelLoader::ERROR_PARSING ? true : false;
 
 	bool skinAndRigOk = true;
 	bool uploadingSkin = mFMP->childGetValue("upload_skin").asBoolean();
@@ -4616,6 +4632,17 @@ void LLFloaterModelPreview::onBrowseLOD(void* data)
 
 	LLFloaterModelPreview* mp = (LLFloaterModelPreview*) data;
 	mp->loadModel(mp->mModelPreview->mPreviewLOD);
+}
+
+//static
+void LLFloaterModelPreview::onReset(void* user_data)
+{
+	assert_main_thread();
+
+	LLFloaterModelPreview* fmp = (LLFloaterModelPreview*) user_data;
+	LLModelPreview* mp = fmp->mModelPreview;
+	std::string filename = mp->mLODFile[3]; 
+	mp->loadModel(filename,3);
 }
 
 //static

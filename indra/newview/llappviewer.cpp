@@ -309,7 +309,7 @@ BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
 // Internal globals... that should be removed
-static std::string gArgs = "Build 6";
+static std::string gArgs = "Build 7 Test";
 
 const std::string MARKER_FILE_NAME("SecondLife.exec_marker");
 const std::string ERROR_MARKER_FILE_NAME("SecondLife.error_marker");
@@ -500,6 +500,7 @@ static void settings_to_globals()
 	LLVolumeImplFlexible::sUpdateFactor = gSavedSettings.getF32("RenderFlexTimeFactor");
 	LLVOTree::sTreeFactor				= gSavedSettings.getF32("RenderTreeLODFactor");
 	LLVOAvatar::sLODFactor				= gSavedSettings.getF32("RenderAvatarLODFactor");
+	LLVOAvatar::sPhysicsLODFactor		= gSavedSettings.getF32("RenderAvatarPhysicsLODFactor");
 	LLVOAvatar::sMaxVisible				= (U32)gSavedSettings.getS32("RenderAvatarMaxVisible");
 	LLVOAvatar::sVisibleInFirstPerson	= gSavedSettings.getBOOL("FirstPersonAvatarVisible");
 	// clamp auto-open time to some minimum usable value
@@ -571,7 +572,7 @@ public:
 	std::string mFile;
 
 	LLFastTimerLogThread(std::string& test_name) : LLThread("fast timer log")
- 	{
+	{
 		std::string file_name = test_name + std::string(".slp");
 		mFile = gDirUtilp->getExpandedFilename(LL_PATH_LOGS, file_name);
 	}
@@ -589,6 +590,7 @@ public:
 
 		os.close();
 	}
+
 };
 
 //virtual
@@ -877,7 +879,7 @@ bool LLAppViewer::init()
 	
 	// Initialize the repeater service.
 	LLMainLoopRepeater::instance().start();
-
+	
 	//
 	// Initialize the window
 	//
@@ -1073,7 +1075,7 @@ bool LLAppViewer::mainLoop()
 	gServicePump = new LLPumpIO(gAPRPoolp);
 	LLHTTPClient::setPump(*gServicePump);
 	LLCurl::setCAFile(gDirUtilp->getCAFile());
-
+	
 	// Note: this is where gLocalSpeakerMgr and gActiveSpeakerMgr used to be instantiated.
 
 	LLVoiceChannel::initClass();

@@ -39,6 +39,7 @@
 #include "llspeakbutton.h"
 
 #include "llbottomtray.h"
+#include "llfirstuse.h"
 
 static LLDefaultChildRegistry::Register<LLSpeakButton> t1("talk_button");
 
@@ -181,6 +182,7 @@ void LLSpeakButton::onMouseDown_SpeakBtn()
 {
 	bool down = true;
 	LLVoiceClient::getInstance()->inputUserControlState(down); // this method knows/care about whether this translates into a toggle-to-talk or down-to-talk
+	LLFirstUse::speak(false);
 }
 void LLSpeakButton::onMouseUp_SpeakBtn()
 {

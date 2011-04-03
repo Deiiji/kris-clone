@@ -46,6 +46,7 @@
 #include "llhints.h"
 #include "llimfloater.h" // for LLIMFloater
 #include "llnearbychatbar.h"
+#include "llsidetray.h"
 #include "llspeakbutton.h"
 #include "llsplitbutton.h"
 #include "llsyswellwindow.h"
@@ -55,7 +56,8 @@
 #include "llviewerwindow.h"
 #include "llsdserialize.h"
 #include "llfloatersidebarctrl.h" // S21 KL test
-#include "llsidetray.h" // S21
+#include "llfirstuse.h"
+
 // Distance from mouse down on which drag'n'drop should be started.
 #define DRAG_START_DISTANCE 3
 
@@ -381,7 +383,12 @@ void LLBottomTray::onChange(EStatusType status, const std::string &channelURI, b
 	// skipped to avoid button blinking
 	if (status != STATUS_JOINING && status!= STATUS_LEFT_CHANNEL)
 	{
-		mSpeakBtn->setFlyoutBtnEnabled(LLVoiceClient::getInstance()->voiceEnabled() && LLVoiceClient::getInstance()->isVoiceWorking());
+		bool voice_status = LLVoiceClient::getInstance()->voiceEnabled() && LLVoiceClient::getInstance()->isVoiceWorking();
+		mSpeakBtn->setFlyoutBtnEnabled(voice_status);
+		if (voice_status)
+		{
+			LLFirstUse::speak(true);
+		}
 	}
 }
 
@@ -561,6 +568,7 @@ BOOL LLBottomTray::postBuild()
 
 	mSpeakPanel = getChild<LLPanel>("speak_panel");
 	mSpeakBtn = getChild<LLSpeakButton>("talk");
+	LLHints::registerHintTarget("speak_btn", mSpeakBtn->getHandle());
 
 	// Both parts of speak button should be initially disabled because
 	// it takes some time between logging in to world and connecting to voice channel.
@@ -848,6 +856,24 @@ void LLBottomTray::draw()
 		LLRect rect = mLandingTab->calcScreenRect();
 		mImageDragIndication->draw(rect.mLeft - w/2, rect.getHeight(), w, h);
 	}
+	getChild<LLButton>("show_profile_btn")->setToggleState(LLAvatarActions::profileVisible(gAgent.getID()));
+
+	LLPanel* panel = LLSideTray::getInstance()->getPanel("panel_people");
+	if (panel && panel->isInVisibleChain())
+	{
+		getChild<LLButton>("show_people_button")->setToggleState(true);
+	}
+	else
+	{
+		getChild<LLButton>("show_people_button")->setToggleState(false);
+	}
+
+	LLFloater* help_browser = (LLFloaterReg::findInstance("help_browser"));
+	bool help_floater_visible = (help_browser && help_browser->isInVisibleChain());
+
+	getChild<LLButton>("show_help_btn")->setToggleState(help_floater_visible);
+
+
 }
 
 bool LLBottomTray::onContextMenuItemEnabled(const LLSD& userdata)
