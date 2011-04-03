@@ -321,36 +321,7 @@
           name="4"
           value="4"/>
         </combo_box>
-        <slider
-        control_name="RenderAvatarPhysicsLODFactor"
-        follows="left|top"
-        height="16"
-        initial_value="100"
-	increment=".05"
-        label="  Avatar Physics:"
-        label_width="85"
-        layout="topleft"
-        left_delta="-16"
-        name="AvatarPhysicsDetail"
-        show_text="false"
-        top_pad="12"
-        width="160">
-           <slider.commit_callback
-            function="Pref.UpdateSliderText"
-            parameter="AvatarPhysicsDetailText" />
-        </slider>
-        <text
-        type="string"
-        length="1"
-        follows="left|top"
-        height="12"
-        layout="topleft"
-        left_delta="165"
-        name="AvatarPhysicsDetailText"
-        top_pad="-16"
-        width="128">
-           Low
-        </text>
+       
 
         <text
         type="string"
@@ -549,6 +520,38 @@
           function="Pref.UpdateSliderText"
           parameter="ObjectMeshDetailText" />
         </slider>
+        <slider
+       can_edit_text="true" 
+       control_name="RenderAvatarPhysicsLODFactor"
+       follows="left|top"
+       height="16"
+       initial_value="100"
+       increment=".05"
+       label="  Avatar Physics:"
+       label_width="140"
+       layout="topleft"
+       left_delta="0"
+       name="AvatarPhysicsDetail"
+       show_text="true"
+       top_pad="4"
+       width="275">
+          <slider.commit_callback
+           function="Pref.UpdateSliderText"
+           parameter="AvatarPhysicsDetailText" />
+        </slider>
+      <!-- <text
+        type="string"
+        length="1"
+        follows="left|top"
+        height="12"
+        layout="topleft"
+        left="50"
+        top="10" 
+        name="AvatarPhysicsDetailText"
+        top_pad="4"
+        width="128">
+          Low
+        </text> -->
         <slider
         can_edit_text="true"
         control_name="RenderFlexTimeFactor"

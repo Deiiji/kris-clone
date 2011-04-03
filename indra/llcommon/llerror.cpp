@@ -1200,7 +1200,7 @@ namespace LLError
 
 		while(true)
 		{
-			// Loop forever, in case the crash didn't work?
+			// Loop forever, in case the crash didn't work
 		}
 		
 		// this is an attempt to let Coverity and other semantic scanners know that this function won't be returning ever.
