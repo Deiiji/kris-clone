@@ -523,7 +523,10 @@ void LLNearbyChatHandler::processChat(const LLChat& chat_msg, const LLSD &args)
 		&& chat_msg.mFromID != gAgentID)
 	{
  		LLFirstUse::otherAvatarChatFirst();
-		LLRecentPeople::instance().add(chat_msg.mFromID);
+
+ 		// Add sender to the recent people list.
+ 		LLRecentPeople::instance().add(chat_msg.mFromID);
+
 	}
 
 	if( nearby_chat->getVisible()
