@@ -7025,7 +7025,7 @@ void LLPipeline::renderDeferredLighting()
 						unbindDeferredShader(gLuminanceGatherProgram);
 						mLuminanceMap.flush();
 						gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_TEXTURE, mLuminanceMap.getTexture(), true);
-						gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_BILINEAR); // S21 
+						gGL.getTexUnit(0)->setTextureFilteringOption(LLTexUnit::TFO_TRILINEAR);
 						glGenerateMipmap(GL_TEXTURE_2D);
 					}
 				}

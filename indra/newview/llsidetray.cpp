@@ -685,14 +685,7 @@ LLPanel* LLSideTray::openChildPanel(LLSideTrayTab* tab, const std::string& panel
 		LLFloater* floater_tab = LLFloaterReg::getInstance("side_bar_tab", tab_name);
 		if (!floater_tab) return NULL;
 
-		// KL the new code opens a floater but fucks up the logic FloaterReg Toggle cannot handle it!
-		if (floater_tab->isMinimized())
-		{
-			floater_tab->setMinimized(FALSE);
-		}
-
-		// Send the floater to the front.
-		floater_tab->setFrontmost();
+		floater_tab->openFloater(tab_name);
 	}
 
 	LLSideTrayPanelContainer* container = dynamic_cast<LLSideTrayPanelContainer*>(view->getParent());
