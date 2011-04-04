@@ -2045,8 +2045,9 @@ void LLAgentWearables::editWearable(const LLUUID& item_id)
 		return;
 	}
 
+	const BOOL disable_camera_switch = LLWearableType::getDisableCameraSwitch(wearable->getType());
 	LLPanel* panel = LLSideTray::getInstance()->getPanel("sidepanel_appearance");
-	LLSidepanelAppearance::editWearable(wearable, panel);
+	LLSidepanelAppearance::editWearable(wearable, panel, disable_camera_switch);
 }
 
 // Request editing the item after it gets worn.

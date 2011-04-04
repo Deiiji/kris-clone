@@ -4802,13 +4802,13 @@ void LLWearableBridge::buildContextMenu(LLMenuGL& menu, U32 flags)
 						disabled_items.push_back(std::string("Wearable Edit"));
 					}
 
-					if (LLWearableType::getAllowMultiwear(mWearableType))
+					if (LLWearableType::getAllowMultiwear(mWearableType)) // KL ok this makes sense is it a multiwearable
 					{
 						items.push_back(std::string("Wearable Add"));
-						if (gAgentWearables.getWearableCount(mWearableType) > 0)
+						/*(if (gAgentWearables.getWearableCount(mWearableType) > 0) // But this makes no sense!!
 						{
 							disabled_items.push_back(std::string("Wearable Add"));
-						}
+						} */
 					}
 					break;
 				default:

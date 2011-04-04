@@ -25,6 +25,7 @@
  */
 
 #include "llviewerprecompiledheaders.h"
+
 #include "llviewerwindow.h"
 
 #if LL_WINDOWS
