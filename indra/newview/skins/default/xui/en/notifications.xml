@@ -2215,7 +2215,7 @@ This is usually a temporary failure. Please customize and save the wearable agai
    icon="alertmodal.tga"
    name="YouHaveBeenLoggedOut"
    type="alertmodal">
-Darn. You have been logged out of [SECOND_LIFE]
+Sucks to be you! You have been logged out of [SECOND_LIFE]
             [MESSAGE]
     <usetemplate
      name="okcancelbuttons"
