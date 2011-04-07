@@ -265,6 +265,7 @@ public:
 								use_ellipses,
 								parse_urls,
 								parse_highlights,
+								clip,
 								clip_partial;
 								
 		Optional<S32>			v_pad,
@@ -326,26 +327,26 @@ public:
 
 	// wide-char versions
 	void					setWText(const LLWString& text);
-	const LLWString&       	getWText() const;
+	const LLWString&       			getWText() const;
 
 	void					appendText(const std::string &new_text, bool prepend_newline, const LLStyle::Params& input_params = LLStyle::Params());
 	// force reflow of text
 	void					needsReflow(S32 index = 0);
 
-	S32						getLength() const { return getWText().length(); }
-	S32						getLineCount() const { return mLineInfoList.size(); }
+	S32					getLength() const { return getWText().length(); }
+	S32					getLineCount() const { return mLineInfoList.size(); }
 
 	void					addDocumentChild(LLView* view);
 	void					removeDocumentChild(LLView* view);
-	const LLView*			getDocumentView() const { return mDocumentView; }
-	LLRect					getVisibleTextRect() { return mVisibleTextRect; }
+	const LLView*				getDocumentView() const { return mDocumentView; }
+	LLRect					getVisibleTextRect() const { return mVisibleTextRect; }
 	LLRect					getTextBoundingRect();
 	LLRect					getVisibleDocumentRect() const;
 
-	S32						getVPad() { return mVPad; }
-	S32						getHPad() { return mHPad; }
+	S32					getVPad() { return mVPad; }
+	S32					getHPad() { return mHPad; }
 
-	S32						getDocIndexFromLocalCoord( S32 local_x, S32 local_y, BOOL round, bool hit_past_end_of_line = true) const;
+	S32					getDocIndexFromLocalCoord( S32 local_x, S32 local_y, BOOL round, bool hit_past_end_of_line = true) const;
 	LLRect					getLocalRectFromDocIndex(S32 pos) const;
 	LLRect					getDocRectFromDocIndex(S32 pos) const;
 
@@ -552,6 +553,7 @@ protected:
 	bool						mTrackEnd;			// if true, keeps scroll position at end of document during resize
 	bool						mReadOnly;
 	bool						mBGVisible;			// render background?
+	bool						mClip;			// fix the clipped and missing vertical tab on widget
 	bool						mClipPartial;		// false if we show lines that are partially inside bounding rect
 	bool						mPlainText;			// didn't use Image or Icon segments
 	S32							mMaxTextByteLength;	// Maximum length mText is allowed to be in bytes
