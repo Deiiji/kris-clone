@@ -52,6 +52,7 @@
 #include "llsyswellwindow.h"
 #include "lltoolmgr.h"
 #include "llviewerparcelmgr.h"
+#include "llviewerchat.h" // fix resize fix
 
 #include "llviewerwindow.h"
 #include "llsdserialize.h"
@@ -556,6 +557,9 @@ BOOL LLBottomTray::postBuild()
 
 	mNearbyChatBar = findChild<LLNearbyChatBar>("chat_bar");
 	LLHints::registerHintTarget("chat_bar", mNearbyChatBar->LLView::getHandle());
+
+	LLFontGL* font = LLViewerChat::getChatFont();
+	mNearbyChatBar->getChatBox()->setFont(font);
 
 	mChatBarContainer = getChild<LLLayoutPanel>("chat_bar_layout_panel");
 	mNearbyCharResizeHandlePanel = getChild<LLPanel>("chat_bar_resize_handle_panel");

@@ -41,6 +41,10 @@ public:
 	static S32 getChatFontSize();
 	static void formatChatMsg(const LLChat& chat, std::string& formated_msg);
 	static std::string getSenderSLURL(const LLChat& chat, const LLSD& args);
+	typedef boost::signals2::signal<void (LLFontGL* fontp)> chatFontUpdate_signal_t;
+	static boost::signals2::connection setFontChangedCallback( const chatFontUpdate_signal_t::slot_type& cb );
+	static void signalChatFontChanged();
+	static chatFontUpdate_signal_t* mChatFontChangedSignal;
 
 private:
 	static std::string getObjectImSLURL(const LLChat& chat, const LLSD& args);

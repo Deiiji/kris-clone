@@ -47,6 +47,7 @@
 #include "llwindow.h"
 #include "llviewerwindow.h"
 #include "llrootview.h"
+#include "llviewerchat.h" //fix for font resize
 
 S32 LLNearbyChatBar::sLastSpecialChatChannel = 0;
 
@@ -437,7 +438,17 @@ BOOL LLNearbyChatBar::postBuild()
 	mOutputMonitor = getChild<LLOutputMonitorCtrl>("chat_zone_indicator");
 	mOutputMonitor->setVisible(FALSE);
 
+	LLViewerChat::setFontChangedCallback(boost::bind(&LLNearbyChatBar::onChatFontChange, this, _1));
+
 	return TRUE;
+}
+
+void LLNearbyChatBar::onChatFontChange(LLFontGL* fontp)
+{
+	if(mChatBox)
+	{
+		mChatBox->setFont(fontp);
+	}
 }
 
 //static
