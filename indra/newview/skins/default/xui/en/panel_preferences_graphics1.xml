@@ -1680,9 +1680,12 @@
         layout="topleft"
         top_pad="35" 
         left="10"
-        name="dof"
+        name="UseDOF"
         tool_tip="Render Depth of Field in deferred rendering."
         width="315" />
+	 <check_box.commit_callback
+     function="Pref.VertexShaderEnable" />
+      </check_box>
          <text
             name="deferred_label"
             follows="left|top"

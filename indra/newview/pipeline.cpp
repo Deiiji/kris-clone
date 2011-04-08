@@ -6318,8 +6318,8 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 		F32 fnumber = gSavedSettings.getF32("CameraFNumber");
 		F32 default_focal_length = gSavedSettings.getF32("CameraFocalLength");
 
-		if (LLToolMgr::getInstance()->inBuildMode())
-		{ //squish focal length when in build mode so DoF doesn't make editing objects difficult
+		if (LLToolMgr::getInstance()->inBuildMode() || !gSavedSettings.getBOOL("RenderUseDOF")) // S21 version
+		{ //squish focal length when in build mode (or if DoF is disabled) so DoF doesn't make editing objects difficult
 			default_focal_length = 5.f;
 		}
 
@@ -8798,7 +8798,7 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 		near_clip = -max.mV[2];
 		F32 far_clip = -min.mV[2]*2.f;
 
-		far_clip = llmin(far_clip, 128.f);
+		//far_clip = llmin(far_clip, 128.f);
 		far_clip = llmin(far_clip, camera.getFar());
 
 		F32 range = far_clip-near_clip;
@@ -9148,7 +9148,7 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 			}
 		}
 
-		shadow_cam.setFar(128.f);
+		//shadow_cam.setFar(128.f);
 		shadow_cam.setOriginAndLookAt(eye, up, center);
 
 		shadow_cam.setOrigin(0,0,0);
