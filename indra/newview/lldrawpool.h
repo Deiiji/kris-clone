@@ -61,7 +61,7 @@ public:
 		POOL_WATER,
 		POOL_GLOW,
 		POOL_ALPHA,
-		NUM_POOL_TYPES
+		NUM_POOL_TYPES,
 		// * invisiprims work by rendering to the depth buffer but not the color buffer, occluding anything rendered after them
 		// - and the LLDrawPool types enum controls what order things are rendered in
 		// - so, it has absolute control over what invisprims block
@@ -134,7 +134,7 @@ public:
 		PASS_ALPHA_MASK,
 		PASS_FULLBRIGHT_ALPHA_MASK,
 		PASS_ALPHA_SHADOW,
-		NUM_RENDER_TYPES
+		NUM_RENDER_TYPES,
 	};
 
 	LLRenderPass(const U32 type);

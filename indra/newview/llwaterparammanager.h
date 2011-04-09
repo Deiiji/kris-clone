@@ -298,9 +298,6 @@ public:
 	// singleton pattern implementation
 	static LLWaterParamManager * instance();
 
-private:
-	void initOverrides();
-
 public:
 
 	LLWaterParamSet mCurParams;

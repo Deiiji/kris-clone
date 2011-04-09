@@ -132,8 +132,6 @@ protected:
 		return temp;
 	}
 
-	bool checkFileLength(S32 min_len);
-
 protected:
 	LLAPRFile mInfile ;
 	std::string mSrcFilename;

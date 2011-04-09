@@ -157,7 +157,6 @@ LLTextBase::Params::Params()
 	read_only("read_only", false),
 	v_pad("v_pad", 0),
 	h_pad("h_pad", 0),
-	clip("clip", true),
 	clip_partial("clip_partial", true),
 	line_spacing("line_spacing"),
 	max_text_length("max_length", 255),
@@ -200,7 +199,6 @@ LLTextBase::LLTextBase(const LLTextBase::Params &p)
 	mVAlign(p.font_valign),
 	mLineSpacingMult(p.line_spacing.multiple),
 	mLineSpacingPixels(p.line_spacing.pixels),
-	mClip(p.clip),
 	mClipPartial(p.clip_partial && !p.allow_scroll),
 	mTrackEnd( p.track_end ),
 	mScrollIndex(-1),
@@ -335,7 +333,7 @@ void LLTextBase::drawSelectionBackground()
 		LLRect content_display_rect = getVisibleDocumentRect();
 
 		// binary search for line that starts before top of visible buffer
-		line_list_t::const_iterator line_iter = std::upper_bound(mLineInfoList.begin(), mLineInfoList.end(), content_display_rect.mTop, compare_bottom());
+		line_list_t::const_iterator line_iter = std::lower_bound(mLineInfoList.begin(), mLineInfoList.end(), content_display_rect.mTop, compare_bottom());
 		line_list_t::const_iterator end_iter = std::lower_bound(mLineInfoList.begin(), mLineInfoList.end(), content_display_rect.mBottom, compare_top());
 
 		bool done = false;
@@ -546,11 +544,11 @@ void LLTextBase::drawText()
 			next_start = getLineStart(next_line);
 			line_end = next_start;
 		}
-		
-		LLRect text_rect(line.mRect);
-		text_rect.mRight = llmin(mDocumentView->getRect().getWidth(), text_rect.mRight);
-		text_rect.translate(mVisibleTextRect.mLeft, mVisibleTextRect.mBottom);
-		text_rect.translate(mDocumentView->getRect().mLeft, mDocumentView->getRect().mBottom);
+
+		LLRect text_rect(line.mRect.mLeft + mVisibleTextRect.mLeft - scrolled_view_rect.mLeft,
+						line.mRect.mTop - scrolled_view_rect.mBottom + mVisibleTextRect.mBottom,
+						llmin(mDocumentView->getRect().getWidth(), line.mRect.mRight) - scrolled_view_rect.mLeft,
+						line.mRect.mBottom - scrolled_view_rect.mBottom + mVisibleTextRect.mBottom);
 
 		// draw a single line of text
 		S32 seg_start = line_start;
@@ -995,28 +993,14 @@ void LLTextBase::draw()
 		updateScrollFromCursor();
 	}
 
-	LLRect text_rect;
+	LLRect doc_rect;
 	if (mScroller)
 	{
-		mScroller->localRectToOtherView(mScroller->getContentWindowRect(), &text_rect, this);
+		mScroller->localRectToOtherView(mScroller->getContentWindowRect(), &doc_rect, this);
 	}
 	else
 	{
-		LLRect visible_lines_rect;
-		std::pair<S32, S32> line_range = getVisibleLines(mClipPartial);
-		for (S32 i = line_range.first; i < line_range.second; i++)
-		{
-			if (visible_lines_rect.isEmpty())
-				{
-				visible_lines_rect = mLineInfoList[i].mRect;
-				}
-			else
-				{
-				visible_lines_rect.unionWith(mLineInfoList[i].mRect);i
-				}
-		}
-		text_rect = visible_lines_rect;
-		text_rect.translate(mDocumentView->getRect().mLeft, mDocumentView->getRect().mBottom);
+		doc_rect = getLocalRect();
 	}
 
 	if (mBGVisible)
@@ -1026,36 +1010,28 @@ void LLTextBase::draw()
 		LLRect bg_rect = mVisibleTextRect;
 		if (mScroller)
 		{
-			bg_rect.intersectWith(text_rect);
+			bg_rect.intersectWith(doc_rect);
 		}
 		LLColor4 bg_color = mReadOnly 
 							? mReadOnlyBgColor.get()
 							: hasFocus() 
 								? mFocusBgColor.get() 
 								: mWriteableBgColor.get();
-		gl_rect_2d(text_rect, bg_color % alpha, TRUE);
+		gl_rect_2d(doc_rect, bg_color % alpha, TRUE);
 	}
 
-	bool should_clip = mClip || mScroller != NULL;
- 	{ 
-	LLLocalClipRect clip(text_rect, should_clip);
-	
 	// draw document view
-	if (mScroller)
+	LLUICtrl::draw();
+
 	{
-	drawChild(mScroller);
- 	}
- 		else
-		{
-		drawChild(mDocumentView);
- 		}
+		// only clip if we support scrolling...
+		// since convention is that text boxes never vertically truncate their contents
+		// regardless of rect bounds
+		LLLocalClipRect clip(doc_rect, mScroller != NULL);
 		drawSelectionBackground();
 		drawText();
 		drawCursor();
 	}
-	mDocumentView->setVisible(FALSE);
- 	LLUICtrl::draw();
- 	mDocumentView->setVisible(TRUE);
 }
 
 
@@ -1439,7 +1415,7 @@ S32	LLTextBase::getFirstVisibleLine() const
 	return iter - mLineInfoList.begin();
 }
 
-std::pair<S32, S32>	LLTextBase::getVisibleLines(bool require_fully_visible)
+std::pair<S32, S32>	LLTextBase::getVisibleLines(bool fully_visible) 
 {
 	LLRect visible_region = getVisibleDocumentRect();
 	line_list_t::const_iterator first_iter;
@@ -1448,15 +1424,15 @@ std::pair<S32, S32>	LLTextBase::getVisibleLines(bool require_fully_visible)
 	// make sure we have an up-to-date mLineInfoList
 	reflow();
 
-	if (require_fully_visible)
+	if (fully_visible)
 	{
 		first_iter = std::lower_bound(mLineInfoList.begin(), mLineInfoList.end(), visible_region.mTop, compare_top());
-		last_iter = std::upper_bound(mLineInfoList.begin(), mLineInfoList.end(), visible_region.mBottom, compare_bottom());
+		last_iter = std::lower_bound(mLineInfoList.begin(), mLineInfoList.end(), visible_region.mBottom, compare_bottom());
 	}
 	else
 	{
 		first_iter = std::lower_bound(mLineInfoList.begin(), mLineInfoList.end(), visible_region.mTop, compare_bottom());
-		last_iter = std::upper_bound(mLineInfoList.begin(), mLineInfoList.end(), visible_region.mBottom, compare_top());
+		last_iter = std::lower_bound(mLineInfoList.begin(), mLineInfoList.end(), visible_region.mBottom, compare_top());
 	}
 	return std::pair<S32, S32>(first_iter - mLineInfoList.begin(), last_iter - mLineInfoList.begin());
 }
@@ -2428,40 +2404,14 @@ LLRect LLTextBase::getVisibleDocumentRect() const
 	{
 		return mScroller->getVisibleContentRect();
 	}
-	else if (mClip)
-	{
-		LLRect visible_text_rect = getVisibleTextRect();
-		LLRect doc_rect = mDocumentView->getRect();
-		visible_text_rect.translate(-doc_rect.mLeft, -doc_rect.mBottom);
-		
-		// reject partially visible lines
-		LLRect visible_lines_rect;
-		for (line_list_t::const_iterator it = mLineInfoList.begin(), end_it = mLineInfoList.end();
-			it != end_it;
-			++it)
-		{
-			bool line_visible = mClipPartial ? visible_text_rect.contains(it->mRect) : visible_text_rect.overlaps(it->mRect);
-			if (line_visible)
-			{
-				if (visible_lines_rect.isEmpty())
-				{
-					visible_lines_rect = it->mRect;
-				}
-				else
-				{
-				visible_lines_rect.unionWith(it->mRect);
-				}
-			}
-		}
-		return visible_lines_rect;
-	}
 	else
-	{	// entire document rect is visible
+	{
+		// entire document rect is visible when not scrolling
 		// but offset according to height of widget
 		LLRect doc_rect = mDocumentView->getLocalRect();
 		doc_rect.mLeft -= mDocumentView->getRect().mLeft;
 		// adjust for height of text above widget baseline
-		doc_rect.mBottom = llmin(0,doc_rect.getHeight() - mVisibleTextRect.getHeight());
+		doc_rect.mBottom = doc_rect.getHeight() - mVisibleTextRect.getHeight();
 		return doc_rect;
 	}
 }
