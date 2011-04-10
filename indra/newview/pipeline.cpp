@@ -206,8 +206,7 @@ std::string gPoolNames[] =
 	"POOL_VOIDWATER",
 	"POOL_WATER",
 	"POOL_GLOW",
-	"POOL_ALPHA",
-	"NUM_RENDER_TYPES"
+	"POOL_ALPHA"
 };
 
 void drawBox(const LLVector3& c, const LLVector3& r);
