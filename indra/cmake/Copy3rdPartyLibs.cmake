@@ -63,22 +63,6 @@ if(WINDOWS)
         set(fmod_files fmod.dll)
     endif (FMOD_SDK_DIR)
 
-    #*******************************
-    # LLKDU
-    set(internal_llkdu_path "${CMAKE_SOURCE_DIR}/llkdu")
-    if(NOT EXISTS ${internal_llkdu_path})
-        if (EXISTS "${debug_src_dir}/llkdu.dll")
-            set(debug_llkdu_src "${debug_src_dir}/llkdu.dll")
-            set(debug_llkdu_dst "${SHARED_LIB_STAGING_DIR_DEBUG}/llkdu.dll")
-        endif (EXISTS "${debug_src_dir}/llkdu.dll")
-
-        if (EXISTS "${release_src_dir}/llkdu.dll")
-            set(release_llkdu_src "${release_src_dir}/llkdu.dll")
-            set(release_llkdu_dst "${SHARED_LIB_STAGING_DIR_RELEASE}/llkdu.dll")
-            set(relwithdebinfo_llkdu_dst "${SHARED_LIB_STAGING_DIR_RELWITHDEBINFO}/llkdu.dll")
-        endif (EXISTS "${release_src_dir}/llkdu.dll")
-    endif (NOT EXISTS ${internal_llkdu_path})
-
 #*******************************
 # Copy MS C runtime dlls, required for packaging.
 # *TODO - Adapt this to support VC9
@@ -140,6 +124,62 @@ if (MSVC80)
         set(third_party_targets ${third_party_targets} ${out_targets})
           
     endif (EXISTS ${release_msvc8_redist_path})
+elseif (MSVC_VERSION EQUAL 1600) # VisualStudio 2010
+    FIND_PATH(debug_msvc10_redist_path msvcr100d.dll
+        PATHS
+        ${MSVC_DEBUG_REDIST_PATH}
+         [HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\10.0\\Setup\\VC;ProductDir]/redist/Debug_NonRedist/x86/Microsoft.VC100.DebugCRT
+        NO_DEFAULT_PATH
+        NO_DEFAULT_PATH
+        )
+
+    if(EXISTS ${debug_msvc10_redist_path})
+        set(debug_msvc10_files
+            msvcr100d.dll
+            msvcp100d.dll
+            )
+
+        copy_if_different(
+            ${debug_msvc10_redist_path}
+            "${SHARED_LIB_STAGING_DIR_DEBUG}"
+            out_targets
+            ${debug_msvc10_files}
+            )
+        set(third_party_targets ${third_party_targets} ${out_targets})
+
+    endif ()
+
+    FIND_PATH(release_msvc10_redist_path msvcr100.dll
+        PATHS
+        ${MSVC_REDIST_PATH}
+         [HKEY_LOCAL_MACHINE\\SOFTWARE\\Microsoft\\VisualStudio\\10.0\\Setup\\VC;ProductDir]/redist/x86/Microsoft.VC100.CRT
+        NO_DEFAULT_PATH
+        NO_DEFAULT_PATH
+        )
+
+    if(EXISTS ${release_msvc10_redist_path})
+        set(release_msvc10_files
+            msvcr100.dll
+            msvcp100.dll
+            )
+
+        copy_if_different(
+            ${release_msvc10_redist_path}
+            "${SHARED_LIB_STAGING_DIR_RELEASE}"
+            out_targets
+            ${release_msvc10_files}
+            )
+        set(third_party_targets ${third_party_targets} ${out_targets})
+
+        copy_if_different(
+            ${release_msvc10_redist_path}
+            "${SHARED_LIB_STAGING_DIR_RELWITHDEBINFO}"
+            out_targets
+            ${release_msvc10_files}
+            )
+        set(third_party_targets ${third_party_targets} ${out_targets})
+          
+    endif ()
 endif (MSVC80)
 
 elseif(DARWIN)
@@ -181,21 +221,6 @@ elseif(DARWIN)
     # fmod is statically linked on darwin
     set(fmod_files "")
 
-    #*******************************
-    # LLKDU
-    set(internal_llkdu_path "${CMAKE_SOURCE_DIR}/llkdu")
-    if(NOT EXISTS ${internal_llkdu_path})
-        if (EXISTS "${debug_src_dir}/libllkdu.dylib")
-            set(debug_llkdu_src "${debug_src_dir}/libllkdu.dylib")
-            set(debug_llkdu_dst "${SHARED_LIB_STAGING_DIR_DEBUG}/libllkdu.dylib")
-        endif (EXISTS "${debug_src_dir}/libllkdu.dylib")
-
-        if (EXISTS "${release_src_dir}/libllkdu.dylib")
-            set(release_llkdu_src "${release_src_dir}/libllkdu.dylib")
-            set(release_llkdu_dst "${SHARED_LIB_STAGING_DIR_RELEASE}/libllkdu.dylib")
-            set(relwithdebinfo_llkdu_dst "${SHARED_LIB_STAGING_DIR_RELWITHDEBINFO}/libllkdu.dylib")
-        endif (EXISTS "${release_src_dir}/libllkdu.dylib")
-    endif (NOT EXISTS ${internal_llkdu_path})
 elseif(LINUX)
     # linux is weird, multiple side by side configurations aren't supported
     # and we don't seem to have any debug shared libs built yet anyways...
