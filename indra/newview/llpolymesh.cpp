@@ -30,6 +30,7 @@
 #include "llviewerprecompiledheaders.h"
 
 #include "llpolymesh.h"
+#include "llmemory.h"
 
 #include "llviewercontrol.h"
 #include "llxmltree.h"
