@@ -36,7 +36,6 @@
 #include "llspeakers.h"
 #include "llbottomtray.h"
 
-
 class LLGestureComboList
 	: public LLGestureManagerObserver
 	, public LLUICtrl
