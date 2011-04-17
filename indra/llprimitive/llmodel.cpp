@@ -2068,7 +2068,7 @@ void LLModel::Decomposition::fromLLSD(LLSD& decomp)
 			std::set<U64> valid;
 
 			//must have at least 4 points
-			llassert(count > 3);
+			//llassert(count > 3);
 
 			for (U32 j = 0; j < count; ++j)
 			{
@@ -2086,7 +2086,7 @@ void LLModel::Decomposition::fromLLSD(LLSD& decomp)
 			}
 
 			//each hull must contain at least 4 unique points
-			llassert(valid.size() > 3);
+			//llassert(valid.size() > 3);
 		}
 	}
 
