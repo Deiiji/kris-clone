@@ -111,7 +111,7 @@ def test_assembly_binding(src_filename, assembly_name, assembly_ver):
         print "Multiple bindings to %s found:" % assembly_name
         print versions
         print 
-        # raise MultipleBindingsException(versions)
+        raise MultipleBindingsException(versions)
 
     elif versions[0] != assembly_ver:
         print "Unexpected version found for %s:" % assembly_name
