@@ -67,8 +67,8 @@ LLModel::~LLModel()
 {
 	if (mDecompID >= 0)
 	{
-		//LLConvexDecomposition::getInstance()->deleteDecomposition(mDecompID);
-		LLConvexDecomposition::getInstance()->quitSystem(); // This is just something to get a compile since the TPV headers are fucking shit & wrong.....
+		LLConvexDecomposition::getInstance()->deleteDecomposition(mDecompID);
+		//LLConvexDecomposition::getInstance()->quitSystem(); // This is just something to get a compile since the TPV headers are fucking shit & wrong.....
 	}
 }
 
