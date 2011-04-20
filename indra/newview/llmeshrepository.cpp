@@ -3392,8 +3392,8 @@ void LLPhysicsDecomp::run()
 	static const LLCDStageData* stages = NULL;
 	static S32 num_stages = 0;
 	
-	if (!stages && LLConvexDecomposition::getInstance() != NULL) // KL if the stub returns NULL the viewer goes kaboom!
-   // if (!stages)
+//	if (!stages && LLConvexDecomposition::getInstance() != NULL) // KL if the stub returns NULL the viewer goes kaboom!
+	if (!stages)
 	{
 		num_stages = decomp->getStages(&stages);
 	}
@@ -3417,9 +3417,9 @@ void LLPhysicsDecomp::run()
 			S32& id = *(mCurRequest->mDecompID);
 			if (id == -1)
 			{
-				//decomp->genDecomposition(id); // Neither exist currently for TPV's
+				decomp->genDecomposition(id);
 			}
-			//decomp->bindDecomposition(id);
+			decomp->bindDecomposition(id);
 
 			if (mCurRequest->mStage == "single_hull")
 			{

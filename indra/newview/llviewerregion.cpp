@@ -72,8 +72,6 @@
 	#pragma warning(disable:4355)
 #endif
 
-extern BOOL gNoRender;
-
 const F32 WATER_TEXTURE_SCALE = 8.f;			//  Number of times to repeat the water texture across a region
 const S16 MAX_MAP_DIST = 10;
 
@@ -110,7 +108,7 @@ public:
 		}
 
 		// Process the SLapp as if it was a secondlife://{PLACE} SLurl
-		LLURLDispatcher::dispatch(url, web, true);
+		LLURLDispatcher::dispatch(url, "clicked", web, true);
 		return true;
 	}
 };
@@ -234,28 +232,19 @@ LLViewerRegion::LLViewerRegion(const U64 &handle,
 	updateRenderMatrix();
 
 	mLandp = new LLSurface('l', NULL);
-	if (!gNoRender)
-	{
-		// Create the composition layer for the surface
-		mCompositionp = new LLVLComposition(mLandp, grids_per_region_edge, region_width_meters/grids_per_region_edge);
-		mCompositionp->setSurface(mLandp);
 
-		// Create the surfaces
-		mLandp->setRegion(this);
-		mLandp->create(grids_per_region_edge,
-						grids_per_patch_edge,
-						mOriginGlobal,
-						mWidth);
-	}
+	// Create the composition layer for the surface
+	mCompositionp = new LLVLComposition(mLandp, grids_per_region_edge, region_width_meters/grids_per_region_edge);
+	mCompositionp->setSurface(mLandp);
 
-	if (!gNoRender)
-	{
-		mParcelOverlay = new LLViewerParcelOverlay(this, region_width_meters);
-	}
-	else
-	{
-		mParcelOverlay = NULL;
-	}
+	// Create the surfaces
+	mLandp->setRegion(this);
+	mLandp->create(grids_per_region_edge,
+					grids_per_patch_edge,
+					mOriginGlobal,
+					mWidth);
+
+	mParcelOverlay = new LLViewerParcelOverlay(this, region_width_meters);
 
 	setOriginGlobal(from_region_handle(handle));
 	calculateCenterGlobal();
@@ -1084,6 +1073,8 @@ LLViewerRegion::eCacheUpdateResult LLViewerRegion::cacheFullUpdate(LLViewerObjec
 // AND the CRC matches. JC
 LLDataPacker *LLViewerRegion::getDP(U32 local_id, U32 crc, U8 &cache_miss_type)
 {
+	//llassert(mCacheLoaded);  This assert failes often, changing to early-out -- davep, 2010/10/18
+
 	if (mCacheLoaded)
 	{
 		LLVOCacheEntry* entry = get_if_there(mCacheMap, local_id, (LLVOCacheEntry*)NULL);

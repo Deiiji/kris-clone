@@ -572,7 +572,7 @@ public:
 	std::string mFile;
 
 	LLFastTimerLogThread(std::string& test_name) : LLThread("fast timer log")
-	{
+ 	{
 		std::string file_name = test_name + std::string(".slp");
 		mFile = gDirUtilp->getExpandedFilename(LL_PATH_LOGS, file_name);
 	}
@@ -590,7 +590,6 @@ public:
 
 		os.close();
 	}
-
 };
 
 //virtual
@@ -915,7 +914,7 @@ bool LLAppViewer::init()
 	}
 
 	// If we don't have the right GL requirements, exit.
-	if (!gGLManager.mHasRequirements && !gNoRender)
+	if (!gGLManager.mHasRequirements)
 	{	
 		// can't use an alert here since we're exiting and
 		// all hell breaks lose.
@@ -1075,7 +1074,7 @@ bool LLAppViewer::mainLoop()
 	gServicePump = new LLPumpIO(gAPRPoolp);
 	LLHTTPClient::setPump(*gServicePump);
 	LLCurl::setCAFile(gDirUtilp->getCAFile());
-	
+
 	// Note: this is where gLocalSpeakerMgr and gActiveSpeakerMgr used to be instantiated.
 
 	LLVoiceChannel::initClass();
@@ -1223,7 +1222,8 @@ bool LLAppViewer::mainLoop()
 				}
 
 				// Render scene.
-				if (!LLApp::isExiting())
+				// *TODO: Should we run display() even during gHeadlessClient?  DK 2011-02-18
+				if (!LLApp::isExiting() && !gHeadlessClient)
 				{
 					pingMainloopTimeout("Main:Display");
 					gGLActive = TRUE;
@@ -1251,8 +1251,7 @@ bool LLAppViewer::mainLoop()
 				}
 
 				// yield cooperatively when not running as foreground window
-				if (   gNoRender
-					   || (gViewerWindow && !gViewerWindow->mWindow->getVisible())
+				if (   (gViewerWindow && !gViewerWindow->mWindow->getVisible())
 						|| !gFocusMgr.getAppHasFocus())
 				{
 					// Sleep if we're not rendering, or the window is minimized.
@@ -2619,12 +2618,26 @@ void LLAppViewer::checkForCrash(void)
     
 }
 
+//
+// This function decides whether the client machine meets the minimum requirements to
+// run in a maximized window, per the consensus of davep, boa and nyx on 3/30/2011.
+//
+bool LLAppViewer::meetsRequirementsForMaximizedStart()
+{
+	bool maximizedOk = (LLFeatureManager::getInstance()->getGPUClass() >= GPU_CLASS_2);
+
+	const U32 one_gigabyte_kb = 1024 * 1024;
+	maximizedOk &= (gSysMemory.getPhysicalMemoryKB() >= one_gigabyte_kb);
+
+	return maximizedOk;
+}
+
 bool LLAppViewer::initWindow()
 {
 	LL_INFOS("AppInit") << "Initializing window..." << LL_ENDL;
 
 	// store setting in a global for easy access and modification
-	gNoRender = gSavedSettings.getBOOL("DisableRendering");
+	gHeadlessClient = gSavedSettings.getBOOL("HeadlessClient");
 
 	// always start windowed
 	BOOL ignorePixelDepth = gSavedSettings.getBOOL("IgnorePixelDepth");
@@ -2638,7 +2651,8 @@ bool LLAppViewer::initWindow()
 	const S32 NEVER_SUBMIT_REPORT = 2;
 	bool use_watchdog = false;
 	int watchdog_enabled_setting = gSavedSettings.getS32("WatchdogEnabled");
-	if(watchdog_enabled_setting == -1){
+	if(watchdog_enabled_setting == -1)
+	{
 		use_watchdog = !LLFeatureManager::getInstance()->isFeatureAvailable("WatchdogDisabled");
 	}
 	else
@@ -2660,34 +2674,36 @@ bool LLAppViewer::initWindow()
 		gViewerWindow->mWindow->maximize();
 	}
 
-	if (!gNoRender)
+	//
+	// Initialize GL stuff
+	//
+
+	if (mForceGraphicsDetail)
 	{
-		//
-		// Initialize GL stuff
-		//
-
-		if (mForceGraphicsDetail)
-		{
-			LLFeatureManager::getInstance()->setGraphicsLevel(gSavedSettings.getU32("RenderQualityPerformance"), false);
-		}
-				
-		// Set this flag in case we crash while initializing GL
-		gSavedSettings.setBOOL("RenderInitError", TRUE);
-		gSavedSettings.saveToFile( gSavedSettings.getString("ClientSettingsFile"), TRUE );
-	
-		gPipeline.init();
-		
-		stop_glerror();
-		gViewerWindow->initGLDefaults();
-
-		gSavedSettings.setBOOL("RenderInitError", FALSE);
-		gSavedSettings.saveToFile( gSavedSettings.getString("ClientSettingsFile"), TRUE );
+		LLFeatureManager::getInstance()->setGraphicsLevel(gSavedSettings.getU32("RenderQualityPerformance"), false);
 	}
+			
+	// Set this flag in case we crash while initializing GL
+	gSavedSettings.setBOOL("RenderInitError", TRUE);
+	gSavedSettings.saveToFile( gSavedSettings.getString("ClientSettingsFile"), TRUE );
+
+	gPipeline.init();
+		
+	stop_glerror();
+	gViewerWindow->initGLDefaults();
+
+	gSavedSettings.setBOOL("RenderInitError", FALSE);
+	gSavedSettings.saveToFile( gSavedSettings.getString("ClientSettingsFile"), TRUE );
 
 	//If we have a startup crash, it's usually near GL initialization, so simulate that.
 	if(gCrashOnStartup)
 	{
 		LLAppViewer::instance()->forceErrorLLError();
+	}
+
+	if (gSavedSettings.getBOOL("WindowMaximized"))
+	{
+		gViewerWindow->mWindow->maximize();
 	}
 
 	LLUI::sWindow = gViewerWindow->getWindow();
@@ -2724,12 +2740,9 @@ void LLAppViewer::cleanupSavedSettings()
 		
 	gSavedSettings.setBOOL("ShowObjectUpdates", gShowObjectUpdates);
 	
-	if (!gNoRender)
+	if (gDebugView)
 	{
-		if (gDebugView)
-		{
-			gSavedSettings.setBOOL("ShowDebugConsole", gDebugView->mDebugConsolep->getVisible());
-		}
+		gSavedSettings.setBOOL("ShowDebugConsole", gDebugView->mDebugConsolep->getVisible());
 	}
 
 	// save window position if not maximized
@@ -3712,7 +3725,7 @@ void LLAppViewer::badNetworkHandler()
 // is destroyed.
 void LLAppViewer::saveFinalSnapshot()
 {
-	if (!mSavedFinalSnapshot && !gNoRender)
+	if (!mSavedFinalSnapshot)
 	{
 		gSavedSettings.setVector3d("FocusPosOnLogout", gAgentCamera.calcFocusPositionTargetGlobal());
 		gSavedSettings.setVector3d("CameraPosOnLogout", gAgentCamera.calcCameraPositionTargetGlobal());
@@ -4120,34 +4133,31 @@ void LLAppViewer::idle()
 	//
 	// Update weather effects
 	//
-	if (!gNoRender)
+	LLWorld::getInstance()->updateClouds(gFrameDTClamped);
+	gSky.propagateHeavenlyBodies(gFrameDTClamped);				// moves sun, moon, and planets
+
+	// Update wind vector 
+	LLVector3 wind_position_region;
+	static LLVector3 average_wind;
+
+	LLViewerRegion *regionp;
+	regionp = LLWorld::getInstance()->resolveRegionGlobal(wind_position_region, gAgent.getPositionGlobal());	// puts agent's local coords into wind_position	
+	if (regionp)
 	{
-		LLWorld::getInstance()->updateClouds(gFrameDTClamped);
-		gSky.propagateHeavenlyBodies(gFrameDTClamped);				// moves sun, moon, and planets
+		gWindVec = regionp->mWind.getVelocity(wind_position_region);
 
-		// Update wind vector 
-		LLVector3 wind_position_region;
-		static LLVector3 average_wind;
-
-		LLViewerRegion *regionp;
-		regionp = LLWorld::getInstance()->resolveRegionGlobal(wind_position_region, gAgent.getPositionGlobal());	// puts agent's local coords into wind_position	
-		if (regionp)
-		{
-			gWindVec = regionp->mWind.getVelocity(wind_position_region);
-
-			// Compute average wind and use to drive motion of water
-			
-			average_wind = regionp->mWind.getAverage();
-			F32 cloud_density = regionp->mCloudLayer.getDensityRegion(wind_position_region);
-			
-			gSky.setCloudDensityAtAgent(cloud_density);
-			gSky.setWind(average_wind);
-			//LLVOWater::setWind(average_wind);
-		}
-		else
-		{
-			gWindVec.setVec(0.0f, 0.0f, 0.0f);
-		}
+		// Compute average wind and use to drive motion of water
+		
+		average_wind = regionp->mWind.getAverage();
+		F32 cloud_density = regionp->mCloudLayer.getDensityRegion(wind_position_region);
+		
+		gSky.setCloudDensityAtAgent(cloud_density);
+		gSky.setWind(average_wind);
+		//LLVOWater::setWind(average_wind);
+	}
+	else
+	{
+		gWindVec.setVec(0.0f, 0.0f, 0.0f);
 	}
 	
 	//////////////////////////////////////
@@ -4156,13 +4166,10 @@ void LLAppViewer::idle()
 	// Here, particles are updated and drawables are moved.
 	//
 	
-	if (!gNoRender)
-	{
-		LLFastTimer t(FTM_WORLD_UPDATE);
-		gPipeline.updateMove();
+	LLFastTimer t(FTM_WORLD_UPDATE);
+	gPipeline.updateMove();
 
-		LLWorld::getInstance()->updateParticles();
-	}
+	LLWorld::getInstance()->updateParticles();
 
 	if (LLViewerJoystick::getInstance()->getOverrideCamera())
 	{ 
@@ -4542,12 +4549,9 @@ void LLAppViewer::disconnectViewer()
 	gSavedSettings.setBOOL("FlyingAtExit", gAgent.getFlying() );
 
 	// Un-minimize all windows so they don't get saved minimized
-	if (!gNoRender)
+	if (gFloaterView)
 	{
-		if (gFloaterView)
-		{
-			gFloaterView->restoreAll();
-		}
+		gFloaterView->restoreAll();
 	}
 
 	if (LLSelectMgr::getInstance())

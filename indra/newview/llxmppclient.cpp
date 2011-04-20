@@ -573,18 +573,18 @@ static std::string xml_escape(const std::string &xml)
 	std::string out = xml;
 	size_t pos;
 
-	pos = 0;
-	for (pos = out.find('<', pos);
+	pos = out.find('<');
+	for ( ;
 		 pos != std::string::npos;
-		 out.find('<'))
+		 pos = out.find('<', pos))
 	{
 		out.replace(pos, 1, "&lt;");
 	}
 
-	pos = 0;
-	for (pos = out.find('>', pos);
+	pos = out.find('>');
+	for ( ;
 		 pos != std::string::npos;
-		 out.find('>'))
+		 pos = out.find('>', pos))
 	{
 		out.replace(pos, 1, "&gt;");
 	}

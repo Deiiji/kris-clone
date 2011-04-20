@@ -116,8 +116,6 @@ public:
 	static void startChat(const char* line);
 	static void stopChat();
 
-	void onChatFontChange(LLFontGL* fontp);
-
 	static void sendChatFromViewer(const std::string &utf8text, EChatType type, BOOL animate);
 	static void sendChatFromViewer(const LLWString &wtext, EChatType type, BOOL animate);
 

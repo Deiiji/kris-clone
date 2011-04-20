@@ -1379,10 +1379,6 @@ void LLPipeline::unlinkDrawable(LLDrawable *drawable)
 U32 LLPipeline::addObject(LLViewerObject *vobj)
 {
 	LLMemType mt_ao(LLMemType::MTYPE_PIPELINE_ADD_OBJECT);
-	if (gNoRender)
-	{
-		return 0;
-	}
 
 	if (gSavedSettings.getBOOL("RenderDelayCreation"))
 	{
@@ -5995,7 +5991,6 @@ void validate_framebuffer_object()
 {                                                           
 	GLenum status;                                            
 	status = glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT); 
-	// S21 KL in the cases of a bad framebuffer I would prefer a black screen over a CTD so make these warnings.
 	switch(status) 
 	{                                          
 		case GL_FRAMEBUFFER_COMPLETE:                       

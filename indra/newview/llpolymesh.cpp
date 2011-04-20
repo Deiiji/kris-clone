@@ -29,7 +29,7 @@
 //-----------------------------------------------------------------------------
 #include "llviewerprecompiledheaders.h"
 
-#include "llpolymesh.h"
+#include "llfasttimer.h"
 #include "llmemory.h"
 
 #include "llviewercontrol.h"
@@ -40,7 +40,7 @@
 #include "llvolume.h"
 #include "llendianswizzle.h"
 
-#include "llfasttimer.h"
+#include "llpolymesh.h"
 
 #define HEADER_ASCII "Linden Mesh 1.0"
 #define HEADER_BINARY "Linden Binary Mesh 1.0"
@@ -144,9 +144,9 @@ void LLPolyMeshSharedData::freeMeshData()
 		delete [] mDetailTexCoords;
 		mDetailTexCoords = NULL;
 
-		free(mWeights);
-		mWeights = NULL;
-	}
+                delete [] mWeights;
+                mWeights = NULL;
+        }
 
 	mNumFaces = 0;
 	delete [] mFaces;
@@ -228,19 +228,19 @@ U32 LLPolyMeshSharedData::getNumKB()
 //-----------------------------------------------------------------------------
 BOOL LLPolyMeshSharedData::allocateVertexData( U32 numVertices )
 {
-	U32 i;
-	mBaseCoords = new LLVector3[ numVertices ];
-	mBaseNormals = new LLVector3[ numVertices ];
-	mBaseBinormals = new LLVector3[ numVertices ];
-	mTexCoords = new LLVector2[ numVertices ];
-	mDetailTexCoords = new LLVector2[ numVertices ];
-	mWeights = (F32*) malloc((numVertices*sizeof(F32)+0xF) & ~0xF);
-	for (i = 0; i < numVertices; i++)
-	{
-		mWeights[i] = 0.f;
-	}
-	mNumVertices = numVertices;
-	return TRUE;
+        U32 i;
+        mBaseCoords = new LLVector3[ numVertices ];
+        mBaseNormals = new LLVector3[ numVertices ];
+        mBaseBinormals = new LLVector3[ numVertices ];
+        mTexCoords = new LLVector2[ numVertices ];
+        mDetailTexCoords = new LLVector2[ numVertices ];
+        mWeights = new F32[ numVertices ];
+        for (i = 0; i < numVertices; i++)
+        {
+                mWeights[i] = 0.f;
+        }
+        mNumVertices = numVertices;
+        return TRUE;
 }
 
 //-----------------------------------------------------------------------------
@@ -764,8 +764,8 @@ LLPolyMesh::LLPolyMesh(LLPolyMeshSharedData *shared_data, LLPolyMesh *reference_
 		mClothingWeights = reference_mesh->mClothingWeights;
 	}
 	else
-	{ 	 
-#if 1	// Allocate memory without initializing every vector
+	{
+		// Allocate memory without initializing every vector
 		// NOTE: This makes asusmptions about the size of LLVector[234]
 		int nverts = mSharedData->mNumVertices;
 		int nfloats = nverts * (2*4 + 3*3 + 2 + 4);
@@ -773,8 +773,6 @@ LLPolyMesh::LLPolyMesh(LLPolyMeshSharedData *shared_data, LLPolyMesh *reference_
 		//use 16 byte aligned vertex data to make LLPolyMesh SSE friendly
 		mVertexData = (F32*) malloc(nfloats*4);
 		int offset = 0;
-
-		//all members must be 16-byte aligned except the last 3
 		mCoords				= 	(LLVector4*)(mVertexData + offset); offset += 4*nverts;
 		mNormals			=	(LLVector4*)(mVertexData + offset); offset += 4*nverts;
 		mClothingWeights	= 	(LLVector4*)(mVertexData + offset); offset += 4*nverts;
@@ -782,21 +780,9 @@ LLPolyMesh::LLPolyMesh(LLPolyMeshSharedData *shared_data, LLPolyMesh *reference_
 
 		// these members don't need to be 16-byte aligned, but the first one might be
 		// read during an aligned memcpy of mTexCoords
-		mScaledNormals		=	(LLVector3*)(mVertexData + offset); offset += 3*nverts;
-		mBinormals			=	(LLVector3*)(mVertexData + offset); offset += 3*nverts;
-		mScaledBinormals	=	(LLVector3*)(mVertexData + offset); offset += 3*nverts;
-		
-		
-#else
-		mCoords = new LLVector3[mSharedData->mNumVertices];
-		mNormals = new LLVector3[mSharedData->mNumVertices];
-		mScaledNormals = new LLVector3[mSharedData->mNumVertices];
-		mBinormals = new LLVector3[mSharedData->mNumVertices];
-		mScaledBinormals = new LLVector3[mSharedData->mNumVertices];
-		mTexCoords = new LLVector2[mSharedData->mNumVertices];
-		mClothingWeights = new LLVector4[mSharedData->mNumVertices];
-		memset(mClothingWeights, 0, sizeof(LLVector4) * mSharedData->mNumVertices);
-#endif
+		mScaledNormals =                (LLVector3*)(mVertexData + offset); offset += 3*nverts;
+		mBinormals =                    (LLVector3*)(mVertexData + offset); offset += 3*nverts;
+		mScaledBinormals =              (LLVector3*)(mVertexData + offset); offset += 3*nverts; 
 		initializeForMorph();
 	}
 }
@@ -807,23 +793,15 @@ LLPolyMesh::LLPolyMesh(LLPolyMeshSharedData *shared_data, LLPolyMesh *reference_
 //-----------------------------------------------------------------------------
 LLPolyMesh::~LLPolyMesh()
 {
-	S32 i;
-	for (i = 0; i < mJointRenderData.count(); i++)
-	{
-		delete mJointRenderData[i];
-		mJointRenderData[i] = NULL;
-	}
-#if 0 // These are now allocated as one big uninitialized chunk
-	delete [] mCoords;
-	delete [] mNormals;
-	delete [] mScaledNormals;
-	delete [] mBinormals;
-	delete [] mScaledBinormals;
-	delete [] mClothingWeights;
-	delete [] mTexCoords;
-#else
-	free(mVertexData);
-#endif
+        S32 i;
+        for (i = 0; i < mJointRenderData.count(); i++)
+        {
+                delete mJointRenderData[i];
+                mJointRenderData[i] = NULL;
+        }
+
+		free(mVertexData);
+
 }
 
 
@@ -989,10 +967,7 @@ LLVector3 *LLPolyMesh::getScaledBinormals()
 //-----------------------------------------------------------------------------
 void LLPolyMesh::initializeForMorph()
 {
-	if (!mSharedData)
-		return;
-
-	for (U32 i = 0; i < mSharedData->mNumVertices; ++i)
+    for (U32 i = 0; i < mSharedData->mNumVertices; ++i)
 	{
 		mCoords[i] = LLVector4(mSharedData->mBaseCoords[i]);
 		mNormals[i] = LLVector4(mSharedData->mBaseNormals[i]);

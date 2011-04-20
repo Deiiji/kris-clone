@@ -1311,17 +1311,7 @@ void LLVOAvatar::initInstance(void)
 		
 	}
 	
-	if (gNoRender)
-	{
-		return;
-	}
-	
 	buildCharacter();
-	
-	if (gNoRender)
-	{
-		return;
-	}
 	
 	// preload specific motions here
 	createMotion( ANIM_AGENT_CUSTOMIZE);
@@ -1790,12 +1780,6 @@ void LLVOAvatar::buildCharacter()
 
 	BOOL status = loadAvatar();
 	stop_glerror();
-
-	if (gNoRender)
-	{
-		// Still want to load the avatar skeleton so visual parameters work.
-		return;
-	}
 
 // 	gPrintMessagesThisFrame = TRUE;
 	lldebugs << "Avatar load took " << timer.getElapsedTimeF32() << " seconds." << llendl;
@@ -2270,7 +2254,7 @@ BOOL LLVOAvatar::idleUpdate(LLAgent &agent, LLWorld &world, const F64 &time)
 	setPixelAreaAndAngle(gAgent);
 
 	// force asynchronous drawable update
-	if(mDrawable.notNull() && !gNoRender)
+	if(mDrawable.notNull())
 	{	
 		LLFastTimer t(FTM_JOINT_UPDATE);
 	
@@ -2326,11 +2310,6 @@ BOOL LLVOAvatar::idleUpdate(LLAgent &agent, LLWorld &world, const F64 &time)
 	// store off last frame's root position to be consistent with camera position
 	LLVector3 root_pos_last = mRoot.getWorldPosition();
 	BOOL detailed_update = updateCharacter(agent);
-
-	if (gNoRender)
-	{
-		return TRUE;
-	}
 
 	static LLUICachedControl<bool> visualizers_in_calls("ShowVoiceVisualizersInCalls", false);
 	bool voice_enabled = (visualizers_in_calls || LLVoiceClient::getInstance()->inProximalChannel()) &&
@@ -3333,17 +3312,6 @@ BOOL LLVOAvatar::updateCharacter(LLAgent &agent)
 			}
 		}
 	}
-
-	if (gNoRender)
-	{
-		// Hack if we're running drones...
-		if (isSelf())
-		{
-			gAgent.setPositionAgent(getPositionAgent());
-		}
-		return FALSE;
-	}
-
 
 	LLVector3d root_pos_global;
 
@@ -4352,7 +4320,7 @@ void LLVOAvatar::updateTextures()
 {
 	BOOL render_avatar = TRUE;
 
-	if (mIsDummy || gNoRender)
+	if (mIsDummy)
 	{
 		return;
 	}
@@ -4625,11 +4593,6 @@ void LLVOAvatar::processAnimationStateChanges()
 {
 	LLMemType mt(LLMemType::MTYPE_AVATAR);
 	
-	if (gNoRender)
-	{
-		return;
-	}
-
 	if ( isAnyAnimationSignaled(AGENT_WALK_ANIMS, NUM_AGENT_WALK_ANIMS) )
 	{
 		startMotion(ANIM_AGENT_WALK_ADJUST);
@@ -4923,7 +4886,7 @@ LLVector3 LLVOAvatar::getVolumePos(S32 joint_index, LLVector3& volume_offset)
 //-----------------------------------------------------------------------------
 LLJoint* LLVOAvatar::findCollisionVolume(U32 volume_id)
 {
-	if ((S32)volume_id > mNumCollisionVolumes || (S32)volume_id<0)  // S21
+	if ((S32)volume_id > mNumCollisionVolumes)
 	{
 		return NULL;
 	}
@@ -5098,7 +5061,7 @@ void LLVOAvatar::getGround(const LLVector3 &in_pos_agent, LLVector3 &out_pos_age
 	LLVector3d z_vec(0.0f, 0.0f, 1.0f);
 	LLVector3d p0_global, p1_global;
 
-	if (gNoRender || mIsDummy)
+	if (mIsDummy)
 	{
 		outNorm.setVec(z_vec);
 		out_pos_agent = in_pos_agent;
@@ -5670,11 +5633,6 @@ BOOL LLVOAvatar::loadLayersets()
 //-----------------------------------------------------------------------------
 void LLVOAvatar::updateVisualParams()
 {
-	if (gNoRender)
-	{
-		return;
-	}
-
 	setSex( (getVisualParamWeight( "male" ) > 0.5f) ? SEX_MALE : SEX_FEMALE );
 
 	LLCharacter::updateVisualParams();
@@ -6464,8 +6422,6 @@ LLMotion* LLVOAvatar::findMotion(const LLUUID& id) const
 void LLVOAvatar::updateMeshTextures()
 {
     // llinfos << "updateMeshTextures" << llendl;
-	if (gNoRender) return;
-
 	// if user has never specified a texture, assign the default
 	for (U32 i=0; i < getNumTEs(); i++)
 	{
@@ -6501,11 +6457,9 @@ void LLVOAvatar::updateMeshTextures()
 			// When an avatar is changing clothes and not in Appearance mode,
 			// use the last-known good baked texture until it finish the first
 			// render of the new layerset.
-
 			const BOOL layerset_invalid = mBakedTextureDatas[i].mTexLayerSet 
 										  && ( !mBakedTextureDatas[i].mTexLayerSet->getComposite()->isInitialized()
 										  || !mBakedTextureDatas[i].mTexLayerSet->isLocalTextureDataAvailable() );
-
 			use_lkg_baked_layer[i] = (!is_layer_baked[i] 
 									  && (mBakedTextureDatas[i].mLastTextureIndex != IMG_DEFAULT_AVATAR) 
 									  && layerset_invalid);
@@ -7119,11 +7073,6 @@ void LLVOAvatar::processAvatarAppearance( LLMessageSystem* mesgsys )
 //			llinfos << "processAvatarAppearance end  " << mID << llendl;
 			return;
 		}
-	}
-
-	if (gNoRender)
-	{
-		return;
 	}
 
 	ESex old_sex = getSex();

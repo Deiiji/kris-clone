@@ -168,7 +168,6 @@ LLMenuItemCallGL* gBusyMenu = NULL;
 // Local prototypes
 
 // File Menu
-const char* upload_pick(void* data);
 void handle_compress_image(void*);
 
 
@@ -866,40 +865,36 @@ void toggle_destination_and_avatar_picker(const LLSD& show)
 	LLButton* avatar_btn = gViewerWindow->getRootView()->getChildView("bottom_tray")->getChild<LLButton>("avatar_btn");
 	LLButton* destination_btn = gViewerWindow->getRootView()->getChildView("bottom_tray")->getChild<LLButton>("destination_btn");
 
-	switch(panel_idx)
-	{
-	case 0:
-		if (!destinations->getVisible())
-		{
-			container->setVisible(true);
-			destinations->setVisible(true);
-			avatar_picker->setVisible(false);
-			LLFirstUse::notUsingDestinationGuide(false);
-			avatar_btn->setToggleState(false);
-			destination_btn->setToggleState(true);
-			return;
-		}
-		break;
-	case 1:
-		if (!avatar_picker->getVisible())
-		{	
-			container->setVisible(true);
-			destinations->setVisible(false);
-			avatar_picker->setVisible(true);
-			avatar_btn->setToggleState(true);
-			destination_btn->setToggleState(false);
-			return;
-		}
-		break;
-	default:
-		break;
+	if (panel_idx == 0
+		&& !destinations->getVisible())
+	{	// opening destinations guide
+		container->setVisible(true);
+		destinations->setVisible(true);
+		avatar_picker->setVisible(false);
+		LLFirstUse::notUsingDestinationGuide(false);
+		avatar_btn->setToggleState(false);
+		destination_btn->setToggleState(true);
+		gSavedSettings.setS32("DestinationsAndAvatarsVisibility", 0);
 	}
-
-	container->setVisible(false);
-	destinations->setVisible(false);
-	avatar_picker->setVisible(false);
-	avatar_btn->setToggleState(false);
-	destination_btn->setToggleState(false);
+	else if (panel_idx == 1 
+		&& !avatar_picker->getVisible())
+	{	// opening avatar picker
+		container->setVisible(true);
+		destinations->setVisible(false);
+		avatar_picker->setVisible(true);
+		avatar_btn->setToggleState(true);
+		destination_btn->setToggleState(false);
+		gSavedSettings.setS32("DestinationsAndAvatarsVisibility", 1);
+	}
+	else
+	{	// toggling off dest guide or avatar picker
+		container->setVisible(false);
+		destinations->setVisible(false);
+		avatar_picker->setVisible(false);
+		avatar_btn->setToggleState(false);
+		destination_btn->setToggleState(false);
+		gSavedSettings.setS32("DestinationsAndAvatarsVisibility", -1);
+	}
 };
 
 
@@ -3088,7 +3083,7 @@ bool callback_eject(const LLSD& notification, const LLSD& response)
 	else if (ban_enabled)
 	{
 		// This is tricky. It is similar to say if it is not an 'Eject' button,
-		// and it is also not a 'Cancel' button, and ban_enabled==true, 
+		// and it is also not an 'Cancle' button, and ban_enabled==ture, 
 		// it should be the 'Eject and Ban' button.
 		LLMessageSystem* msg = gMessageSystem;
 		LLViewerObject* avatar = gObjectList.findObject(avatar_id);
@@ -6498,12 +6493,12 @@ class LLToolsSelectedScriptAction : public view_listener_t
 		else if (action == "start")
 		{
 			name = "start_queue";
-			msg = "Running";
+			msg = "SetRunning";
 		}
 		else if (action == "stop")
 		{
 			name = "stop_queue";
-			msg = "RunningNot";
+			msg = "SetRunningNot";
 		}
 		LLUUID id; id.generate();
 		

@@ -438,17 +438,7 @@ BOOL LLNearbyChatBar::postBuild()
 	mOutputMonitor = getChild<LLOutputMonitorCtrl>("chat_zone_indicator");
 	mOutputMonitor->setVisible(FALSE);
 
-	LLViewerChat::setFontChangedCallback(boost::bind(&LLNearbyChatBar::onChatFontChange, this, _1));
-
 	return TRUE;
-}
-
-void LLNearbyChatBar::onChatFontChange(LLFontGL* fontp)
-{
-	if(mChatBox)
-	{
-		mChatBox->setFont(fontp);
-	}
 }
 
 //static

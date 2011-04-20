@@ -10,7 +10,7 @@ include(DirectX)
 include(Strophe)
 include(OpenSSL)
 include(DragDrop)
-include(ELFIO)
+include(EXPAT)
 include(FMOD)
 include(OPENAL)
 include(FindOpenGL)
@@ -47,13 +47,13 @@ include(CMakeCopyIfDifferent)
 
 include_directories(
     ${DBUSGLIB_INCLUDE_DIRS}
-    ${ELFIO_INCLUDE_DIR}
     ${JSONCPP_INCLUDE_DIRS}
     ${GLOD_INCLUDE_DIR}
     ${LLAUDIO_INCLUDE_DIRS}
     ${LLCHARACTER_INCLUDE_DIRS}
     ${LLCOMMON_INCLUDE_DIRS}
     ${LLCONVEXDECOMP_INCLUDE_DIRS}
+    ${FMOD_INCLUDE_DIR}
     ${LLIMAGE_INCLUDE_DIRS}
     ${LLINVENTORY_INCLUDE_DIRS}
     ${LLMATH_INCLUDE_DIRS}
@@ -70,6 +70,8 @@ include_directories(
     ${LSCRIPT_INCLUDE_DIRS}/lscript_compile
     ${LLLOGIN_INCLUDE_DIRS}
     ${LIBS_PREBUILT_DIR}/include/collada
+    ${STROPHE_INCLUDE_DIRS}
+    ${OPENAL_LIB_INCLUDE_DIRS}
     ${LIBS_PREBUILT_DIR}/include/collada/1.4
     )
 
@@ -189,7 +191,6 @@ set(viewer_SOURCE_FILES
     llfloaterhelpbrowser.cpp
     llfloaterhud.cpp
     llfloaterimagepreview.cpp
-    llfloaterimportcollada.cpp
     llfloaterinspect.cpp
     llfloaterinventory.cpp
     llfloaterjoystick.cpp
@@ -307,7 +308,6 @@ set(viewer_SOURCE_FILES
     llmemoryview.cpp
     llmenucommands.cpp
     llmeshrepository.cpp
-    llmeshreduction.cpp
     llmimetypes.cpp
     llmorphview.cpp
     llmoveview.cpp
@@ -745,7 +745,6 @@ set(viewer_HEADER_FILES
     llfloaterhelpbrowser.h
     llfloaterhud.h
     llfloaterimagepreview.h
-    llfloaterimportcollada.h
     llfloaterinspect.h
     llfloaterinventory.h
     llfloaterjoystick.h
@@ -863,7 +862,6 @@ set(viewer_HEADER_FILES
     llmemoryview.h
     llmenucommands.h
     llmeshrepository.h
-    llmeshreduction.h
     llmimetypes.h
     llmorphview.h
     llmoveview.h
@@ -1329,8 +1327,6 @@ if (WINDOWS)
     if (INTEL_MEMOPS_LIBRARY)
       list(APPEND viewer_LIBRARIES ${INTEL_MEMOPS_LIBRARY})
     endif (INTEL_MEMOPS_LIBRARY)
-
-    use_prebuilt_binary(dbghelp)
 endif (WINDOWS)
 
 # Add the xui files. This is handy for searching for xui elements
@@ -1470,28 +1466,14 @@ set(PACKAGE ON CACHE BOOL
     "Add a package target that builds an installer package.")
 
 if (WINDOWS)
-    if(MSVC71)
-        set(release_flags "/MAP:Release/${VIEWER_BINARY_NAME}.map /MAPINFO:LINES")
-    else(MSVC71)
-        set(release_flags "/MAP:Release/${VIEWER_BINARY_NAME}.map")
-    endif(MSVC71)
-    
-    if (INCREMENTAL_LINK)
-		set_target_properties(${VIEWER_BINARY_NAME}
-			PROPERTIES
-			LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS /INCREMENTAL /INCLUDE:__tcmalloc"
-			LINK_FLAGS_DEBUG "/NODEFAULTLIB:\"LIBCMT;LIBCMTD;MSVCRT\""
-			LINK_FLAGS_RELEASE ${release_flags}
-			)
-    else(INCREMENTAL_LINK)
-		set_target_properties(${VIEWER_BINARY_NAME}
-			PROPERTIES
-			LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS /INCREMENTAL:NO /INCLUDE:__tcmalloc"
-			LINK_FLAGS_DEBUG "/NODEFAULTLIB:\"LIBCMT;LIBCMTD;MSVCRT\""
-			LINK_FLAGS_RELEASE ${release_flags}
-			)
-	endif(INCREMENTAL_LINK)
-	
+	set_target_properties(${VIEWER_BINARY_NAME}
+        PROPERTIES
+        # *TODO -reenable this once we get server usage sorted out
+        #LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS /INCLUDE:\"__tcmalloc\""
+        LINK_FLAGS "/debug /NODEFAULTLIB:LIBCMT /SUBSYSTEM:WINDOWS /INCLUDE:__tcmalloc"
+        LINK_FLAGS_DEBUG "/NODEFAULTLIB:\"LIBCMT;LIBCMTD;MSVCRT\" /INCREMENTAL:NO"
+        LINK_FLAGS_RELEASE ""
+        )
     if(USE_PRECOMPILED_HEADERS)
         set_target_properties(
             ${VIEWER_BINARY_NAME}
@@ -1506,11 +1488,6 @@ if (WINDOWS)
     # be met. I'm looking forward to a source-code split-up project next year that will address this kind of thing.
     # In the meantime, if you have any ideas on how to easily maintain one list, either here or in viewer_manifest.py
     # and have the build deps get tracked *please* tell me about it.
-
-    if(LLKDU_LIBRARY)
-      # Configure a var for llkdu which may not exist for all builds.
-      set(LLKDU_DLL_SOURCE ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/llkdu.dll)
-    endif(LLKDU_LIBRARY)
 
     if(USE_GOOGLE_PERFTOOLS)
       # Configure a var for tcmalloc location, if used.
@@ -1528,29 +1505,29 @@ if (WINDOWS)
       #${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libtcmalloc_minimal.dll => None ... Skipping libtcmalloc_minimal.dll
       ${CMAKE_SOURCE_DIR}/../etc/message.xml
       ${CMAKE_SOURCE_DIR}/../scripts/messages/message_template.msg
-      ${LLKDU_DLL_SOURCE}
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/llcommon.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libapr-1.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libaprutil-1.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libapriconv-1.dll
+      ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libstrophe.dll
       ${SHARED_LIB_STAGING_DIR}/Release/glod.dll
       ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/glod.dll
       ${SHARED_LIB_STAGING_DIR}/Debug/glod.dll
-      ${SHARED_LIB_STAGING_DIR}/Release/libcollada14dom21.dll
-      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/libcollada14dom21.dll
-      ${SHARED_LIB_STAGING_DIR}/Debug/libcollada14dom21-d.dll
+      ${SHARED_LIB_STAGING_DIR}/Release/libcollada14dom22.dll
+      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/libcollada14dom22.dll
+      ${SHARED_LIB_STAGING_DIR}/Debug/libcollada14dom22-d.dll
       ${SHARED_LIB_STAGING_DIR}/Release/openjpeg.dll
       ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/openjpeg.dll
       ${SHARED_LIB_STAGING_DIR}/Debug/openjpegd.dll
-      ${SHARED_LIB_STAGING_DIR}/Release/msvcr80.dll
-      ${SHARED_LIB_STAGING_DIR}/Release/msvcp80.dll
-      ${SHARED_LIB_STAGING_DIR}/Release/Microsoft.VC80.CRT.manifest
-      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/msvcr80.dll
-      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/msvcp80.dll
-      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/Microsoft.VC80.CRT.manifest
-      ${SHARED_LIB_STAGING_DIR}/Debug/msvcr80d.dll
-      ${SHARED_LIB_STAGING_DIR}/Debug/msvcp80d.dll
-      ${SHARED_LIB_STAGING_DIR}/Debug/Microsoft.VC80.DebugCRT.manifest
+      ${SHARED_LIB_STAGING_DIR}/Release/fmod.dll
+      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/fmod.dll
+      ${SHARED_LIB_STAGING_DIR}/Debug/fmod.dll
+      ${SHARED_LIB_STAGING_DIR}/Release/msvcr100.dll
+      ${SHARED_LIB_STAGING_DIR}/Release/msvcp100.dll
+      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/msvcr100.dll
+      ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/msvcp100.dll
+      ${SHARED_LIB_STAGING_DIR}/Debug/msvcr100d.dll
+      ${SHARED_LIB_STAGING_DIR}/Debug/msvcp100d.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/SLVoice.exe
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/vivoxsdk.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/ortp.dll
@@ -1562,8 +1539,6 @@ if (WINDOWS)
       ${CMAKE_CURRENT_SOURCE_DIR}/licenses-win32.txt
       ${CMAKE_CURRENT_SOURCE_DIR}/featuretable.txt
       ${CMAKE_CURRENT_SOURCE_DIR}/featuretable_xp.txt
-      ${CMAKE_CURRENT_SOURCE_DIR}/dbghelp.dll
-      ${CMAKE_CURRENT_SOURCE_DIR}/fmod.dll
       ${ARCH_PREBUILT_DIRS_RELEASE}/libeay32.dll
       ${ARCH_PREBUILT_DIRS_RELEASE}/qtcore4.dll
       ${ARCH_PREBUILT_DIRS_RELEASE}/qtgui4.dll
@@ -1702,8 +1677,6 @@ if (WINDOWS)
         # sorted out on the parabuild cluster...
         #${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/event_host.tar.bz2)
 
-      check_message_template(package)
-
     endif (PACKAGE)
 endif (WINDOWS)
 
@@ -1712,7 +1685,6 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${LLAUDIO_LIBRARIES}
     ${LLCHARACTER_LIBRARIES}
     ${LLIMAGE_LIBRARIES}
-    ${LLIMAGEJ2COJ_LIBRARIES}
     ${LLINVENTORY_LIBRARIES}
     ${LLMESSAGE_LIBRARIES}
     ${LLPLUGIN_LIBRARIES}
@@ -1741,8 +1713,8 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${SMARTHEAP_LIBRARY}
     ${UI_LIBRARIES}
     ${WINDOWS_LIBRARIES}
+    ${EXPAT_LIBRARIES}
     ${XMLRPCEPI_LIBRARIES}
-    ${ELFIO_LIBRARIES}
     ${OPENSSL_LIBRARIES}
     ${CRYPTO_LIBRARIES}
     ${LLLOGIN_LIBRARIES}
@@ -1750,6 +1722,17 @@ target_link_libraries(${VIEWER_BINARY_NAME}
     ${TCMALLOC_LIBRARIES}
     )
 
+if (USE_KDU)
+    target_link_libraries(${VIEWER_BINARY_NAME}
+        ${LLKDU_LIBRARIES}
+        ${KDU_LIBRARY}
+        )
+else (USE_KDU)
+    target_link_libraries(${VIEWER_BINARY_NAME}
+        ${LLIMAGEJ2COJ_LIBRARIES}
+        )
+endif (USE_KDU)
+    
 build_version(viewer)
 
 set(ARTWORK_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH
@@ -1758,6 +1741,16 @@ set(ARTWORK_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE PATH
 
 if (LINUX)
   set(product Kirstens S21-${ARCH}-${viewer_VERSION})
+  # These are the generated targets that are copied to package/
+  set(COPY_INPUT_DEPENDENCIES
+	${VIEWER_BINARY_NAME}
+	linux-crash-logger
+	linux-updater
+	SLPlugin
+	media_plugin_webkit
+	media_plugin_gstreamer010
+	llcommon
+	)
 
   add_custom_command(
       OUTPUT ${product}.tar.bz2
@@ -1776,18 +1769,13 @@ if (LINUX)
         --login_channel=${VIEWER_LOGIN_CHANNEL}
         --source=${CMAKE_CURRENT_SOURCE_DIR}
         --touch=${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/.${product}.touched
-      DEPENDS ${VIEWER_BINARY_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/viewer_manifest.py
+      DEPENDS
+        ${CMAKE_CURRENT_SOURCE_DIR}/viewer_manifest.py
+        ${COPY_INPUT_DEPENDENCIES}
       )
 
-  add_dependencies(${VIEWER_BINARY_NAME} SLPlugin media_plugin_gstreamer010 media_plugin_webkit)
-
-  if (NOT INSTALL)
-    add_custom_target(package ALL DEPENDS ${product}.tar.bz2)
-    add_dependencies(package linux-crash-logger-target)
-   
-    check_message_template(package)
-  endif (NOT INSTALL)
-
+  if (PACKAGE)
+  endif (PACKAGE)
   add_custom_command(
     OUTPUT  ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/.${product}.copy_touched
     COMMAND ${PYTHON_EXECUTABLE}
@@ -1809,7 +1797,13 @@ if (LINUX)
     )
     
   add_custom_target(copy_l_viewer_manifest ALL DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/.${product}.copy_touched) 
-  add_dependencies(copy_l_viewer_manifest "${VIEWER_BINARY_NAME}" linux-crash-logger-target linux-updater-target)
+
+  if (PACKAGE)
+    add_custom_target(package ALL DEPENDS ${product}.tar.bz2)
+    # Make sure we don't run two instances of viewer_manifest.py at the same time.
+    add_dependencies(package copy_l_viewer_manifest)
+    check_message_template(package)
+  endif (PACKAGE)
 endif (LINUX)
 
 if (DARWIN)
@@ -1848,7 +1842,6 @@ if (DARWIN)
 
   if (PACKAGE)
       add_custom_target(package ALL DEPENDS ${VIEWER_BINARY_NAME}) 
-      check_message_template(package)
 
       add_custom_command(
         TARGET package POST_BUILD
@@ -1879,7 +1872,9 @@ if (PACKAGE)
   if (WINDOWS)
     set(VIEWER_DIST_DIR "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}")
     set(VIEWER_SYMBOL_FILE "${CMAKE_CURRENT_BINARY_DIR}/${CMAKE_CFG_INTDIR}/secondlife-symbols-windows.tar.bz2")
-    set(VIEWER_EXE_GLOBS "${VIEWER_BINARY_NAME}${CMAKE_EXECUTABLE_SUFFIX} slplugin.exe")
+    # slplugin.exe failing symbols dump - need to debug, might have to do with updated version of google breakpad
+    # set(VIEWER_EXE_GLOBS "${VIEWER_BINARY_NAME}${CMAKE_EXECUTABLE_SUFFIX} slplugin.exe")
+    set(VIEWER_EXE_GLOBS "${VIEWER_BINARY_NAME}${CMAKE_EXECUTABLE_SUFFIX}")
     set(VIEWER_LIB_GLOB "*${CMAKE_SHARED_MODULE_SUFFIX}")
     set(VIEWER_COPY_MANIFEST copy_w_viewer_manifest)
   endif (WINDOWS)
@@ -1897,6 +1892,7 @@ if (PACKAGE)
     set(VIEWER_COPY_MANIFEST copy_l_viewer_manifest)
   endif (LINUX)
 
+  if(RELEASE_CRASH_REPORTING OR NON_RELEASE_CRASH_REPORTING)
   if(CMAKE_CFG_INTDIR STREQUAL ".")
       set(LLBUILD_CONFIG ${CMAKE_BUILD_TYPE})
   else(CMAKE_CFG_INTDIR STREQUAL ".")
@@ -1912,7 +1908,7 @@ if (PACKAGE)
       "${VIEWER_DIST_DIR}"
       "${VIEWER_EXE_GLOBS}"
       "${VIEWER_LIB_GLOB}"
-      "${LIBS_PREBUILT_DIR}/${LL_ARCH_DIR}/bin/dump_syms"
+      "${AUTOBUILD_INSTALL_DIR}/bin/dump_syms"
       "${VIEWER_SYMBOL_FILE}"
     DEPENDS generate_breakpad_symbols.py
         VERBATIM)
@@ -1920,6 +1916,7 @@ if (PACKAGE)
   add_custom_target(generate_breakpad_symbols DEPENDS "${VIEWER_SYMBOL_FILE}")
   add_dependencies(generate_breakpad_symbols "${VIEWER_BINARY_NAME}" "${VIEWER_COPY_MANIFEST}")
   add_dependencies(package generate_breakpad_symbols)
+  endif(RELEASE_CRASH_REPORTING OR NON_RELEASE_CRASH_REPORTING)
 endif (PACKAGE)
 
 if (LL_TESTS)
@@ -1934,6 +1931,8 @@ if (LL_TESTS)
     llremoteparcelrequest.cpp
     llviewerhelputil.cpp
     llversioninfo.cpp
+    llworldmap.cpp
+    llworldmipmap.cpp
   )
 
   ##################################################
@@ -2017,4 +2016,5 @@ if (LL_TESTS)
 
 endif (LL_TESTS)
 
+check_message_template(${VIEWER_BINARY_NAME})
 
