@@ -1,9 +1,9 @@
 /** 
- * @file llwidgetreg.h
+ * @file llimage_libtest.h
  *
- * $LicenseInfo:firstyear=2009&license=viewerlgpl$
+ * $LicenseInfo:firstyear=2011&license=viewerlgpl$
  * Second Life Viewer Source Code
- * Copyright (C) 2010, Linden Research, Inc.
+ * Copyright (C) 2011, Linden Research, Inc.
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -22,16 +22,8 @@
  * Linden Research, Inc., 945 Battery Street, San Francisco, CA  94111  USA
  * $/LicenseInfo$
  */
-#ifndef LLWIDGETREG_H
-#define LLWIDGETREG_H
+#ifndef LLIMAGE_LIBTEST_H
+#define LLIMAGE_LIBTEST_H
 
-// Register all widgets with the builder registry.
-// Useful on Windows where linker discards all references to the 
-// static LLDefaultChildRegistry::Register<> calls.
-class LLWidgetReg
-{
-public:
-	static void initClass(bool register_widgets);
-};
 
 #endif
