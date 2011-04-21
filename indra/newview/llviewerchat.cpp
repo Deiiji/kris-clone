@@ -35,8 +35,6 @@
 #include "llworld.h"
 #include "llinstantmessage.h" //SYSTEM_FROM
 
-LLViewerChat::chatFontUpdate_signal_t * LLViewerChat::mChatFontChangedSignal;
-
 // LLViewerChat
 
 //static 
@@ -257,20 +255,4 @@ std::string LLViewerChat::getObjectImSLURL(const LLChat& chat, const LLSD& args)
 	url += "&slurl=" + LLURI::escape(slurl);
 
 	return url;
-}
-
-boost::signals2::connection LLViewerChat::setFontChangedCallback( const chatFontUpdate_signal_t::slot_type& cb )
-{
-	if (!mChatFontChangedSignal) mChatFontChangedSignal = new chatFontUpdate_signal_t();
-	return mChatFontChangedSignal->connect(cb);
-}
-
-void LLViewerChat::signalChatFontChanged()
-{
-	//Notify all observers that our font has changed
-	LLFontGL* fontp = getChatFont(); 
-	if (mChatFontChangedSignal)
-	{
-		(*mChatFontChangedSignal)(fontp);
-	}
 }

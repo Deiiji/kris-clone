@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <menu_bar name="Main Menu">
-	<menu label="S21" name="S21">
+	<menu label="Moi" name="Me">
 		<menu_item_call label="Préférences" name="Preferences"/>
 		<menu_item_call label="Ma Page d&apos;accueil" name="Manage My Account">
 			<menu_item_call.on_click name="ManageMyAccount_url" parameter="WebLaunchJoinNow,http://secondlife.com/account/index.php?lang=fr"/>
 		</menu_item_call>
 		<menu_item_call label="Acheter des L$" name="Buy and Sell L$"/>
 		<menu_item_call label="Mon profil" name="Profile"/>
-		<menu_item_call label="Changer de tenue" name="ChangeOutfit"/>
+		<menu_item_call label="Mon apparence" name="ChangeOutfit"/>
 		<menu_item_check label="Mon inventaire" name="Inventory"/>
 		<menu_item_check label="Mon inventaire" name="ShowSidetrayInventory"/>
 		<menu_item_check label="Mes gestes" name="Gestures"/>
@@ -35,6 +35,7 @@
 	<menu label="Monde" name="World">
 		<menu_item_check label="Mini-carte" name="Mini-Map"/>
 		<menu_item_check label="Carte du monde" name="World Map"/>
+		<menu_item_check label="Rechercher" name="Search"/>
 		<menu_item_call label="Photo" name="Take Snapshot"/>
 		<menu_item_call label="Créer un repère pour ce lieu" name="Create Landmark Here"/>
 		<menu label="Profil du lieu" name="Land">
@@ -123,8 +124,6 @@
 		</menu>
 		<menu_item_call label="Annuler" name="Undo"/>
 		<menu_item_call label="Refaire" name="Redo"/>
-	</menu>
-	<menu label="Film" name="Film">
 	</menu>
 	<menu label="Aide" name="Help">
 		<menu_item_call label="Aide de [SECOND_LIFE]" name="Second Life Help"/>
@@ -229,8 +228,10 @@
 		<menu label="Afficher les infos" name="Display Info">
 			<menu_item_check label="Afficher l&apos;heure" name="Show Time"/>
 			<menu_item_check label="Afficher les infos de rendu" name="Show Render Info"/>
+			<menu_item_check label="Afficher les infos de texture" name="Show Texture Info"/>
 			<menu_item_check label="Afficher les matrices" name="Show Matrices"/>
 			<menu_item_check label="Afficher la couleur sous le curseur" name="Show Color Under Cursor"/>
+			<menu_item_check label="Afficher la mémoire" name="Show Memory"/>
 			<menu_item_check label="Afficher les mises à jour des objets" name="Show Updates"/>
 		</menu>
 		<menu label="Forcer une erreur" name="Force Errors">
@@ -255,6 +256,7 @@
 			<menu_item_check label="Shadow Frusta" name="Shadow Frusta"/>
 			<menu_item_check label="Occlusion" name="Occlusion"/>
 			<menu_item_check label="Lots de rendu" name="Render Batches"/>
+			<menu_item_check label="Type de mise à jour" name="Update Type"/>
 			<menu_item_check label="Texture Anim" name="Texture Anim"/>
 			<menu_item_check label="Priorité de la texture" name="Texture Priority"/>
 			<menu_item_check label="Zone de texture" name="Texture Area"/>

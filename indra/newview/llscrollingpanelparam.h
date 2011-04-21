@@ -28,7 +28,6 @@
 #ifndef LL_SCROLLINGPANELPARAM_H
 #define LL_SCROLLINGPANELPARAM_H
 
-#include "llpanel.h"
 #include "llscrollingpanelparambase.h"
 
 class LLViewerJointMesh;
