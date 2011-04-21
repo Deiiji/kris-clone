@@ -425,6 +425,29 @@ Add this Ability to &apos;[ROLE_NAME]&apos;?
      notext="No"
      yestext="Yes"/>
   </notification>
+
+  <notification
+   icon="alert.tga"
+   name="GroupChatDisconnected"
+   type="alert">
+Group Chat is offline due to error:
+[ERROR]
+Do you want to reconnect?
+    <usetemplate
+     name="okcancelbuttons"
+     notext="Remain Offline"
+     yestext="Reconnect Now"/>
+  </notification>
+
+  <notification
+   icon="notify.tga"
+   name="GroupChatError"
+   persist="true"
+   type="notify">
+Group Chat error:
+[ERROR]
+  </notification>
+
   <notification
    icon="alertmodal.tga"
    name="JoinGroupCanAfford"
