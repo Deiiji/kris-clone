@@ -1299,13 +1299,7 @@ void LLView::drawChildren()
 {
 	if (!mChildList.empty())
 	{
-		static const LLRect* rootRect = NULL;
-		
-		if (!mParentView)
-		{
-			rootRect = &mRect;
-		}
-
+		LLRect rootRect = getRootView()->getRect();
 		LLRect screenRect;
 
 		++sDepth;
@@ -1319,7 +1313,7 @@ void LLView::drawChildren()
 			{
 				// Only draw views that are within the root view
 				localRectToScreen(viewp->getRect(),&screenRect);
-				if ( rootRect->overlaps(screenRect)  && LLUI::sDirtyRect.overlaps(screenRect))
+				if ( rootRect.overlaps(screenRect)  && LLUI::sDirtyRect.overlaps(screenRect))
 				{
 					LLUI::pushMatrix();
 					{
