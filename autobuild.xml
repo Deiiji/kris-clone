@@ -1462,9 +1462,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>cb04654cdfe93e3c8d16fef0c475e2bb</string>
+              <string>1061d5963e71ff01140d1a783dbb61a6</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/3p-pcre/rev/226370/arch/Darwin/installer/pcre-7.6-darwin-20110411.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/pcre-7.6-darwin-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
