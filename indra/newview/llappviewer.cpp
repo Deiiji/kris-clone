@@ -1,4 +1,4 @@
-/** 
+	/** 
  * @file llappviewer.cpp
  * @brief The LLAppViewer class definitions
  *
@@ -202,8 +202,6 @@
 // Include for security api initialization
 #include "llsecapi.h"
 #include "llmachineid.h"
-
-#include "llviewerxmppclient.h"
 #include "llmainlooprepeater.h"
 
 // *FIX: These extern globals should be cleaned up.
@@ -309,7 +307,7 @@ BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
 // Internal globals... that should be removed
-static std::string gArgs = "Build 7 RC1";
+static std::string gArgs = "Build 7 RC2";
 
 const std::string MARKER_FILE_NAME("SecondLife.exec_marker");
 const std::string ERROR_MARKER_FILE_NAME("SecondLife.error_marker");
@@ -878,7 +876,7 @@ bool LLAppViewer::init()
 	
 	// Initialize the repeater service.
 	LLMainLoopRepeater::instance().start();
-	
+
 	//
 	// Initialize the window
 	//
@@ -1808,7 +1806,8 @@ bool LLAppViewer::cleanup()
 			gDirUtilp->getExpandedFilename(LL_PATH_LOGS, baseline_name),
 			gDirUtilp->getExpandedFilename(LL_PATH_LOGS, current_name),
 			gDirUtilp->getExpandedFilename(LL_PATH_LOGS, report_name));
-	}
+	}	
+
 	LLMetricPerformanceTesterBasic::cleanClass() ;
 
 	llinfos << "Cleaning up Media and Textures" << llendflush;
@@ -1993,7 +1992,7 @@ bool LLAppViewer::loadSettingsFromDirectory(const std::string& location_key,
 		it != end_it;
 		++it)
 	{
-		// skip settings groups that aren't the one we requested.
+		// skip settings groups that aren't the one we requested
 		if (it->name() != location_key) continue;
 
 		ELLPath path_index = (ELLPath)it->path_index();
@@ -2295,7 +2294,6 @@ bool LLAppViewer::initConfiguration()
     {
 		LLVersionInfo::resetChannel(clp.getOption("channel")[0]);
 	}
-	
 
 	// If we have specified crash on startup, set the global so we'll trigger the crash at the right time
 	if(clp.hasOption("crashonstartup"))
@@ -2306,12 +2304,12 @@ bool LLAppViewer::initConfiguration()
 	if (clp.hasOption("logperformance"))
 	{
 		LLFastTimer::sLog = TRUE;
-		LLFastTimer::sLogName = std::string("performance");
+		LLFastTimer::sLogName = std::string("performance");		
 	}
 	
 	if (clp.hasOption("logmetrics"))
-	{
-		LLFastTimer::sMetricLog = TRUE ;
+ 	{
+ 		LLFastTimer::sMetricLog = TRUE ;
 		// '--logmetrics' can be specified with a named test metric argument so the data gathering is done only on that test
 		// In the absence of argument, every metric is gathered (makes for a rather slow run and hard to decipher report...)
 		std::string test_name = clp.getOption("logmetrics")[0];
@@ -2699,6 +2697,16 @@ bool LLAppViewer::initWindow()
 	if(gCrashOnStartup)
 	{
 		LLAppViewer::instance()->forceErrorLLError();
+	}
+
+	//
+	// Determine if the window should start maximized on initial run based
+	// on graphics capability
+	//
+	if (gSavedSettings.getBOOL("FirstLoginThisInstall") && meetsRequirementsForMaximizedStart())
+	{
+		LL_INFOS("AppInit") << "This client met the requirements for a maximized initial screen." << LL_ENDL;
+		gSavedSettings.setBOOL("WindowMaximized", TRUE);
 	}
 
 	if (gSavedSettings.getBOOL("WindowMaximized"))
@@ -4215,8 +4223,6 @@ void LLAppViewer::idle()
 			gAudiop->idle(max_audio_decode_time);
 		}
 	}
-
-	if (xmpp) xmpp->check_for_inbound_chat();
 	
 	// Handle shutdown process, for example, 
 	// wait for floaters to close, send quit message,

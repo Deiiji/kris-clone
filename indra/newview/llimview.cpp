@@ -64,7 +64,6 @@
 #include "llviewercontrol.h"
 #include "llviewerparcelmgr.h"
 
-#include "llviewerxmppclient.h"
 
 const static std::string ADHOC_NAME_SUFFIX(" Conference");
 
@@ -1033,27 +1032,18 @@ void LLIMModel::sendMessage(const std::string& utf8_text,
 		{
 			new_dialog = IM_SESSION_SEND;
 		}
-
-		LLGroupMgrGroupData* group_datap =
-			LLGroupMgr::getInstance()->getGroupData(other_participant_id);
-		if (group_datap && xmpp)
-		{
-			xmpp->say(group_datap->mName, utf8_text);
-		}
-		else {
-			pack_instant_message(
-				gMessageSystem,
-				gAgent.getID(),
-				FALSE,
-				gAgent.getSessionID(),
-				other_participant_id,
-				name.c_str(),
-				utf8_text.c_str(),
-				offline,
-				(EInstantMessage)new_dialog,
-				im_session_id);
-			gAgent.sendReliableMessage();
-		}
+		pack_instant_message(
+			gMessageSystem,
+			gAgent.getID(),
+			FALSE,
+			gAgent.getSessionID(),
+			other_participant_id,
+			name.c_str(),
+			utf8_text.c_str(),
+			offline,
+			(EInstantMessage)new_dialog,
+			im_session_id);
+		gAgent.sendReliableMessage();
 	}
 
 	// If there is a mute list and this is not a group chat...
@@ -2616,11 +2606,6 @@ bool LLIMMgr::leaveSession(const LLUUID& session_id)
 {
 	LLIMModel::LLIMSession* im_session = LLIMModel::getInstance()->findIMSession(session_id);
 	if (!im_session) return false;
-
-	LLGroupMgrGroupData* group_datap =
-	  LLGroupMgr::getInstance()->getGroupData(im_session->mOtherParticipantID);
-	if (group_datap && xmpp)
-	  xmpp->leave(group_datap->mName);
 
 	LLIMModel::getInstance()->sendLeaveSession(session_id, im_session->mOtherParticipantID);
 	gIMMgr->removeSession(session_id);

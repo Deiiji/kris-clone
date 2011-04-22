@@ -7,7 +7,6 @@ include(Boost)
 include(BuildVersion)
 include(DBusGlib)
 include(DirectX)
-include(Strophe)
 include(OpenSSL)
 include(DragDrop)
 include(EXPAT)
@@ -70,7 +69,6 @@ include_directories(
     ${LSCRIPT_INCLUDE_DIRS}/lscript_compile
     ${LLLOGIN_INCLUDE_DIRS}
     ${LIBS_PREBUILT_DIR}/include/collada
-    ${STROPHE_INCLUDE_DIRS}
     ${OPENAL_LIB_INCLUDE_DIRS}
     ${LIBS_PREBUILT_DIR}/include/collada/1.4
     )
@@ -556,7 +554,6 @@ set(viewer_SOURCE_FILES
     llviewervisualparam.cpp
     llviewerwindow.cpp
     llviewerwindowlistener.cpp
-    llviewerxmppclient.cpp
     llvlcomposition.cpp
     llvlmanager.cpp
     llvoavatar.cpp
@@ -601,7 +598,6 @@ set(viewer_SOURCE_FILES
     llworldmapview.cpp
     llxmlrpclistener.cpp
     llxmlrpctransaction.cpp
-    llxmppclient.cpp
     noise.cpp
     pipeline.cpp
     qtoolalign.cpp
@@ -1104,7 +1100,6 @@ set(viewer_HEADER_FILES
     llviewervisualparam.h
     llviewerwindow.h
     llviewerwindowlistener.h
-    llviewerxmppclient.h
     llvlcomposition.h
     llvlmanager.h
     llvoavatar.h
@@ -1149,7 +1144,6 @@ set(viewer_HEADER_FILES
     llworldmapview.h
     llxmlrpclistener.h
     llxmlrpctransaction.h
-    llxmppclient.h
     macmain.h
     noise.h
     pipeline.h
@@ -1171,7 +1165,6 @@ if (DARWIN)
   find_library(COREAUDIO_LIBRARY CoreAudio)
 
   set(viewer_LIBRARIES
-    ${STROPHE_LIBRARIES}
     ${COCOA_LIBRARY}
     ${AGL_LIBRARY}
     ${IOKIT_LIBRARY}
@@ -1208,7 +1201,6 @@ if (LINUX)
     SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--as-needed")
 
     set(viewer_LIBRARIES
-        ${STROPHE_LIBRARIES}
         Xinerama
         )
 endif (LINUX)
@@ -1300,7 +1292,6 @@ if (WINDOWS)
         )
 
     set(viewer_LIBRARIES
-        ${STROPHE_LIBRARIES}
         ${WINDOWS_LIBRARIES}
         comdlg32
         ${DINPUT_LIBRARY}
@@ -1509,7 +1500,6 @@ if (WINDOWS)
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libapr-1.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libaprutil-1.dll
       ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libapriconv-1.dll
-      ${SHARED_LIB_STAGING_DIR}/${CMAKE_CFG_INTDIR}/libstrophe.dll
       ${SHARED_LIB_STAGING_DIR}/Release/glod.dll
       ${SHARED_LIB_STAGING_DIR}/RelWithDebInfo/glod.dll
       ${SHARED_LIB_STAGING_DIR}/Debug/glod.dll

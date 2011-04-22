@@ -112,7 +112,6 @@ static void onClickVolume(void*);
 LLStatusBar::LLStatusBar(const LLRect& rect)
 :	LLPanel(),
 	mTextTime(NULL),
-	mXMPPStatus(NULL),
 	mSGBandwidth(NULL),
 	mSGPacketLoss(NULL),
 	mBtnVolume(NULL),
@@ -166,7 +165,6 @@ BOOL LLStatusBar::postBuild()
 	gMenuBarView->setRightMouseDownCallback(boost::bind(&show_navbar_context_menu, _1, _2, _3));
 
 	mTextTime = getChild<LLTextBox>("TimeText" );
-	mXMPPStatus = getChild<LLTextBox>("XMPPStatus");
 	
 	getChild<LLUICtrl>("buyL")->setCommitCallback(
 		boost::bind(&LLStatusBar::onClickBuyCurrency, this));
@@ -309,7 +307,6 @@ void LLStatusBar::refresh()
 void LLStatusBar::setVisibleForMouselook(bool visible)
 {
 	mTextTime->setVisible(visible);
-	mXMPPStatus->setVisible(visible);
 	getChild<LLUICtrl>("balance_bg")->setVisible(visible);
 	mBoxBalance->setVisible(visible);
 	mBtnVolume->setVisible(visible);
@@ -381,11 +378,6 @@ void LLStatusBar::setBalance(S32 balance)
 	}
 }
 
-void LLStatusBar::setXMPPStatus(std::string& status, std::string& tooltip)
-{
-	mXMPPStatus->setText(status);
-	mXMPPStatus->setToolTip(tooltip);
-}
 
 // static
 void LLStatusBar::sendMoneyBalanceRequest()

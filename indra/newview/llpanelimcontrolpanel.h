@@ -109,11 +109,10 @@ public:
 	void setSessionId(const LLUUID& session_id);
 	/*virtual*/ void draw();
 
-	// STONE XMPP HACK:
-	LLParticipantList* mParticipantList;
-
 protected:
 	LLUUID mGroupID;
+
+	LLParticipantList* mParticipantList;
 
 private:
 	void onGroupInfoButtonClicked();

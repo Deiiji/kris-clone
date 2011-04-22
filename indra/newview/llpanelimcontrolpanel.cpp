@@ -43,7 +43,6 @@
 #include "llsidetray.h"
 #include "llspeakers.h"
 #include "lltrans.h"
-#include "llviewerxmppclient.h"
 
 void LLPanelChatControlPanel::onCallButtonClicked()
 {
@@ -330,11 +329,6 @@ void LLPanelGroupControlPanel::setSessionId(const LLUUID& session_id)
 	{
 		LLSpeakerMgr* speaker_manager = LLIMModel::getInstance()->getSpeakerManager(session_id);
 		mParticipantList = new LLParticipantList(speaker_manager, getChild<LLAvatarList>("speakers_list"), true,false);
-
-		if (xmpp)
-			xmpp->populateGroupPresence(mGroupID, this);
-		else
-			LL_INFOS("XMPP") << "No global XMPP available" << LL_ENDL;
 	}
 }
 

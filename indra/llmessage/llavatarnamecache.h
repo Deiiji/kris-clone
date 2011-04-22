@@ -37,52 +37,6 @@ class LLUUID;
 
 namespace LLAvatarNameCache
 {
-	class key
-	{
-	public:
-		enum kind_t {
-			agent_id,
-			username,
-		};
-
-		key(const std::string& name) : mKind(username), mKey(name) { }
-		key(const LLUUID& id) : mKind(agent_id), mKey(id.asString()) { }
-		key(const key& k) : mKind(k.mKind), mKey(k.mKey) { }
-		const kind_t kind() const { return mKind; }
-
-		const std::string& asString() const { return mKey; }
-		LLUUID asUUID() const {
-			if (mKind == agent_id)
-				return LLUUID(mKey);
-			return LLUUID::null;
-		}
-
-		const std::string& param() const {
-			static const std::string ids("ids=");
-			static const std::string user("username=");
-			switch (mKind) {
-			case username:
-				return user;
-			case agent_id:
-			default:
-				return ids;
-			}
-		}
-
-		bool operator==(const key& b) const {
-			return mKind == b.mKind && mKey == b.mKey;
-		}
-
-		bool operator<(const key& b) const {
-			if (mKind == b.mKind)
-				return mKey < b.mKey;
-			return mKind < b.mKind;
-		}
-		
-	private:
-		std::string mKey;
-		kind_t mKind;
-	};
 		
 	typedef boost::signals2::signal<void (void)> use_display_name_signal_t;
 
@@ -111,22 +65,16 @@ namespace LLAvatarNameCache
 	// If name is in cache, returns true and fills in provided LLAvatarName
 	// otherwise returns false
 	bool get(const LLUUID& agent_id, LLAvatarName *av_name);
-	bool getKey(const key& key, LLAvatarName *av_name);
 
 	// Callback types for get() below
 	typedef boost::signals2::signal<
 		void (const LLUUID& agent_id, const LLAvatarName& av_name)>
-			id_callback_signal_t;
-	typedef id_callback_signal_t::slot_type id_callback_slot_t;
-	typedef boost::signals2::signal<
-		void (const key& key, const LLAvatarName& av_name)>
 			callback_signal_t;
 	typedef callback_signal_t::slot_type callback_slot_t;
 
 	// Fetches name information and calls callback.
 	// If name information is in cache, callback will be called immediately.
-	void get(const LLUUID& agent_id, id_callback_slot_t slot);
-	void getKey(const key& key, callback_slot_t slot);
+	void get(const LLUUID& agent_id, callback_slot_t slot);
 
 	// Allow display names to be explicitly disabled for testing.
 	void setUseDisplayNames(bool use);
@@ -135,7 +83,7 @@ namespace LLAvatarNameCache
 	void erase(const LLUUID& agent_id);
 
     /// Provide some fallback for agents that return errors
-	void handleAgentError(const key& key);
+	void handleAgentError(const LLUUID& agent_id);
 
 	// Force a re-fetch of the most recent data, but keep the current
 	// data in cache

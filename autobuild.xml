@@ -1338,9 +1338,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>cc159598ef3fcd34fd33a8a0ef846165</string>
+              <string>3d40be8566fa4b9df9a38e2a0f9ea467</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-openssl/rev/223711/arch/Linux/installer/openssl-0.9.8q-linux-20110314.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-openssl/rev/226882/arch/Linux/installer/openssl-1.0.0d-linux-20110418.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1573,54 +1573,6 @@
               <string>44f84b3b45f7067a104a7c34d50d62f0</string>
               <key>url</key>
               <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/slvoice-3.2.0002.9361-windows-20110120.tar.bz2</string>
-            </map>
-            <key>name</key>
-            <string>windows</string>
-          </map>
-        </map>
-      </map>
-      <key>strophe</key>
-      <map>
-        <key>license</key>
-        <string>mit</string>
-        <key>license_file</key>
-        <string>LICENSES/libstrophe.txt</string>
-        <key>name</key>
-        <string>strophe</string>
-        <key>platforms</key>
-        <map>
-          <key>darwin</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>75bc1123c4df3854e883e0fceaad2e77</string>
-              <key>url</key>
-              <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/Darwin/installer/libstrophe-LL0-darwin-20110215.tar.bz2</uri>
-            </map>
-            <key>name</key>
-            <string>darwin</string>
-          </map>
-          <key>linux</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>538ab8e213130e03a34c8c3605aecdb1</string>
-              <key>url</key>
-              <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/Linux/installer/libstrophe-LL0-linux-20110216.tar.bz2</uri>
-            </map>
-            <key>name</key>
-            <string>linux</string>
-          </map>
-          <key>windows</key>
-          <map>
-            <key>archive</key>
-            <map>
-              <key>hash</key>
-              <string>c5ca26e2f207d5a58f64085f2949289a</string>
-              <key>url</key>
-              <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/CYGWIN/installer/libstrophe-LL0-windows-20110215.tar.bz2</uri>
             </map>
             <key>name</key>
             <string>windows</string>

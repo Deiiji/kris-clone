@@ -293,8 +293,6 @@ BOOL LLIMFloater::postBuild()
 	slide_right->setVisible(!mControlPanel->getParent()->getVisible());
 	slide_right->setClickedCallback(boost::bind(&LLIMFloater::onSlide, this));
 
-	mSubjectLine = getChild<LLTextBox>("chat_subject");
-
 	mInputEditor = getChild<LLLineEditor>("chat_editor");
 	mInputEditor->setMaxTextLength(1023);
 	// enable line history support for instant message bar
@@ -539,11 +537,6 @@ void LLIMFloater::getAllowedRect(LLRect& rect)
 		}
 	}
 	rect.mRight -= sAllowedRectRightPadding;
-}
-
-void LLIMFloater::setSubject(const std::string& subject)
-{
-	mSubjectLine->setText(subject);
 }
 
 void LLIMFloater::setDocked(bool docked, bool pop_on_undock)

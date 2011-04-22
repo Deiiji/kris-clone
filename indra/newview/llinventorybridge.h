@@ -41,6 +41,7 @@ class LLMenuGL;
 class LLCallingCardObserver;
 class LLViewerJointAttachment;
 
+
 typedef std::vector<std::string> menuentry_vec_t;
 
 //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
