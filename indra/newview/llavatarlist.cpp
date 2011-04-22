@@ -597,7 +597,7 @@ bool LLAvatarItemNameComparator::doCompare(const LLAvatarListItem* avatar_item1,
 }
 bool LLAvatarItemAgentOnTopComparator::doCompare(const LLAvatarListItem* avatar_item1, const LLAvatarListItem* avatar_item2) const
 {
-	//keep agent on top, if first is agent, 
+	//keep agent on top, if first is agent
 	//then we need to return true to elevate this id, otherwise false.
 	if(avatar_item1->getAvatarId() == gAgentID)
 	{
