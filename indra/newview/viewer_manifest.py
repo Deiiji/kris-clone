@@ -852,7 +852,7 @@ class LinuxManifest(ViewerManifest):
 
         self.path("Kirstens-S20","bin/do-not-directly-run-kirstens-s20-bin")
         self.path("../linux_crash_logger/linux-crash-logger","bin/linux-crash-logger.bin")
-        self.path("../linux_updater/linux-updater", "bin/linux-updater.bin")
+#        self.path("../linux_updater/linux-updater", "bin/linux-updater.bin")
         self.path("../llplugin/slplugin/SLPlugin", "bin/SLPlugin")
 
         if self.prefix("res-sdl"):
