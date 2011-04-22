@@ -450,9 +450,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>61ead113e6479452e6b690c84b4e9d30</string>
+              <string>cca725bb1d16ccaee368e70e41d4299e</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/3p-fmod-private/rev/221852/arch/Darwin/installer/fmod-3.75-darwin-20110222.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/fmod-3.75-darwin-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
