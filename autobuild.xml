@@ -234,9 +234,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>480b27a0cb39a4adfcdeabef895de3e1</string>
+              <string>2222b901f310c1806847293789d69ac7</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-colladadom/rev/227230/arch/Darwin/installer/colladadom-2.2-darwin-20110420.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-colladadom/rev/226584/arch/Darwin/installer/colladadom-2.2-darwin-20110413.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -450,9 +450,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>cca725bb1d16ccaee368e70e41d4299e</string>
+              <string>61ead113e6479452e6b690c84b4e9d30</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/fmod-3.75-darwin-20110422.tar.bz2</string>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/3p-fmod-private/rev/221852/arch/Darwin/installer/fmod-3.75-darwin-20110222.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -462,9 +462,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>0c61d643db54d2e5999be8254569d8b3</string>
+              <string>bc5787552c96db2a986802afc55e6bd8</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/3p-fmod-private/rev/221852/arch/Linux/installer/fmod-3.75-linux-20110223.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-fmod-3.75-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -476,7 +476,7 @@
               <key>hash</key>
               <string>6165b0cefa7511d5336ae3a4d9dfab83</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/fmod-3.75-windows-20110416.tar.bz2/download</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/fmod-3.75-windows-20110416.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -1242,9 +1242,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>c81bacf922bb3b540d92b660364c48ce</string>
+              <string>593fc39605d9d90186a44cfc1fbbf68a</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/ndofdev-linux-0.2-20101013.tar.bz2</string>
+              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-ndof-0.3-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1338,9 +1338,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>3d40be8566fa4b9df9a38e2a0f9ea467</string>
+              <string>cc159598ef3fcd34fd33a8a0ef846165</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-openssl/rev/226882/arch/Linux/installer/openssl-1.0.0d-linux-20110418.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-openssl/rev/223711/arch/Linux/installer/openssl-0.9.8q-linux-20110314.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1426,9 +1426,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>fb2382014c79e0049746e4e29bd834f9</string>
+              <string>87988a45b18286d0a3ad2f50bccd6b55</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/openjpeg-1.4-linux-20110314.tar.bz2</string>
+              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-S21J-2.0.5-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1462,9 +1462,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>1061d5963e71ff01140d1a783dbb61a6</string>
+              <string>9728ebc786f8d48747784648efe00a44</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/pcre-7.6-darwin-20110422.tar.bz2</string>
+              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/3p-pcre/rev/226370/arch/Darwin/installer/pcre-7.6-darwin-20110411.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -1474,9 +1474,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>18854c815c6f960e22add25cf1ff93d4</string>
+              <string>9728ebc786f8d48747784648efe00a44</string>
               <key>url</key>
-              <string>http://s3-proxy.lindenlab.com/private-builds-secondlife-com/hg/repo/3p-pcre/rev/226572/arch/Linux/installer/pcre-7.6-linux-20110413.tar.bz2</string>
+              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-pcre-7.6-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1573,6 +1573,54 @@
               <string>44f84b3b45f7067a104a7c34d50d62f0</string>
               <key>url</key>
               <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/slvoice-3.2.0002.9361-windows-20110120.tar.bz2</string>
+            </map>
+            <key>name</key>
+            <string>windows</string>
+          </map>
+        </map>
+      </map>
+      <key>strophe</key>
+      <map>
+        <key>license</key>
+        <string>mit</string>
+        <key>license_file</key>
+        <string>LICENSES/libstrophe.txt</string>
+        <key>name</key>
+        <string>strophe</string>
+        <key>platforms</key>
+        <map>
+          <key>darwin</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>75bc1123c4df3854e883e0fceaad2e77</string>
+              <key>url</key>
+              <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/Darwin/installer/libstrophe-LL0-darwin-20110215.tar.bz2</uri>
+            </map>
+            <key>name</key>
+            <string>darwin</string>
+          </map>
+          <key>linux</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>538ab8e213130e03a34c8c3605aecdb1</string>
+              <key>url</key>
+              <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/Linux/installer/libstrophe-LL0-linux-20110216.tar.bz2</uri>
+            </map>
+            <key>name</key>
+            <string>linux</string>
+          </map>
+          <key>windows</key>
+          <map>
+            <key>archive</key>
+            <map>
+              <key>hash</key>
+              <string>c5ca26e2f207d5a58f64085f2949289a</string>
+              <key>url</key>
+              <uri>http://s3.amazonaws.com/automated-builds-secondlife-com/hg/repo/seth_libstrophe/rev/221313/arch/CYGWIN/installer/libstrophe-LL0-windows-20110215.tar.bz2</uri>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -1742,6 +1790,24 @@
       <string>viewer_development</string>
       <key>platforms</key>
       <map>
+        <key>Linux</key>
+        <map>
+          <key>configurations</key>
+          <map>
+            <key>KVLinuxRelease</key>
+            <map>
+              <key>build</key>
+              <map>
+                <key>command</key>
+                <string>make</string>
+              </map>
+              <key>name</key>
+              <string>KVLinuxRelease</string>
+            </map>
+          </map>
+          <key>name</key>
+          <string>Linux</string>
+        </map>
         <key>common</key>
         <map>
           <key>configurations</key>
@@ -1765,6 +1831,25 @@
               </map>
               <key>name</key>
               <string>Debug</string>
+            </map>
+            <key>KVLinuxRelease</key>
+            <map>
+              <key>configure</key>
+              <map>
+                <key>command</key>
+                <string>cmake</string>
+                <key>options</key>
+                <array>
+                  <string>-DCMAKE_BUILD_TYPE:STRING=Release</string>
+                  <string>-DUNATTENDED:BOOL=OFF</string>
+                  <string>-DFMOD:BOOL=FALSE</string>
+                  <string>-DUSE_KDU:BOOL=FALSE</string>
+                  <string>-DWORD_SIZE:STRING=32</string>
+                  <string>-DROOT_PROJECT_NAME:STRING=Kirstens-S21</string>
+                </array>
+              </map>
+              <key>name</key>
+              <string>KVLinuxRelease</string>
             </map>
             <key>OpenSourceDebug</key>
             <map>
