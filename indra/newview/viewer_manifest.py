@@ -854,6 +854,7 @@ class LinuxManifest(ViewerManifest):
         # Create an appropriate gridargs.dat for this package, denoting required grid.
         self.put_in_file(self.flags_list(), 'etc/gridargs.dat')
 
+        self.path("Kirstens-S20","bin/do-not-directly-run-kirstens-s20-bin")
         self.path("../linux_crash_logger/linux-crash-logger","bin/linux-crash-logger.bin")
         self.path("../linux_updater/linux-updater", "bin/linux-updater.bin")
         self.path("../llplugin/slplugin/SLPlugin", "bin/SLPlugin")
@@ -952,11 +953,11 @@ class Linux_i686Manifest(LinuxManifest):
             self.path("libdb-5.1.so")
             self.path("libdb-5.so")
             self.path("libdb.so")
-            self.path("libcrypto.so.0.9.8")
+            self.path("libcrypto.so.1.0.0")
             self.path("libexpat.so.1.5.2")
+            self.path("libssl.so.1.0.0")
 	    self.path("libglod.so")
 	    self.path("libminizip.so")
-            self.path("libssl.so.0.9.8")
             self.path("libuuid.so")
             self.path("libuuid.so.16")
             self.path("libuuid.so.16.0.22")
