@@ -860,7 +860,7 @@ class LinuxManifest(ViewerManifest):
             # recurse
             self.end_prefix("res-sdl")
 
-        self.path("../viewer_components/updater/scripts/linux/update_install", "bin/update_install")
+#        self.path("../viewer_components/updater/scripts/linux/update_install", "bin/update_install")
 
         # plugins
         if self.prefix(src="", dst="bin/llplugin"):
