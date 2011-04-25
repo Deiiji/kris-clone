@@ -51,6 +51,9 @@
 
 using namespace LLVOAvatarDefines;
 
+const S32 BAKE_UPLOAD_ATTEMPTS = 5;
+const F32 BAKE_UPLOAD_RETRY_DELAY = 5.f;
+
 class LLTexLayerInfo
 {
 	friend class LLTexLayer;
@@ -93,11 +96,13 @@ private:
 //-----------------------------------------------------------------------------
 LLBakedUploadData::LLBakedUploadData(const LLVOAvatarSelf* avatar,
 									 LLTexLayerSet* layerset,
-									 const LLUUID& id) : 
+									 const LLUUID& id,
+										bool highest_res) : 
 	mAvatar(avatar),
 	mTexLayerSet(layerset),
 	mID(id),
-	mStartTime(LLFrameTimer::getTotalTime())		// Record starting time
+	mStartTime(LLFrameTimer::getTotalTime()),		// Record starting time
+	mIsHighestRes(highest_res)
 { 
 }
 
@@ -116,6 +121,7 @@ LLTexLayerSetBuffer::LLTexLayerSetBuffer(LLTexLayerSet* const owner,
 	mUploadPending(FALSE), // Not used for any logic here, just to sync sending of updates
 	mNeedsUpload(FALSE),
 	mNumLowresUploads(0),
+	mUploadFailCount(0),
 	mNeedsUpdate(TRUE),
 	mNumLowresUpdates(0),
 	mTexLayerSet(owner)
@@ -204,6 +210,7 @@ void LLTexLayerSetBuffer::cancelUpload()
 	mNeedsUpload = FALSE;
 	mUploadPending = FALSE;
 	mNeedsUploadTimer.pause();
+	mUploadRetryTimer.reset();
 }
 
 void LLTexLayerSetBuffer::pushProjection() const
@@ -357,7 +364,21 @@ BOOL LLTexLayerSetBuffer::isReadyToUpload() const
 	if (isAgentAvatarValid() && !gAgentAvatarp->isUsingBakedTextures()) return FALSE; // Don't upload if avatar is using composites.
 
 	// If we requested an upload and have the final LOD ready, then upload.
-	if (mTexLayerSet->isLocalTextureDataFinal()) return TRUE;
+//	if (mTexLayerSet->isLocalTextureDataFinal()) return TRUE;
+	BOOL ready = FALSE;
+	if (mTexLayerSet->isLocalTextureDataFinal())
+	{
+	if (mUploadFailCount == 0)
+		{
+			ready = TRUE;
+		}
+		else
+		{
+			ready = mUploadRetryTimer.getElapsedTimeF32() >= BAKE_UPLOAD_RETRY_DELAY;
+		}
+	}
+	else
+	{
 
 	// Upload if we've hit a timeout.  Upload is a pretty expensive process so we need to make sure
 	// we aren't doing uploads too frequently.
@@ -371,10 +392,12 @@ BOOL LLTexLayerSetBuffer::isReadyToUpload() const
 		// If we hit our timeout and have textures available at even lower resolution, then upload.
 		const BOOL is_upload_textures_timeout = mNeedsUploadTimer.getElapsedTimeF32() >= texture_timeout_threshold;
 		const BOOL has_lower_lod = mTexLayerSet->isLocalTextureDataAvailable();
-		if (has_lower_lod && is_upload_textures_timeout) return TRUE; 
+//		if (has_lower_lod && is_upload_textures_timeout) return TRUE; 
+		ready = has_lower_lod && is_upload_textures_timeout;
+		}
 	}
 
-	return FALSE;
+	return ready;
 }
 
 BOOL LLTexLayerSetBuffer::isReadyToUpdate() const
@@ -482,17 +505,20 @@ void LLTexLayerSetBuffer::doUpload()
 			
 			if (valid)
 			{
+				const bool highest_lod = mTexLayerSet->isLocalTextureDataFinal();
 				// Baked_upload_data is owned by the responder and deleted after the request completes.
 				LLBakedUploadData* baked_upload_data = new LLBakedUploadData(gAgentAvatarp, 
 																			 this->mTexLayerSet, 
-																			 asset_id);
+																			 asset_id,
+																				highest_lod);
 				// upload ID is used to avoid overlaps, e.g. when the user rapidly makes two changes outside of Face Edit.
 				mUploadID = asset_id;
 
 				// Upload the image
 				const std::string url = gAgent.getRegion()->getCapability("UploadBakedTexture");
 				if(!url.empty()
-					&& !LLPipeline::sForceOldBakedUpload) // toggle debug setting UploadBakedTexOld to change between the new caps method and old method
+					&& !LLPipeline::sForceOldBakedUpload // toggle debug setting UploadBakedTexOld to change between the new caps method and old method
+					&& (mUploadFailCount < BAKE_UPLOAD_ATTEMPTS-1))
 				{
 					LLSD body = LLSD::emptyMap();
 					// The responder will call LLTexLayerSetBuffer::onTextureUploadComplete()
@@ -511,7 +537,7 @@ void LLTexLayerSetBuffer::doUpload()
 					llinfos << "Baked texture upload via Asset Store." <<  llendl;
 				}
 
-				const BOOL highest_lod = mTexLayerSet->isLocalTextureDataFinal();	
+//				const BOOL highest_lod = mTexLayerSet->isLocalTextureDataFinal();	
 				if (highest_lod)
 				{
 					// Sending the final LOD for the baked texture.  All done, pause 
@@ -603,13 +629,16 @@ void LLTexLayerSetBuffer::onTextureUploadComplete(const LLUUID& uuid,
 {
 	LLBakedUploadData* baked_upload_data = (LLBakedUploadData*)userdata;
 
-	if ((result == 0) &&
-		isAgentAvatarValid() &&
+//	if ((result == 0) &&
+//		isAgentAvatarValid() &&
+		if (isAgentAvatarValid() &&
 		!gAgentAvatarp->isDead() &&
 		(baked_upload_data->mAvatar == gAgentAvatarp) && // Sanity check: only the user's avatar should be uploading textures.
 		(baked_upload_data->mTexLayerSet->hasComposite()))
 	{
 		LLTexLayerSetBuffer* layerset_buffer = baked_upload_data->mTexLayerSet->getComposite();
+		S32 failures = layerset_buffer->mUploadFailCount;
+		layerset_buffer->mUploadFailCount = 0;
 			
 		if (layerset_buffer->mUploadID.isNull())
 		{
@@ -626,20 +655,34 @@ void LLTexLayerSetBuffer::onTextureUploadComplete(const LLUUID& uuid,
 		{
 			// This is the upload we're currently waiting for.
 			layerset_buffer->mUploadID.setNull();
+			const std::string name(baked_upload_data->mTexLayerSet->getBodyRegionName());
+			const std::string resolution = baked_upload_data->mIsHighestRes ? " full res " : " low res ";
 			if (result >= 0)
 			{
 				layerset_buffer->mUploadPending = FALSE;
 				LLVOAvatarDefines::ETextureIndex baked_te = gAgentAvatarp->getBakedTE(layerset_buffer->mTexLayerSet);
 				// Update baked texture info with the new UUID
 				U64 now = LLFrameTimer::getTotalTime();		// Record starting time
-				llinfos << "Baked texture upload took " << (S32)((now - baked_upload_data->mStartTime) / 1000) << " ms" << llendl;
+//				llinfos << "Baked texture upload took " << (S32)((now - baked_upload_data->mStartTime) / 1000) << " ms" << llendl;
+				llinfos << "Baked" << resolution << "texture upload for " << name << " took " << (S32)((now - baked_upload_data->mStartTime) / 1000) << " ms" << llendl;
 				gAgentAvatarp->setNewBakedTexture(baked_te, uuid);
 			}
 			else
 			{	
 				// Avatar appearance is changing, ignore the upload results
-				llinfos << "Baked upload failed. Reason: " << result << llendl;
+//				llinfos << "Baked upload failed. Reason: " << result << llendl;
 				// *FIX: retry upload after n seconds, asset server could be busy
+				++failures;
+				S32 max_attempts = baked_upload_data->mIsHighestRes ? BAKE_UPLOAD_ATTEMPTS : 1;
+				llwarns << "Baked" << resolution << "texture upload for " << name << " failed (attempt " << failures << "/" << BAKE_UPLOAD_ATTEMPTS << ".)";
+				if (failures < max_attempts)
+				{
+					llcont << llformat(" Retrying in %.1f seconds.", BAKE_UPLOAD_RETRY_DELAY);
+					layerset_buffer->mUploadFailCount = failures;
+					layerset_buffer->mUploadRetryTimer.start();
+					layerset_buffer->requestUpload();
+				}
+				llcont << llendl;
 			}
 		}
 		else
