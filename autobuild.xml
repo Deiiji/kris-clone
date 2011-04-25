@@ -1438,9 +1438,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>ca5765af55f798724d601720afdf6953</string>
+              <string>1c7f7d821aaf5af43e954fe1692fc4da</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/openjpeg-1.4-windows-20110302.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-windows-S21J-2.0.6-20110424.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
