@@ -594,9 +594,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>5de58ca0fe19abf68b25956762ee0d29</string>
+              <string>d04c73785f56f06f836a6331475cb1fc</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/glext-68-windows-20110406.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-glext-68-20110425.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
