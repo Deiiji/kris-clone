@@ -286,8 +286,7 @@ LLFloaterPreference::LLFloaterPreference(const LLSD& key)
 	mOriginalIMViaEmail(false),
 	mLanguageChanged(false),
 	mAvatarDataInitialized(false),
-	mDoubleClickActionDirty(false),
-	mFavoritesRecordMayExist(false)
+	mDoubleClickActionDirty(false)
 {
 	
 	//Build Floater is now Called from 	LLFloaterReg::add("preferences", "floater_preferences.xml", (LLFloaterBuildFunc)&LLFloaterReg::build<LLFloaterPreference>);
@@ -411,6 +410,8 @@ BOOL LLFloaterPreference::postBuild()
 	gSavedSettings.getControl("ChatFontSize")->getSignal()->connect(boost::bind(&LLIMFloater::processChatHistoryStyleUpdate, _2));
 
 	gSavedSettings.getControl("ChatFontSize")->getSignal()->connect(boost::bind(&LLNearbyChat::processChatHistoryStyleUpdate, _2));
+
+	gSavedSettings.getControl("ChatFontSize")->getSignal()->connect(boost::bind(&LLViewerChat::signalChatFontChanged));
 
 	gSavedSettings.getControl("ChatBubbleOpacity")->getSignal()->connect(boost::bind(&LLFloaterPreference::onNameTagOpacityChange, this, _2));
 
@@ -565,34 +566,6 @@ void LLFloaterPreference::apply()
 		updateDoubleClickSettings();
 		mDoubleClickActionDirty = false;
 	}
-
-	if (mFavoritesRecordMayExist && !gSavedPerAccountSettings.getBOOL("ShowFavoritesOnLogin"))
-	{
-		removeFavoritesRecordOfUser();		
-	}
-}
-
-void LLFloaterPreference::removeFavoritesRecordOfUser()
-{
-	mFavoritesRecordMayExist = false;
-	std::string filename = gDirUtilp->getExpandedFilename(LL_PATH_USER_SETTINGS, "stored_favorites.xml");
-	LLSD fav_llsd;
-	llifstream file;
-	file.open(filename);
-	if (!file.is_open()) return;
-	LLSDSerialize::fromXML(fav_llsd, file);
-	
-	LLAvatarName av_name;
-	LLAvatarNameCache::get( gAgentID, &av_name );
-	if (fav_llsd.has(av_name.getLegacyName()))
-	{
-		fav_llsd.erase(av_name.getLegacyName());
-	}
-	
-	llofstream out_file;
-	out_file.open(filename);
-	LLSDSerialize::toPrettyXML(fav_llsd, out_file);
-
 }
 
 void LLFloaterPreference::cancel()
@@ -676,11 +649,6 @@ void LLFloaterPreference::onOpen(const LLSD& key)
 	{
 		getChild<LLUICtrl>("maturity_desired_textbox")->setValue(maturity_combo->getSelectedItemLabel());
 		getChildView("maturity_desired_combobox")->setVisible( false);
-	}
-
-	if (LLStartUp::getStartupState() == STATE_STARTED)
-	{
-		mFavoritesRecordMayExist = gSavedPerAccountSettings.getBOOL("ShowFavoritesOnLogin");
 	}
 
 	// Forget previous language changes.
@@ -1856,7 +1824,6 @@ void LLPanelPreferenceGraphics::draw()
 		bool enable = hasDirtyChilds();
 
 		button_apply->setEnabled(enable);
-
 	}
 }
 bool LLPanelPreferenceGraphics::hasDirtyChilds()

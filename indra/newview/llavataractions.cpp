@@ -330,6 +330,7 @@ static void on_avatar_name_show_profile(const LLUUID& agent_id, const LLAvatarNa
 	// PROFILES: open in webkit window
 	LLWeb::loadWebURLInternal(url, "", agent_id.asString());
 }
+
 // static
 void LLAvatarActions::showProfile(const LLUUID& id)
 {

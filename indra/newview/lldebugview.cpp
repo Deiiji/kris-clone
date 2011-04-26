@@ -41,7 +41,6 @@
 #include "llmemoryview.h"
 #include "llsceneview.h"
 #include "llviewertexture.h"
-
 //
 // Globals
 //
@@ -111,9 +110,6 @@ void LLDebugView::init()
 	gTextureView = LLUICtrlFactory::create<LLTextureView>(tvp);
 	addChild(gTextureView);
 	//gTextureView->reshape(r.getWidth(), r.getHeight(), TRUE);
-
-	
-
 
 	if(gAuditTexture)
 	{

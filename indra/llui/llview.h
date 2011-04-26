@@ -543,13 +543,11 @@ private:
 	LLView*		mParentView;
 	child_list_t mChildList;
 
+	std::string	mName;
 	// location in pixels, relative to surrounding structure, bottom,left=0,0
-	BOOL		mVisible;
 	LLRect		mRect;
 	LLRect		mBoundingRect;
-	
 	std::string mLayout;
-	std::string	mName;
 	
 	U32			mReshapeFlags;
 
@@ -570,6 +568,8 @@ private:
 
 	LLRootHandle<LLView> mHandle;
 	BOOL		mLastVisible;
+
+	BOOL		mVisible;
 
 	S32			mNextInsertionOrdinal;
 
