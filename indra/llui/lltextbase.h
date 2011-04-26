@@ -265,7 +265,6 @@ public:
 								use_ellipses,
 								parse_urls,
 								parse_highlights,
-								clip,
 								clip_partial;
 								
 		Optional<S32>			v_pad,
@@ -339,7 +338,7 @@ public:
 	void					addDocumentChild(LLView* view);
 	void					removeDocumentChild(LLView* view);
 	const LLView*			getDocumentView() const { return mDocumentView; }
-	LLRect					getVisibleTextRect() const { return mVisibleTextRect; }
+	LLRect					getVisibleTextRect() { return mVisibleTextRect; }
 	LLRect					getTextBoundingRect();
 	LLRect					getVisibleDocumentRect() const;
 
@@ -553,7 +552,6 @@ protected:
 	bool						mTrackEnd;			// if true, keeps scroll position at end of document during resize
 	bool						mReadOnly;
 	bool						mBGVisible;			// render background?
-	bool						mClip;				// clip text to widget rect
 	bool						mClipPartial;		// false if we show lines that are partially inside bounding rect
 	bool						mPlainText;			// didn't use Image or Icon segments
 	S32							mMaxTextByteLength;	// Maximum length mText is allowed to be in bytes
