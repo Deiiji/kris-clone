@@ -1742,7 +1742,6 @@ LLSpatialPartition::LLSpatialPartition(U32 data_mask, BOOL render_by_group, U32 
 	mSlopRatio = 0.25f;
 	mInfiniteFarClip = FALSE;
 
-	LLGLNamePool::registerPool(&sQueryPool);
 
 	LLVector4a center, size;
 	center.splat(0.f);
