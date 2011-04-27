@@ -26,6 +26,8 @@
 
 #include "linden_common.h"
 
+#include "llvfs.h"
+
 #include <sys/stat.h>
 #include <set>
 #include <map>
@@ -38,8 +40,6 @@
 #else
 #include <sys/file.h>
 #endif
-    
-#include "llvfs.h"
 
 #include "llstl.h"
 #include "lltimer.h"
@@ -1711,7 +1711,8 @@ void LLVFS::audit()
     
 	BOOL vfs_corrupt = FALSE;
 	
-	std::vector<U8> buffer(index_size);
+//	std::vector<U8> buffer(index_size);
+	std::vector<U8> buffer(llmax(index_size,1U));
 
 	if (fread(&buffer[0], 1, index_size, mIndexFP) != index_size)
 	{
