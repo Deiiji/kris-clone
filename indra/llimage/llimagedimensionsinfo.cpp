@@ -86,11 +86,17 @@ bool LLImageDimensionsInfo::getImageDimensionsTga()
 {
 	const S32 TGA_FILE_HEADER_SIZE = 12;
 
+	// Make sure the file is long enough.
+	if (!checkFileLength(TGA_FILE_HEADER_SIZE + 1 /* width */ + 1 /* height */))
+	{
+		llwarns << "Premature end of file" << llendl;
+		return false;
+	}
 	mInfile.seek(APR_CUR,TGA_FILE_HEADER_SIZE);
 	mWidth = read_short();
 	mHeight = read_short();	
 
-	// KL this may still be an issue with certain programs stuffing up the header enable the llinfo and do some testing!
+	// KL for testing purposes.
     llinfos << "Tga header reads width: " << mWidth << " and height: " << mHeight << llendl;
 	return true;
 }
@@ -147,3 +153,13 @@ bool LLImageDimensionsInfo::getImageDimensionsJpeg()
 	return !sJpegErrorEncountered;
 }
 
+bool LLImageDimensionsInfo::checkFileLength(S32 min_len)
+{
+	// Make sure the file is not shorter than min_len bytes.
+	// so that we don't have to check value returned by each read() or seek().
+	char* buf = new char[min_len];
+	int nread = mInfile.read(buf, min_len);
+	delete[] buf;
+	mInfile.seek(APR_SET, 0);
+	return nread == min_len;
+}

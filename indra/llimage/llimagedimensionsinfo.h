@@ -114,24 +114,28 @@ protected:
 		return bt;
 	}
 
+	/// Ok kids now we are after a U16 but APR read deals with S32's so DO NOT use U16's in the bitshift as this cause's Major fail KL
 	U16 read_short()
 	{
 		char p[2];
 		mInfile.read(&p[0],2);
-		U16 temp = (((U16)p[0]) & 0x00FF) |
-				   (((U16)p[1] << 8) & 0xFF00);
+		S32 temp = (((S32)p[0])      & 0x000000FF) | 
+			       (((S32)p[1] << 8) & 0x0000FF00);
 		return temp;
 	}
 
+	/// KL just for completeness include a reverse read :)
 	U16 read_reversed_short()
 	{
 		char p[2];
 		mInfile.read(&p[0],2);
-		U16 temp = (((U16)p[1]) & 0x00FF) |
-				   (((U16)p[0] << 8) & 0xFF00);
+		S32 temp = (((S32)p[1])      & 0x000000FF) |
+				   (((S32)p[0] << 8) & 0x0000FF00);
 		return temp;
 	}
 
+	/// Check if the file is not shorter than min_len bytes.
+	bool checkFileLength(S32 min_len);
 protected:
 	LLAPRFile mInfile ;
 	std::string mSrcFilename;
