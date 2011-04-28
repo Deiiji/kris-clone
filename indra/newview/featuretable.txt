@@ -135,7 +135,7 @@ list High
 RenderAnisotropic			1	1
 RenderAvatarCloth			1	0
 RenderAvatarLODFactor		1	1.0
-RenderAvatarPhysicsLODFactor 1	0.9
+RenderAvatarPhysicsLODFactor 1	1.0
 RenderAvatarVP				1	1
 RenderFarClip				1	128
 RenderFlexTimeFactor		1	1.0
@@ -578,4 +578,3 @@ list NVIDIA_GeForce_Go_7800
 RenderShaderLightingMaxLevel	1	2
 list NVIDIA_GeForce_Go_7900
 RenderShaderLightingMaxLevel	1	2
-
