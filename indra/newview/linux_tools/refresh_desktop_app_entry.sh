@@ -15,6 +15,7 @@ function install_desktop_entry()
 Name=Kirstens Viewer S21\n\
 Comment=Client for the On-line Virtual World, Second Life\n\
 Exec=${installation_prefix}/Runme-kirstens-S21\n\
+GenericName=Kirstens Viewer S21\n\
 Icon=${installation_prefix}/secondlife_icon.png\n\
 Terminal=false\n\
 Type=Application\n\
@@ -33,4 +34,6 @@ if [ "$UID" == "0" ]; then
 else
     # user-specific
     install_desktop_entry "$install_prefix" "$HOME/.local/share/applications"
+    xdg-icon-resource install ${RUN_PATH}/../secondlife_icon.png --size 128 --novendor
+    xdg-desktop-icon install $HOME/.local/share/applications/kirsten-viewer.desktop
 fi
