@@ -92,7 +92,6 @@ void LLTranslate::getTranslateUrl(std::string &translate_url, const std::string 
 
 //	safer way:
 //	char *curl_str = curl_escape(mesg.c_str(), mesg.size());
-	old code:
 	std::string escaped_mesg(curl_str);
 	curl_free(curl_str);
 
