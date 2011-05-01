@@ -35,6 +35,8 @@
 
 #include "reader.h"
 
+#include <curl/curl.h>
+
 // These two are concatenated with the language specifiers to form a complete Google Translate URL
 const char* LLTranslate::m_GoogleURL = "http://ajax.googleapis.com/ajax/services/language/translate?v=1.0&q=";
 const char* LLTranslate::m_GoogleLangSpec = "&langpair=";
@@ -76,13 +78,31 @@ void LLTranslate::translateMessage(LLHTTPClient::ResponderPtr &result, const std
 //static
 void LLTranslate::getTranslateUrl(std::string &translate_url, const std::string &from_lang, const std::string &to_lang, const std::string &mesg)
 {
-	std::string escaped_mesg = curl_escape(mesg.c_str(), mesg.size());
+//	curl_escape() returns a pointer to a C-string. When one is done with the C-string, one must curl_free() the pointer.
+//	(See http://curl.haxx.se/libcurl/c/curl_escape.html .) To be able to call curl_free on the pointer, we must keep it in the first place.
+//	Note that curl_escape() is deprecated and should be replaced by curl_easy_escape(). This change does not do that, as this should probably
+//	be done for all occurrences at once and be accompanied by some refactoring.	
+
+//	old code:
+//	std::string escaped_mesg = curl_escape(mesg.c_str(), mesg.size());
+
+//	may work, not deep tested:
+	CURL *handle = curl_easy_init();
+	char *curl_str = curl_easy_escape(handle,mesg.c_str(), mesg.size());	
+
+//	safer way:
+//	char *curl_str = curl_escape(mesg.c_str(), mesg.size());
+	old code:
+	std::string escaped_mesg(curl_str);
+	curl_free(curl_str);
 
 	translate_url = m_GoogleURL
 		+ escaped_mesg + m_GoogleLangSpec
 		+ from_lang // 'from' language; empty string for auto
 		+ "%7C" // |
 		+ to_lang; // 'to' language
+
+	curl_easy_cleanup(handle); //clean commented code if agree with the patch 
 }
 
 //static
