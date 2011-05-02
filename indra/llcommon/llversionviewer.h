@@ -35,7 +35,7 @@ const S32 LL_VERSION_BUILD = 7; // Kirstens Viewer Build Number
 const char * const LL_CHANNEL = "Kirstens S21";  // This is OUR channel TPV compliance
 
 #if LL_DARWIN
-const char * const LL_VERSION_BUNDLE_ID = "com.secondlife.kirstens.viewer";
+const char * const LL_VERSION_BUNDLE_ID = "com.secondlife.indra.viewer";
 #endif
 
 #endif

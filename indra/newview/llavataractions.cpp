@@ -303,7 +303,7 @@ void LLAvatarActions::startConference(const uuid_vec_t& ids)
 	make_ui_sound("UISndStartIM");
 }
 
-// S21 MS
+// S21
 // static
 void LLAvatarActions::zoomIn(const LLUUID& avatarId)
 {
@@ -312,6 +312,7 @@ void LLAvatarActions::zoomIn(const LLUUID& avatarId)
 		handle_zoom_to_object(avatarId);
 	}
 }
+// S21
 // static
 bool LLAvatarActions::visibleZoomIn(const LLUUID& avatarId)
 {
@@ -324,8 +325,14 @@ bool LLAvatarActions::visibleZoomIn(const LLUUID& avatarId)
 }
 static void on_avatar_name_show_profile(const LLUUID& agent_id, const LLAvatarName& av_name)
 {
-	llinfos << "opening web profile for " << av_name.mUsername << llendl;		
-	std::string url = getProfileURL(av_name.mUsername);
+	std::string username = av_name.mUsername;
+	if (username.empty())
+	{
+		username = LLCacheName::buildUsername(av_name.mDisplayName);
+	}
+	
+	llinfos << "opening web profile for " << username << llendl;		
+	std::string url = getProfileURL(username);
 
 	// PROFILES: open in webkit window
 	LLWeb::loadWebURLInternal(url, "", agent_id.asString());
