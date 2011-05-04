@@ -31,6 +31,7 @@
 #include "llfloaterreg.h"
 #include "llfloatersearch.h"
 #include "llmediactrl.h"
+#include "llnotificationsutil.h"
 #include "lllogininstance.h"
 #include "lluri.h"
 #include "llagent.h"

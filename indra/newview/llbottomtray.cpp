@@ -538,9 +538,6 @@ BOOL LLBottomTray::postBuild()
 	mNearbyChatBar = findChild<LLNearbyChatBar>("chat_bar");
 	LLHints::registerHintTarget("chat_bar", mNearbyChatBar->LLView::getHandle());
 
-	//LLFontGL* font = LLViewerChat::getChatFont();
-	//mNearbyChatBar->getChatBox()->setFont(font);
-
 	mChatBarContainer = getChild<LLLayoutPanel>("chat_bar_layout_panel");
 	mNearbyCharResizeHandlePanel = getChild<LLPanel>("chat_bar_resize_handle_panel");
 

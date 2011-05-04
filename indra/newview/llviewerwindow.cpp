@@ -25,7 +25,6 @@
  */
 
 #include "llviewerprecompiledheaders.h"
-
 #include "llviewerwindow.h"
 
 #if LL_WINDOWS
@@ -714,6 +713,7 @@ public:
 				ypos += y_inc;
 			}
 		}
+
 		if(log_texture_traffic)
 		{	
 			U32 old_y = ypos ;

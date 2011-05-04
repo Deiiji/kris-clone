@@ -1848,7 +1848,7 @@
                   <string>-DCMAKE_BUILD_TYPE:STRING=Release</string>
                   <string>-DUNATTENDED:BOOL=OFF</string>
                   <string>-DWORD_SIZE:STRING=32</string>
-                  <string>-DROOT_PROJECT_NAME:STRING=Kirstens-S21</string>
+	        <string>-DROOT_PROJECT_NAME:STRING=Kirstens-S21</string>
                 </array>
               </map>
               <key>name</key>
