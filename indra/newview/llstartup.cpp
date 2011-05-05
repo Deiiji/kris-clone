@@ -1417,7 +1417,7 @@ bool idle_startup()
 	//---------------------------------------------------------------------
 	if (STATE_AGENT_SEND == LLStartUp::getStartupState())
 	{
-		LL_DEBUGS("AppInit") << "Connecting to region..." << LL_ENDL;
+		LL_DEBUGS("AppInit") << "Connecting to simulation..." << LL_ENDL;
 		set_startup_status(0.60f, LLTrans::getString("LoginConnectingToRegion"), gAgent.mMOTD);
 		// register with the message system so it knows we're
 		// expecting this message
@@ -2987,8 +2987,12 @@ bool process_login_success_response()
 		LLVector3 position = ll_vector3_from_sd(sd["position"]);
 		gAgent.setHomePosRegion(region_handle, position);
 	}
-
-	gAgent.mMOTD.assign(response["message"]);
+	// KL text some response
+	text = "www.kirstenviewer.com";
+	if(!text.empty())
+	{
+	gAgent.mMOTD.assign(text);
+	}
 
 	// Options...
 	// Each 'option' is an array of submaps. 

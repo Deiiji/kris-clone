@@ -407,7 +407,7 @@
 	name="ParticipantListShowIcons"
 	top_pad="1"
 	width="256" />
-   <check_box
+        <check_box
 	control_name="OpenSidePanelsInFloaters"
 	height="16"
 	initial_value="false"
@@ -417,6 +417,16 @@
 	name="SidebarPanelsFloaters"
 	top_pad="1"
 	width="256" />
+	<check_box
+        control_name="DisableTeleportScreens"
+        height="16"
+        initial_value="true"
+        label="Disable Teleport Progress Screens"
+        layout="topleft"
+        left="5"
+        name="DisableTeleportScreens"
+        top_pad="1"
+        width="256" />
 
    
  </layout_panel>

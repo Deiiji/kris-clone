@@ -307,7 +307,7 @@ BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
 // Internal globals... that should be removed
-static std::string gArgs = "Build 7 RC4";
+static std::string gArgs = "Build 7";
 
 const std::string MARKER_FILE_NAME("SecondLife.exec_marker");
 const std::string ERROR_MARKER_FILE_NAME("SecondLife.error_marker");
@@ -317,6 +317,7 @@ static BOOL gDoDisconnect = FALSE;
 static std::string gLaunchFileOnQuit;
 
 // Used on Win32 for other apps to identify our window (eg, win_setup)
+// Note: This 'can' break compatibility with SLURL handling....
 const char* const VIEWER_WINDOW_CLASSNAME = "Kirstens S21";  // S21
 
 //----------------------------------------------------------------------------
@@ -3724,7 +3725,7 @@ void LLAppViewer::badNetworkHandler()
 		"the issue. \n"
 		" \n"
 		"If the problem continues, see the Tech Support FAQ at: \n"
-		"www.secondlife.com/support";
+		"www.kirstensviewer.com";
 	forceDisconnect(message.str());
 	
 	LLApp::instance()->writeMiniDump();

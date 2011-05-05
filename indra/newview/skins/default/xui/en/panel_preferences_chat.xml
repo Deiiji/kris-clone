@@ -66,6 +66,16 @@
      name="play_typing_animation"
      top_pad="10"
      width="400" />
+     <check_box
+     control_name="OnlineOfflinetoNearbyChat"
+     enabled="true"
+     height="16"
+     label="Show On/Offline Notifications in chat"
+     layout="topleft"
+     left_delta="0"
+     name="OnlineOfflinetoNearbyChat"
+     top_pad="5"
+     width="400" />
     <check_box
      enabled="false"
      height="16"
