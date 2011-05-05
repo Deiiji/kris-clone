@@ -72,7 +72,7 @@ elseif (LINUX)
         QtCore
 #        qgif
 #        qjpeg
-	jscore
+#	jscore
         jpeg
         fontconfig
         X11
