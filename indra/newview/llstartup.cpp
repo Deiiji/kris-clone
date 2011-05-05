@@ -2988,7 +2988,7 @@ bool process_login_success_response()
 		gAgent.setHomePosRegion(region_handle, position);
 	}
 	// KL text some response
-	text = "www.kirstenviewer.com";
+	text = "www.kirstensviewer.com";
 	if(!text.empty())
 	{
 	gAgent.mMOTD.assign(text);
