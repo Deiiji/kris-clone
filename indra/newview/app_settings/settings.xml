@@ -6191,6 +6191,17 @@
       <key>Value</key>
       <integer>1</integer>
     </map>
+      <key>OnlineOfflinetoNearbyChat</key>
+    <map>
+      <key>Comment</key>
+      <string>Send online/offline notifications to Nearby Chat panel</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>1</integer>
+    </map>
     <key>OpenDebugStatAdvanced</key>
     <map>
       <key>Comment</key>
