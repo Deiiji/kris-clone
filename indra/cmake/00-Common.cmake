@@ -171,8 +171,8 @@ if (LINUX)
     add_definitions(-DAPPID=secondlife)
     add_definitions(-fvisibility=hidden)
     # don't catch SIGCHLD in our base application class for the viewer - some of our 3rd party libs may need their *own* SIGCHLD handler to work.  Sigh!  The viewer doesn't need to catch SIGCHLD anyway.
-#    add_definitions(-DLL_IGNORE_SIGCHLD) #unusefull
-    add_definitions( -mfpmath=sse)
+    add_definitions(-DLL_IGNORE_SIGCHLD) 
+    add_definitions( -fexceptions -malign-double -msseregparm -mstackrealign -mcrc32 -mno-push-args -maccumulate-outgoing-args -mtls-direct-seg-refs -minline-all-stringops -mcx16)
     if(${CXX_VERSION_NUMBER} GREATER 400)
 	add_definitions(-ftree-vectorize) # work if GCC more than V4
     endif (${CXX_VERSION_NUMBER} GREATER 400)
