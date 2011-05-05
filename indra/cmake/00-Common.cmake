@@ -139,20 +139,15 @@ if (LINUX)
       -fno-strict-aliasing
       -fsigned-char
       -g
+      -march=i686
+      -mtune=i686
+      -msse
       -msse2
+      -ffast-math 
       -mfpmath=sse
       -pthread
       -O2
-      -fno-builtin-malloc
-      -fno-builtin-calloc
-      -fno-builtin-realloc
-      -fno-builtin-free
-      -nostdlibs 
-      -llibtcmalloc 
-      -llibm 
-      -llibc 
-      -llibgcc
-      )#tcmalloc don't want malloc from GCC of other native system
+      )#tcmalloc fix removed why wrapper changed
 
   if (SERVER)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -ftemplate-depth-60")
@@ -176,8 +171,8 @@ if (LINUX)
     add_definitions(-DAPPID=secondlife)
     add_definitions(-fvisibility=hidden)
     # don't catch SIGCHLD in our base application class for the viewer - some of our 3rd party libs may need their *own* SIGCHLD handler to work.  Sigh!  The viewer doesn't need to catch SIGCHLD anyway.
-    add_definitions(-DLL_IGNORE_SIGCHLD)
-    add_definitions(-march=pentium4 -mfpmath=sse)
+#    add_definitions(-DLL_IGNORE_SIGCHLD) #unusefull
+    add_definitions( -mfpmath=sse)
     if(${CXX_VERSION_NUMBER} GREATER 400)
 	add_definitions(-ftree-vectorize) # work if GCC more than V4
     endif (${CXX_VERSION_NUMBER} GREATER 400)
