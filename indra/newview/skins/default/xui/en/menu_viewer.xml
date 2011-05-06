@@ -1237,7 +1237,7 @@
 <menu
      create_jump_keys="true"
      label="Film"
-     name="Quick toggles for machinima"
+     name="Film"
      tear_off="true">
         <menu_item_check
          label="Show Selection Beam"
@@ -3723,6 +3723,16 @@
             <menu_item_check.on_click
              function="ToggleControl"
              parameter="ImagePipelineUseHTTP" />
+        </menu_item_check>
+        <menu_item_check
+         label="HTTP Inventory"
+         name="HTTP Inventory">
+            <menu_item_check.on_check
+             function="CheckControl"
+             parameter="UseHTTPInventory" />
+            <menu_item_check.on_click
+             function="ToggleControl"
+             parameter="UseHTTPInventory" />
         </menu_item_check>
         <menu_item_call
          label="Compress Images"

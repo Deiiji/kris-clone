@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <menu_bar name="Main Menu">
-	<menu label="Ich" name="Me">
+	<menu label="S21" name="Me">
 		<menu_item_call label="Einstellungen" name="Preferences"/>
 		<menu_item_call label="Meine Startseite" name="Manage My Account">
 			<menu_item_call.on_click name="ManageMyAccount_url" parameter="WebLaunchJoinNow,http://secondlife.com/account/index.php?lang=de"/>
@@ -413,6 +413,7 @@
 			<menu_item_call label="Rock" name="Skirt"/>
 			<menu_item_call label="Alpha" name="Alpha"/>
 			<menu_item_call label="Tätowierung" name="Tattoo"/>
+			<menu_item_call label="Physik" name="Physics"/>
 			<menu_item_call label="Alle Kleider" name="All Clothes"/>
 		</menu>
 		<menu label="Hilfe" name="Help">

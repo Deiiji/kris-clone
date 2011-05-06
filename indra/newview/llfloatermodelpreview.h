@@ -120,9 +120,6 @@ public:
 	void extractTranslation( domTranslate* pTranslate, LLMatrix4& transform );
 	void extractTranslationViaElement( daeElement* pTranslateElement, LLMatrix4& transform );
 	
-	void handlePivotPoint( daeElement* pRoot );
-	bool isNodeAPivotPoint( domNode* pNode );
-	
 	void setLoadState(U32 state);
 
 	void buildJointToNodeMappingFromScene( daeElement* pRoot );
@@ -298,7 +295,6 @@ public:
 	void loadModelCallback(S32 lod);
 	void genLODs(S32 which_lod = -1, U32 decimation = 3, bool enforce_tri_limit = false);
 	void generateNormals();
-	void alterModelsPivot( void );
 	void clearMaterials();
 	U32 calcResourceCost();
 	void rebuildUploadData();
@@ -339,8 +335,10 @@ public:
 	U32 getLoadState() { return mLoadState; }
 	//setRestJointFlag: If an asset comes through that changes the joints, we want the reset to persist
 	void setResetJointFlag( bool state ) { if ( !mResetJoints ) mResetJoints = state; }
-	bool getResetJointFlag( void ) { return mResetJoints; }
-
+	const bool getResetJointFlag( void ) const { return mResetJoints; }
+	void setRigWithSceneParity( bool state ) { mRigParityWithScene = state; }
+	const bool getRigWithSceneParity( void ) const { return mRigParityWithScene; }
+	
 	LLVector3 getTranslationForJointOffset( std::string joint );
 
  protected:
@@ -370,6 +368,8 @@ public:
 	bool		mLoading;
 	U32			mLoadState;
 	bool		mResetJoints;
+	bool		mRigParityWithScene;
+	
 	std::map<std::string, bool> mViewOption;
 
 	//GLOD object parameters (must rebuild object if these change)
