@@ -70,8 +70,8 @@ elseif (LINUX)
         QtNetwork
         QtGui
         QtCore
-#        qgif
-#        qjpeg
+        qgif
+        qjpeg
 #	jscore
         jpeg
         fontconfig

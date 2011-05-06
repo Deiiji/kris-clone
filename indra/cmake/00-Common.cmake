@@ -131,6 +131,8 @@ if (LINUX)
 
   # End of hacks.
 
+  #i686 for AMD compatibility
+
   add_definitions(
       -DLL_LINUX=1
       -D_REENTRANT
@@ -172,6 +174,7 @@ if (LINUX)
     add_definitions(-fvisibility=hidden)
     # don't catch SIGCHLD in our base application class for the viewer - some of our 3rd party libs may need their *own* SIGCHLD handler to work.  Sigh!  The viewer doesn't need to catch SIGCHLD anyway.
     add_definitions(-DLL_IGNORE_SIGCHLD) 
+#line after should be conditioned to GCC version, TODO: fix this mess
 #    add_definitions( -fexceptions -malign-double -msseregparm -mstackrealign -mno-push-args -maccumulate-outgoing-args -mtls-direct-seg-refs -minline-all-stringops -mcx16)
     if(${CXX_VERSION_NUMBER} GREATER 400)
 	add_definitions(-ftree-vectorize) # work if GCC more than V4
