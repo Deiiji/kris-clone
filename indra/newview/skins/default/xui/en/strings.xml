@@ -27,25 +27,25 @@
 	<string name="Fullbright">Fullbright (Legacy)</string>	<!-- used in the Build > materials dropdown-->
 
 	<!-- Login -->
-	<string name="LoginInProgress">Logging in. [APP_NAME] may appear frozen.  Please wait.</string>
+	<string name="LoginInProgress">Logging in. [APP_NAME] enjoy!.  Please wait.</string>
 	<string name="LoginInProgressNoFrozen">Logging in...</string>
-	<string name="LoginAuthenticating">Authenticating</string>
+	<string name="LoginAuthenticating">Authenticating client</string>
 	<string name="LoginMaintenance">Performing account maintenance...</string>
 	<string name="LoginAttempt">Previous login attempt failed. Logging in, attempt [NUMBER]</string>
-	<string name="LoginPrecaching">Loading world...</string>
+	<string name="LoginPrecaching">Loading simulator data...</string>
 	<string name="LoginInitializingBrowser">Initializing embedded web browser...</string>
-  <string name="LoginInitializingMultimedia">Initializing multimedia...</string>
-  <string name="LoginInitializingFonts">Loading fonts...</string>
+  <string name="LoginInitializingMultimedia">Initializing media system...</string>
+  <string name="LoginInitializingFonts">Loading font cache...</string>
   <string name="LoginVerifyingCache">Verifying cache files (can take 60-90 seconds)...</string>
 	<string name="LoginProcessingResponse">Processing Response...</string>
-	<string name="LoginInitializingWorld">Initializing World...</string>
-	<string name="LoginDecodingImages">Decoding images...</string>
+	<string name="LoginInitializingWorld">Initializing System...</string>
+	<string name="LoginDecodingImages">Decompressing textures...</string>
 	<string name="LoginInitializingQuicktime">Initializing QuickTime...</string>
 	<string name="LoginQuicktimeNotFound">QuickTime not found - unable to initialize.</string>
 	<string name="LoginQuicktimeOK">QuickTime initialized successfully.</string>
-	<string name="LoginWaitingForRegionHandshake">Waiting for region handshake...</string>
-	<string name="LoginConnectingToRegion">Connecting to region...</string>
-	<string name="LoginDownloadingClothing">Downloading clothing...</string>
+	<string name="LoginWaitingForRegionHandshake">Waiting for simulator response...</string>
+	<string name="LoginConnectingToRegion">Connecting to simulator...</string>
+	<string name="LoginDownloadingClothing">Downloading avatar data...</string>
         <string name="InvalidCertificate">The server returned an invalid or corrupt certificate. Please contact the Grid administrator.</string>
         <string name="CertInvalidHostname">An invalid hostname was used to access the server, please check your SLURL or Grid hostname.</string>
         <string name="CertExpired">The certificate returned by the Grid appears to be expired.  Please check your system clock, or contact your Grid administrator.</string>
@@ -62,7 +62,7 @@
 	<string name="AgentLostConnection">This region may be experiencing trouble.  Please check your connection to the Internet.</string>
 	<string name="SavingSettings">Saving your settings...</string>
 	<string name="LoggingOut">Logging out...</string>
-	<string name="ShuttingDown">Shutting down...</string>
+	<string name="ShuttingDown">Halting system... goodbye</string>
 	<string name="YouHaveBeenDisconnected">You have been disconnected from the region you were in.</string>
 	<string name="SentToInvalidRegion">You were sent to an invalid region.</string>
 	<string name="TestingDisconnect">Testing viewer disconnect</string>

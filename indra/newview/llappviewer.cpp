@@ -318,7 +318,7 @@ static std::string gLaunchFileOnQuit;
 
 // Used on Win32 for other apps to identify our window (eg, win_setup)
 // Note: This 'can' break compatibility with SLURL handling....
-const char* const VIEWER_WINDOW_CLASSNAME = "Kirstens S21";  // S21
+const char* const VIEWER_WINDOW_CLASSNAME = "Second Life";  // S21
 
 //----------------------------------------------------------------------------
 
