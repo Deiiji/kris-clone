@@ -149,6 +149,15 @@ if (LINUX)
       -mfpmath=sse
       -pthread
       -O2
+      -fno-builtin-malloc
+      -fno-builtin-calloc
+      -fno-builtin-realloc
+      -fno-builtin-free
+      -nostdlibs
+      -llibtcmalloc
+      -llibm
+      -llibc
+      -llibgcc
       )#tcmalloc fix removed why wrapper changed
 
   if (SERVER)
