@@ -1239,6 +1239,26 @@
      label="Film"
      name="Film"
      tear_off="true">
+            <menu_item_check
+             label="Show User Interface"
+             name="Show User Interface"
+             shortcut="control|alt|F1">
+                <menu_item_check.on_check
+                 function="Advanced.CheckFeature"
+                 parameter="ui" />
+                <menu_item_check.on_click
+                 function="Advanced.ToggleFeature"
+                 parameter="ui" />
+            </menu_item_check>	 
+            <menu_item_check
+             label="Show HUDs On Screen"
+             name="Show HUDs On Screen">
+                <menu_item_check.on_check
+                 function="View.CheckHUDAttachments" />
+                <menu_item_check.on_click
+                 function="View.ShowHUDAttachments" />
+            </menu_item_check>
+<menu_item_separator/>			
         <menu_item_check
          label="Show Selection Beam"
          name="Enable avatar selection beam">
@@ -1290,6 +1310,13 @@
              function="ToggleControl"
              parameter="JoystickAvatarEnabled" />
          </menu_item_check>
+		 		<menu_item_call
+             label="SpaceNavigator Settings Window"
+             name="SpaceNavigator Settings Window">
+                <menu_item_call.on_click
+                 function="Floater.Show"
+                 parameter="pref_joystick" />
+	     </menu_item_call>	
 <menu_item_separator/>
         <menu_item_check
          label="No Script Particles"
@@ -1301,6 +1328,16 @@
              function="ToggleControl"
              parameter="MachinimaCamNoScriptLights" />
          </menu_item_check>
+        <menu_item_check
+             label="Hide All Particles"
+             name="Hide All Particles" >
+                <menu_item_check.on_check
+                 function="View.CheckRenderType"
+                 parameter="hideparticles" />
+                <menu_item_check.on_click
+                 function="View.ToggleRenderType"
+                 parameter="hideparticles" />
+          </menu_item_check>		 
          <menu_item_check
          label="Render Avatar Impostors"
          name="Render impostors for distant avatars">
@@ -1363,6 +1400,11 @@
            parameter="RenderAttachedLights" />
          </menu_item_check>
 <menu_item_separator/>
+	<menu
+			create_jump_keys="true"
+			label="Shader Toggles"
+			name="Shader Toggles"
+			tear_off="true">
         <menu_item_check
          label="Transparent Water"
          name="Enable transparent water">
@@ -1404,7 +1446,7 @@
              parameter="WindLightUseAtmosShaders" />
         </menu_item_check>     
          <menu_item_check
-         label="Lighting and Shadows (Deff)"
+         label="Lighting and Shadows-Deferred"
          name="Enable enhanced lighting and shadowcasting">
             <menu_item_check.on_check
              function="CheckControl"
@@ -1443,7 +1485,13 @@
              function="ToggleControl"
              parameter="RenderUseDOF" />
         </menu_item_check>
+	</menu>		
 <menu_item_separator/>
+	<menu
+	create_jump_keys="true"
+	label="Audio Mutes"
+	name="Audio Mutes"
+	tear_off="true">
          <menu_item_check
          label="Mute Ambient"
          name="Mute ambient sounds">
@@ -1475,8 +1523,8 @@
              parameter="MuteMusic" />
         </menu_item_check>
          <menu_item_check
-         label="Mute Sound effects"
-         name="Mute sound effects">
+		label="Mute Sound effects"
+		name="Mute sound effects">
             <menu_item_check.on_check
              function="CheckControl"
              parameter="MuteSounds" />
@@ -1484,26 +1532,27 @@
              function="ToggleControl"
              parameter="MuteSounds" />
         </menu_item_check>
-         <menu_item_check
-         label="Mute UI"
-         name="Mute user interface sounds">
-            <menu_item_check.on_check
-             function="CheckControl"
-             parameter="MuteUI" />
-            <menu_item_check.on_click
-             function="ToggleControl"
-             parameter="MuteUI" />
-        </menu_item_check>
-         <menu_item_check
-         label="Mute Voice"
-         name="Mute voice sounds">
-            <menu_item_check.on_check
-             function="CheckControl"
-             parameter="MuteVoice" />
-            <menu_item_check.on_click
-             function="ToggleControl"
-             parameter="MuteVoice" />
-        </menu_item_check>
+		<menu_item_check
+		label="Mute UI"
+		name="Mute user interface sounds">
+			<menu_item_check.on_check
+			function="CheckControl"
+			parameter="MuteUI" />
+			<menu_item_check.on_click
+			function="ToggleControl"
+			parameter="MuteUI" />
+		</menu_item_check>
+		<menu_item_check
+		label="Mute Voice"
+		name="Mute voice sounds">
+			<menu_item_check.on_check
+			function="CheckControl"
+			parameter="MuteVoice" />
+			<menu_item_check.on_click
+			function="ToggleControl"
+			parameter="MuteVoice" />
+		</menu_item_check>
+	</menu>
 <menu_item_separator/>	
 	<menu
          create_jump_keys="true"
