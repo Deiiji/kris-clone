@@ -195,9 +195,9 @@ void LLGridManager::initialize(const std::string& grid_file)
 				  "https://login.yami.lindenlab.com/cgi-bin/login.cgi",                    
 				  "http://yami-secondlife.webdev.lindenlab.com/helpers/",
 				  DEFAULT_LOGIN_PAGE);
-	addSystemGrid("Local (Linden)",                                                                                    
+	addSystemGrid("Local (Port 9000)",                                                                                    
 				  "localhost",                                                             
-				  "https://login.dmz.lindenlab.com/cgi-bin/login.cgi",                     
+				  "http://127.0.0.1:9000",                     
 				  "",
 				  DEFAULT_LOGIN_PAGE); 
 
