@@ -549,16 +549,26 @@ BOOL LLBottomTray::postBuild()
 
 	mSpeakPanel = getChild<LLPanel>("speak_panel");
 	mSpeakBtn = getChild<LLSpeakButton>("talk");
-	LLHints::registerHintTarget("speak_btn", mSpeakBtn->getHandle());
+	if (mSpeakBtn)
+	{
+		LLHints::registerHintTarget("speak_btn", mSpeakBtn->getHandle());
+
+		// Localization tool doesn't understand custom buttons like <talk_button>
+		mSpeakBtn->setSpeakToolTip( getString("SpeakBtnToolTip") );
+		mSpeakBtn->setShowToolTip( getString("VoiceControlBtnToolTip") );
+	}	
+	else
+	{
+		LLTransientFloaterMgr::getInstance()->addControlView(getChild<LLButton>("speak_btn"));
+		LLTransientFloaterMgr::getInstance()->addControlView(getChild<LLButton>("speak_flyout_btn"));
+	}
+
 
 	// Both parts of speak button should be initially disabled because
 	// it takes some time between logging in to world and connecting to voice channel.
-	mSpeakBtn->setSpeakBtnEnabled(false);
-	mSpeakBtn->setFlyoutBtnEnabled(false);
+	getChild<LLButton>("speak_btn")->setEnabled(false);
+	getChild<LLButton>("speak_flyout_btn")->setEnabled(false);
 
-	// Localization tool doesn't understand custom buttons like <talk_button>
-	mSpeakBtn->setSpeakToolTip( getString("SpeakBtnToolTip") );
-	mSpeakBtn->setShowToolTip( getString("VoiceControlBtnToolTip") );
 
 	// Registering Chat Bar to receive Voice client status change notifications.
 	LLVoiceClient::getInstance()->addObserver(this);
