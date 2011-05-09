@@ -955,10 +955,10 @@ class Linux_i686Manifest(LinuxManifest):
             self.path("libdirectfb-1.4.so.5.0.4")
             self.path("libfusion-1.4.so.5.0.4")
             self.path("libdirect-1.4.so.5.0.4")
-            self.path("libopenjpeg.so.2.0.6")
-            self.path("libopenjpeg.so.2.0")
+            self.path("libopenjpeg.so")
             self.path("libopenjpeg.so.2")
-	    self.path("libopenjpeg.so")
+            self.path("libopenjpeg.so.2.0")
+	    self.path("libopenjpeg.so.2.0.6")
             self.path("libalut.so")
             self.path("libopenal.so", "libopenal.so.1")
             self.path("libopenal.so", "libvivoxoal.so.1") # vivox's sdk expects this soname
@@ -966,6 +966,7 @@ class Linux_i686Manifest(LinuxManifest):
             self.path("libtcmalloc.so", "libtcmalloc.so") #formerly called google perf tools
             self.path("libtcmalloc.so.0", "libtcmalloc.so.0") #formerly called google perf tools
             self.path("libtcmalloc.so.0.1.0", "libtcmalloc.so.0.1.0") #formerly called google perf tools
+	    self.path("libtcmalloc_and_profiler.so")
             try:
                     self.path("libfmod-3.75.so")
                     pass
