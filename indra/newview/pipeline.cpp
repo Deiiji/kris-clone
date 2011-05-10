@@ -599,6 +599,7 @@ void LLPipeline::allocateScreenBuffer(U32 resX, U32 resY)
 	U32 samples = llmin(gSavedSettings.getU32("RenderFSAASamples"), (U32) 4);
 	if (gGLManager.mIsATI)
 	{ //disable multisampling of render targets where ATI is involved
+	  // KL consider adding a manual overide ?
 		samples = 0;
 	}
 
@@ -782,6 +783,21 @@ void LLPipeline::updateRenderDeferred()
 	if (deferred)
 	{ //must render glow when rendering deferred since post effect pass is needed to present any lighting at all
 		sRenderGlow = TRUE;
+	}
+}
+
+//static
+void LLPipeline::refreshRenderDeferred()
+{
+	if(gPipeline.hasRenderDebugMask(LLPipeline::RENDER_DEBUG_PHYSICS_SHAPES))
+	{
+		//turn the deferred rendering and glow off when draw physics shapes.
+		sRenderDeferred = FALSE ;
+		sRenderGlow = FALSE ;
+	}
+	else
+	{
+		updateRenderDeferred() ;
 	}
 }
 
@@ -6273,7 +6289,6 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 	gGL.flush();
 	
 	LLVertexBuffer::unbind();
-	//BOOL renderDOF = gSavedSettings.getBOOL("RenderUseDOF"); // S21
 
 	if (LLPipeline::sRenderDeferred && !LLViewerCamera::getInstance()->cameraUnderWater())
 	{

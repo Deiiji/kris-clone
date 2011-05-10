@@ -195,6 +195,7 @@ void LLGridManager::initialize(const std::string& grid_file)
 				  "https://login.yami.lindenlab.com/cgi-bin/login.cgi",                    
 				  "http://yami-secondlife.webdev.lindenlab.com/helpers/",
 				  DEFAULT_LOGIN_PAGE);
+	// Since no one uses linden local except lindens make this maginally useful and use it for opensim standalone locals.
 	addSystemGrid("Local (Port 9000)",                                                                                    
 				  "localhost",                                                             
 				  "http://127.0.0.1:9000",                     
