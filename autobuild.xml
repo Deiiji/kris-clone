@@ -1290,9 +1290,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>17c000ceef32c0623d038b4c73791bee</string>
+              <string>70c53f3ff9b730544a389a49812a9b4c</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/ogg_vorbis-1.1.3-1.2.0-linux-20110307.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-ogg_vorbis-1.2.2-1.3.2-20110511.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
