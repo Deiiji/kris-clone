@@ -36,7 +36,7 @@
     </panel.string>
   <panel
     height="18"
-    left="-415"
+    left="-315"
     width="95"
     top="1"
     follows="right|top" 
@@ -88,25 +88,26 @@
      top="5"
      layout="topleft"
      left_pad="0"
-     name="XMPPStatus"
-     width="120">
-        No XMPP server found
-    </text>
-    <text
-     type="string"
-     font="SansSerifSmall"
-     text_readonly_color="TimeTextColor"
-     follows="right|top"
-     halign="right"
-     height="16"
-     top="5"
-     layout="topleft"
-     left_pad="0"
      name="TimeText"
      tool_tip="Current time (Pacific)"
      width="145">
         24:00 AM PST
     </text>
+     <slider
+     can_edit_text="true"
+     control_name="RenderFarClip"
+     decimal_digits="0"
+     follows="right|top"
+     height="15"
+     increment="1"
+     initial_value="64"
+     layout="topleft"
+     left_delta="-280"
+     max_val="1024"
+     min_val="10"
+     name="drawdistance"
+     top="3"
+     width="140" />
     <button
      follows="right|top"
      height="16"
@@ -115,7 +116,7 @@
      image_pressed="Pause_Press"
      image_pressed_selected="Play_Press"
      is_toggle="true"
-     left_pad="15"
+     left_delta="435"
      top="1"
      name="media_toggle_btn"
      tool_tip="Start/Stop All Media (Music, Video, Web pages)"
@@ -133,19 +134,4 @@
      name="volume_btn"
      tool_tip="Global Volume Control"
      width="16" />
-      <slider
-     can_edit_text="true"
-     control_name="RenderFarClip"
-     decimal_digits="0"
-     follows="right|top"
-     height="15"
-     increment="1"
-     initial_value="64"
-     layout="topleft"
-     left_delta="-580"
-     max_val="1024"
-     min_val="10"
-     name="drawdistance"
-     top="3"
-     width="140" />
 </panel>
