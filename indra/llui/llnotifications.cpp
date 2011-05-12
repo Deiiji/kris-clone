@@ -1532,7 +1532,9 @@ bool LLNotifications::loadVisibilityRules()
 // Add a simple notification (from XUI)
 void LLNotifications::addFromCallback(const LLSD& name)
 {
-	add(LLNotification::Params().name(name.asString()));	
+	//fix for crash on port warning for proxy settings
+	//add(LLNotification::Params().name(name.asString()));	
+	add(name.asString(), LLSD(), LLSD());
 }
 
 LLNotificationPtr LLNotifications::add(const std::string& name, 
