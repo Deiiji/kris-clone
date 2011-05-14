@@ -155,7 +155,7 @@ WindLightUseAtmosShaders	1	1
 WLSkyDetail					1	48
 RenderDeferred				1	0
 RenderDeferredSSAO			1	0
-RenderShadowDetail			1	0
+RenderShadowDetail			1	2
 RenderUseFBO				1	0
 
 //
@@ -185,7 +185,7 @@ WindLightUseAtmosShaders	1	1
 WLSkyDetail					1	128
 RenderDeferred				1	0
 RenderDeferredSSAO			1	0
-RenderShadowDetail			1	0
+RenderShadowDetail			1	2
 RenderUseFBO				1	0
 
 //

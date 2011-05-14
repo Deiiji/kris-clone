@@ -34,7 +34,6 @@
 #include "llcallfloater.h"
 #include "lloutputmonitorctrl.h"
 #include "lltransientfloatermgr.h"
-#include "llviewercontrol.h"
 
 #include "llspeakbutton.h"
 
@@ -53,30 +52,6 @@ LLSpeakButton::Params::Params()
  , monitor("monitor")
 {
 	// See widgets/talk_button.xml
-}
-
-void LLSpeakButton::draw()
-{
-	// Adding check here to see if voice is enabled if so then draw the button.
-	if ( gSavedSettings.getBOOL("EnableVoiceChat") )
-	{
-		// LLVoiceClient::getInstance() is the authoritative global source of info regarding our open-mic state, we merely reflect that state.
-	    bool openmic = LLVoiceClient::getInstance()->getUserPTTState();
-	    bool voiceenabled = LLVoiceClient::getInstance()->voiceEnabled();
-	    mSpeakBtn->setToggleState(openmic && voiceenabled);
-	    mOutputMonitor->setIsMuted(!voiceenabled);
-	    LLUICtrl::draw();
-	}
-}
-void LLSpeakButton::setSpeakBtnEnabled(bool enabled)
-{
-	LLButton* speak_btn = getChild<LLButton>("speak_btn");
-	speak_btn->setEnabled(enabled);
-}
-void LLSpeakButton::setFlyoutBtnEnabled(bool enabled)
-{
-	LLButton* show_btn = getChild<LLBottomtrayButton>("speak_flyout_btn");
-	show_btn->setEnabled(enabled);
 }
 
 LLSpeakButton::LLSpeakButton(const Params& p)

@@ -1,9 +1,9 @@
 /** 
- * @file llpanelvoicedevicesettings.h
- * @author Richard Nelson
- * @brief Voice communication set-up wizard
+ * @file llfloatersounddevices.h
+ * @author Leyla Farazha
+ * @brief Sound Preferences used for minimal skin
  *
- * $LicenseInfo:firstyear=2001&license=viewerlgpl$
+* $LicenseInfo:firstyear=2011&license=viewerlgpl$
  * Second Life Viewer Source Code
  * Copyright (C) 2010, Linden Research, Inc.
  * 
@@ -25,40 +25,25 @@
  * $/LicenseInfo$
  */
 
-#ifndef LL_LLPANELVOICEDEVICESETTINGS_H
-#define LL_LLPANELVOICEDEVICESETTINGS_H
+#ifndef LL_LLFLOATERSOUNDDEVICES_H
+#define LL_LLFLOATERSOUNDDEVICES_H
 
-#include "llpanel.h"
+#include "lltransientdockablefloater.h"
 
-class LLPanelVoiceDeviceSettings : public LLPanel
+class LLFloaterSoundDevices : public LLTransientDockableFloater
 {
 public:
-	LLPanelVoiceDeviceSettings();
-	~LLPanelVoiceDeviceSettings();
 
-	/*virtual*/ void draw();
+	LOG_CLASS(LLFloaterSoundDevices);
+
+	LLFloaterSoundDevices(const LLSD& key);
+	~LLFloaterSoundDevices();
+
 	/*virtual*/ BOOL postBuild();
-	void apply();
-	void cancel();
-	void refresh();
-	void initialize();
-	void cleanup();
-
-	/*virtual*/ void handleVisibilityChange ( BOOL new_visibility );
-
-	void setUseTuningMode(bool use) { mUseTuningMode = use; };
-	
-protected:
-	void onCommitInputDevice();
-	void onCommitOutputDevice();
-
-	F32 mMicVolume;
-	std::string mInputDevice;
-	std::string mOutputDevice;
-	class LLComboBox		*mCtrlInputDevices;
-	class LLComboBox		*mCtrlOutputDevices;
-	BOOL mDevicesUpdated;
-	bool mUseTuningMode;
+	/*virtual*/ void setDocked(bool docked, bool pop_on_undock = true);
+	/*virtual*/ void setFocus( BOOL b );
 };
 
-#endif // LL_LLPANELVOICEDEVICESETTINGS_H
+
+#endif //LL_LLFLOATERSOUNDDEVICES_H
+

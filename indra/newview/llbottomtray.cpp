@@ -380,12 +380,13 @@ void LLBottomTray::onChange(EStatusType status, const std::string &channelURI, b
 	}
 
 	// We have to enable/disable right and left parts of speak button separately (EXT-4648)
-	mSpeakBtn->setSpeakBtnEnabled(enable);
+	getChild<LLButton>("speak_btn")->setEnabled(enable);
+
 	// skipped to avoid button blinking
 	if (status != STATUS_JOINING && status!= STATUS_LEFT_CHANNEL)
 	{
 		bool voice_status = LLVoiceClient::getInstance()->voiceEnabled() && LLVoiceClient::getInstance()->isVoiceWorking();
-		mSpeakBtn->setFlyoutBtnEnabled(voice_status);
+		getChild<LLButton>("speak_flyout_btn")->setEnabled(voice_status);
 		if (voice_status)
 		{
 			LLFirstUse::speak(true);
@@ -548,7 +549,7 @@ BOOL LLBottomTray::postBuild()
 	setRightMouseDownCallback(boost::bind(&LLBottomTray::showBottomTrayContextMenu,this, _2, _3,_4));
 
 	mSpeakPanel = getChild<LLPanel>("speak_panel");
-	mSpeakBtn = getChild<LLSpeakButton>("talk");
+	mSpeakBtn = findChild<LLSpeakButton>("talk");
 	if (mSpeakBtn)
 	{
 		LLHints::registerHintTarget("speak_btn", mSpeakBtn->getHandle());
@@ -752,6 +753,8 @@ void LLBottomTray::updateButtonsOrdersAfterDnD()
 
 void LLBottomTray::saveButtonsOrder()
 {
+	if (!gSavedSettings.getBOOL("AllowBottomTrayButtonReordering")) return;
+
 	std::string user_dir = gDirUtilp->getLindenUserDir();
 	if (user_dir.empty()) return;
 	
@@ -772,6 +775,8 @@ void LLBottomTray::saveButtonsOrder()
 
 void LLBottomTray::loadButtonsOrder()
 {
+	if (!gSavedSettings.getBOOL("AllowBottomTrayButtonReordering")) return;
+
 	// load per-resident sorting information
 	std::string filename = gDirUtilp->getExpandedFilename(LL_PATH_PER_SL_ACCOUNT, SORTING_DATA_FILE_NAME);
 
@@ -864,6 +869,10 @@ void LLBottomTray::draw()
 
 	getChild<LLButton>("show_help_btn")->setToggleState(help_floater_visible);
 
+	bool openmic = LLVoiceClient::getInstance()->getUserPTTState();
+	bool voiceenabled = LLVoiceClient::getInstance()->voiceEnabled();
+	getChild<LLButton>("speak_btn")->setToggleState(openmic && voiceenabled);
+	getChild<LLOutputMonitorCtrl>("chat_zone_indicator")->setIsMuted(!voiceenabled);
 
 }
 
@@ -1321,7 +1330,11 @@ void LLBottomTray::processShrinkButtons(S32& required_width, S32& buttons_freed_
 
 			if (possible_shrink_width > 0)
 			{
-				mSpeakBtn->setLabelVisible(false);
+				if (mSpeakBtn)
+				{	
+					mSpeakBtn->setLabelVisible(false);
+				}
+
 				mSpeakPanel->reshape(panel_width - possible_shrink_width, mSpeakPanel->getRect().getHeight());
 
 				required_width += possible_shrink_width;
@@ -1447,7 +1460,7 @@ bool LLBottomTray::processExtendSpeakButton(S32& available_width)
 		}
 
 		// Reshape the Speak button to its maximum width.
-		mSpeakBtn->setLabelVisible(true);
+		if (mSpeakBtn) mSpeakBtn->setLabelVisible(true);
 		mSpeakPanel->reshape(panel_max_width, mSpeakPanel->getRect().getHeight());
 
 		available_width -= required_headroom;
@@ -1516,7 +1529,6 @@ bool LLBottomTray::canButtonBeShown(EResizeState processed_object_type) const
 void LLBottomTray::initResizeStateContainers()
 {
 	// init map with objects should be processed for each type
-	//Added Speak button to enable button auto-hide if voice is disabled
 	mStateProcessedObjectMap.insert(std::make_pair(RS_BUTTON_SPEAK, getChild<LLPanel>("speak_panel")));
 	mStateProcessedObjectMap.insert(std::make_pair(RS_BUTTON_GESTURES, getChild<LLPanel>("gesture_panel")));
 	mStateProcessedObjectMap.insert(std::make_pair(RS_BUTTON_MOVEMENT, getChild<LLPanel>("movement_panel")));
@@ -1877,28 +1889,31 @@ S32 LLBottomTray::getChicletPanelShrinkHeadroom() const
 // static
 std::string LLBottomTray::resizeStateToString(EResizeState state)
 {
+	const char *rs_string = "UNKNOWN_BUTTON";
+	
 	switch (state)
 	{
-	case RS_NORESIZE:				return "RS_NORESIZE";
-	case RS_CHICLET_PANEL:			return "RS_CHICLET_PANEL";
-	case RS_CHATBAR_INPUT:			return "RS_CHATBAR_INPUT";
-	case RS_BUTTON_SNAPSHOT:		return "RS_BUTTON_SNAPSHOT";
-	case RS_BUTTON_SIDEBAR:			return "RS_BUTTON_SIDEBAR";
-	case RS_BUTTON_INVENTORY:		return "RS_BUTTON_INVENTORY";
-	case RS_BUTTON_CAMERA:			return "RS_BUTTON_CAMERA";
-	case RS_BUTTON_MOVEMENT:		return "RS_BUTTON_MOVEMENT";
-	case RS_BUTTON_GESTURES:		return "RS_BUTTON_GESTURES";
-	case RS_BUTTON_SPEAK:			return "RS_BUTTON_SPEAK";
-	case RS_IM_WELL:				return "RS_IM_WELL";
-	case RS_NOTIFICATION_WELL:		return "RS_NOTIFICATION_WELL";
-	case RS_BUTTON_BUILD:			return "RS_BUTTON_BUILD";
-	case RS_BUTTON_SEARCH:			return "RS_BUTTON_SEARCH";
-	case RS_BUTTON_WORLD_MAP:		return "RS_BUTTON_WORLD_MAP";
-	case RS_BUTTON_MINI_MAP:		return "RS_BUTTON_MINI_MAP";
-	case RS_BUTTONS_CAN_BE_HIDDEN:	return "RS_BUTTONS_CAN_BE_HIDDEN";
-	// No default to track additions.
+		case RS_NORESIZE:               rs_string = "RS_NORESIZE";              break;
+		case RS_CHICLET_PANEL:          rs_string = "RS_CHICLET_PANEL";         break;
+		case RS_CHATBAR_INPUT:          rs_string = "RS_CHATBAR_INPUT";         break;
+		case RS_BUTTON_SNAPSHOT:        rs_string = "RS_BUTTON_SNAPSHOT";       break;
+	    case RS_BUTTON_SIDEBAR:			rs_string =  "RS_BUTTON_SIDEBAR";       break;
+    	case RS_BUTTON_INVENTORY:		rs_string =  "RS_BUTTON_INVENTORY";     break;
+		case RS_BUTTON_CAMERA:          rs_string = "RS_BUTTON_CAMERA";         break;
+		case RS_BUTTON_MOVEMENT:        rs_string = "RS_BUTTON_MOVEMENT";       break;
+		case RS_BUTTON_GESTURES:        rs_string = "RS_BUTTON_GESTURES";       break;
+		case RS_BUTTON_SPEAK:           rs_string = "RS_BUTTON_SPEAK";          break;
+		case RS_IM_WELL:                rs_string = "RS_IM_WELL";               break;
+		case RS_NOTIFICATION_WELL:      rs_string = "RS_NOTIFICATION_WELL";     break;
+		case RS_BUTTON_BUILD:           rs_string = "RS_BUTTON_BUILD";          break;
+		case RS_BUTTON_SEARCH:          rs_string = "RS_BUTTON_SEARCH";         break;
+		case RS_BUTTON_WORLD_MAP:       rs_string = "RS_BUTTON_WORLD_MAP";      break;
+		case RS_BUTTON_MINI_MAP:        rs_string = "RS_BUTTON_MINI_MAP";       break;
+		case RS_BUTTONS_CAN_BE_HIDDEN:  rs_string = "RS_BUTTONS_CAN_BE_HIDDEN"; break;
+		// No default to track additions.
 	}
-	return "UNKNOWN_BUTTON";
+
+	return rs_string;
 }
 
 // static
