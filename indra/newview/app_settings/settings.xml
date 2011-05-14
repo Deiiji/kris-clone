@@ -10467,6 +10467,17 @@
       <key>Value</key>
       <integer>0</integer>
     </map>
+  <key>CloudFile</key>
+  <map>
+    <key>Comment</key>
+    <string>Filename for windlight cloud</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>String</string>
+    <key>Value</key>
+    <string>clouds1.tga</string>
+  </map>
     <key>StatsFile</key>
     <map>
       <key>Comment</key>

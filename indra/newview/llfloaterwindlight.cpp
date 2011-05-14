@@ -399,6 +399,7 @@ void LLFloaterWindLight::syncMenu()
 	LLPanel* panel = getChild<LLPanel>("Scattering");
 
 	tab->enableTabButton(tab->getIndexForPanel(panel), gSavedSettings.getBOOL("RenderDeferredGI"));
+
 }
 
 

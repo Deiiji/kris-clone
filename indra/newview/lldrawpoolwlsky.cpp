@@ -40,6 +40,8 @@
 #include "llface.h"
 #include "llrender.h"
 
+#include "llviewercontrol.h"
+
 LLPointer<LLViewerTexture> LLDrawPoolWLSky::sCloudNoiseTexture = NULL;
 
 LLPointer<LLImageRaw> LLDrawPoolWLSky::sCloudNoiseRawImage = NULL;
@@ -49,13 +51,15 @@ LLPointer<LLImageRaw> LLDrawPoolWLSky::sCloudNoiseRawImage = NULL;
 LLDrawPoolWLSky::LLDrawPoolWLSky(void) :
 	LLDrawPool(POOL_WL_SKY)
 {
-	const std::string cloudNoiseFilename(gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, "windlight", "clouds2.tga"));
+	std::string cloud_filename = gSavedSettings.getString("CloudFile");
+
+	const std::string cloudNoiseFilename(gDirUtilp->getExpandedFilename(LL_PATH_APP_SETTINGS, "windlight", cloud_filename));
 	llinfos << "loading WindLight cloud noise from " << cloudNoiseFilename << llendl;
 
 	LLPointer<LLImageFormatted> cloudNoiseFile(LLImageFormatted::createFromExtension(cloudNoiseFilename));
 
 	if(cloudNoiseFile.isNull()) {
-		llerrs << "Error: Failed to load cloud noise image " << cloudNoiseFilename << llendl;
+		llwarns << "Error: Failed to load cloud noise image " << cloudNoiseFilename << llendl; // KL not exit just because the image is missed
 	}
 
 	cloudNoiseFile->load(cloudNoiseFilename);

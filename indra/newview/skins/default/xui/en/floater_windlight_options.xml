@@ -1279,5 +1279,56 @@
              top="104"
              width="200" />
         </panel>
+      <panel
+        border="true"
+        follows="all"
+        height="180"
+        label="EXTRAS"
+        layout="topleft"
+        left="0"
+        mouse_opaque="false"
+        help_topic="cloud_texture_tab"
+        name="Clouds"
+        top="0"
+        width="698">
+        <text
+         type="string"
+         length="1"
+         follows="left|top|right"
+         font="SansSerif"
+         height="16"
+         layout="topleft"
+         left="10"
+         name="BHText3"
+         top="4"
+         width="200">
+          Cloud base texture (requires restart).
+        </text>
+       <combo_box
+        control_name="CloudFile"
+        height="23"
+        layout="topleft"
+        left="10"
+        top_pad ="0"
+        name="Cloud Type"
+        width="150">
+          <combo_box.item
+          label="Normal"
+          name="0"
+          value="clouds1.tga"/>
+          <combo_box.item
+          label="Cumulo-Numbus"
+          name="1"
+          value="clouds2.tga"/>
+          <combo_box.item
+          label="Altocumulus"
+          name="2"
+          value="clouds3.tga"/>
+          <combo_box.item
+          label="Layered"
+          name="3"
+          value="clouds4.tga"/>
+        </combo_box>
+      </panel>
     </tab_container>
 </floater>
