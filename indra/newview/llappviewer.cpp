@@ -106,7 +106,7 @@
 #include "llnotificationsutil.h"
 
 // Third party library includes
-#include <boost/bind.hpp>
+#include "boost/bind.hpp"
 
 
 #if LL_WINDOWS
