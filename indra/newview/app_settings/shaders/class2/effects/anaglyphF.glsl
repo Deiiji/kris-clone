@@ -1,6 +1,8 @@
 //  KL anaglyph shader
 //  (c)2010 Kirstenlee Cinquetti
 
+#extension GL_ARB_texture_rectangle: enable
+
 uniform sampler2DRect leftTex, rightTex;
 varying vec3 left;
 varying vec3 right;

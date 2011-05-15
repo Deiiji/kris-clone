@@ -6,6 +6,7 @@
  */
  
 #version 120
+#extension GL_ARB_texture_rectangle: enable
 
 uniform sampler2DRect RenderTexture;
 uniform sampler2D NoiseTexture;
