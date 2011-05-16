@@ -1426,9 +1426,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>e673f21aaeda8d633217c11b4647ae3b</string>
+              <string>46261292641854aea77d42215efd8628</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-S21J-2.0.6-20110509.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-S21J-2.0.6-20110516.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
