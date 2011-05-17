@@ -220,7 +220,7 @@ LLBottomTray::LLBottomTray(const LLSD&)
 	mLandingTab(NULL),
 	mCheckForDrag(false)
 {
-	// Firstly add ourself to IMSession observers, so we catch session events
+	// Firstly add our self to IMSession observers, so we catch session events
 	// before chiclets do that.
 	LLIMMgr::getInstance()->addSessionObserver(this);
 

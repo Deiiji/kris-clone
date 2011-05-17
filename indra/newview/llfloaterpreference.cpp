@@ -43,6 +43,7 @@
 #include "llcombobox.h"
 #include "llcommandhandler.h"
 #include "lldirpicker.h"
+#include "lldiriterator.h"
 #include "lleventtimer.h"
 #include "llfeaturemanager.h"
 #include "llfocusmgr.h"
@@ -890,7 +891,6 @@ void LLFloaterPreference::onClickSkin(LLUICtrl* ctrl, const LLSD& userdata)
 void LLFloaterPreference::onSelectSkin() // S21
 {
 	std::string skin_selection = getChild<LLComboBox>("skin_selection")->getValue().asString();
-	llinfos << "skin selected " << skin_selection << llendl;
 	gSavedSettings.setString("SkinCurrent", skin_selection);
 	LLFloaterPreference::refreshSkin(this);
 }
@@ -905,13 +905,16 @@ void LLFloaterPreference::refreshSkin(void* data) // S21
 	if (comboBox != NULL) 
 	{
 		std::string name;
-		gDirUtilp->getNextFileInDir(gDirUtilp->getChatLogsDir(),"*", name); // stupid hack to clear last file search
+	//	gDirUtilp->getNextFileInDir(gDirUtilp->getChatLogsDir(),"*", name); // stupid hack to clear last file search
 		std::string path_name(gDirUtilp->getSkinBaseDir() + delim);
+		std::string pattern = (name+(( name == "*" ) ? "-???\?-?\?-??.xml" : "-???\?-??.xml"));/* create search pattern*/
 		// TODO: we might also want to do this for 'user skins' that can be installed in user_settings folders
 		llinfos << " reading skin folders from "<< path_name << llendl;
 		comboBox->removeall();
-		while (gDirUtilp->getNextFileInDir(path_name, "*", name))
-		{
+		
+		LLDirIterator iter(path_name, pattern);
+	        while (iter.next(name))
+			{
 			std::string skin_path(path_name + name + delim);
 			// skipping non-dir entries
 			// skipping directory traversal filenames

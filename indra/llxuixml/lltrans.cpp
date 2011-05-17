@@ -30,6 +30,7 @@
 
 #include "llfasttimer.h"	// for call count statistics
 #include "llxuiparser.h"
+#include "llxmlnode.h"
 
 #include <map>
 
@@ -156,7 +157,7 @@ std::string LLTrans::getString(const std::string &xml_desc, const LLStringUtil::
 	{
 		LLSD args;
 		args["STRING_NAME"] = xml_desc;
-		//LL_WARNS_ONCE("configuration") << "Missing String in strings.xml: [" << xml_desc << "]" << LL_ENDL;
+		LL_WARNS_ONCE("configuration") << "Missing String in strings.xml: [" << xml_desc << "]" << LL_ENDL;
 
 		//LLNotificationsUtil::add("MissingString", args); // *TODO: resurrect
 		//return xml_desc;
@@ -184,7 +185,7 @@ bool LLTrans::findString(std::string &result, const std::string &xml_desc, const
 	{
 		LLSD args;
 		args["STRING_NAME"] = xml_desc;
-		//LL_WARNS_ONCE("configuration") << "Missing String in strings.xml: [" << xml_desc << "]" << LL_ENDL;
+		LL_WARNS_ONCE("configuration") << "Missing String in strings.xml: [" << xml_desc << "]" << LL_ENDL;
 		//LLNotificationsUtil::add("MissingString", args);
 		
 		return false;

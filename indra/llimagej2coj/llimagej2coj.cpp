@@ -107,11 +107,22 @@ LLImageJ2COJ::~LLImageJ2COJ()
 {
 }
 
+BOOL LLImageJ2COJ::initDecode(LLImageJ2C &base, LLImageRaw &raw_image, int discard_level, int* region)
+{
+	// No specific implementation for this method in the OpenJpeg case
+	return FALSE;
+}
+
+BOOL LLImageJ2COJ::initEncode(LLImageJ2C &base, LLImageRaw &raw_image, int blocks_size, int precincts_size, int levels)
+{
+	// No specific implementation for this method in the OpenJpeg case
+	return FALSE;
+}
 
 BOOL LLImageJ2COJ::decodeImpl(LLImageJ2C &base, LLImageRaw &raw_image, F32 decode_time, S32 first_channel, S32 max_channel_count)
 {
 	//
-	// KL this is probably a damn good place to consider the use of OpenMP perhaps?
+	// FIXME: Get the comment field out of the texture
 	//
 
 	LLTimer decode_timer;
@@ -120,7 +131,7 @@ BOOL LLImageJ2COJ::decodeImpl(LLImageJ2C &base, LLImageRaw &raw_image, F32 decod
 	opj_event_mgr_t event_mgr;		/* event manager */
 	opj_image_t *image = NULL;
 
-	opj_dinfo_t *dinfo = NULL;	/* handle to a decompressor */
+	opj_dinfo_t* dinfo = NULL;	/* handle to a decompressor */
 	opj_cio_t *cio = NULL;
 
 

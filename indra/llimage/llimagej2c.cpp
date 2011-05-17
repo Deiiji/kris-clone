@@ -125,6 +125,15 @@ BOOL LLImageJ2C::updateData()
 	return res;
 }
 
+BOOL LLImageJ2C::initDecode(LLImageRaw &raw_image, int discard_level, int* region)
+{
+	return mImpl->initDecode(*this,raw_image,discard_level,region);
+}
+
+BOOL LLImageJ2C::initEncode(LLImageRaw &raw_image, int blocks_size, int precincts_size, int levels)
+{
+	return mImpl->initEncode(*this,raw_image,blocks_size,precincts_size,levels);
+}
 
 BOOL LLImageJ2C::decode(LLImageRaw *raw_imagep, F32 decode_time)
 {

@@ -85,12 +85,13 @@
 #include "lltextutil.h"
 #include "lllogininstance.h"
 #include "llprogressview.h"
-
+#include "llvocache.h"
 #include "llweb.h"
 #include "llsecondlifeurls.h"
 
 // Linden library includes
 #include "llavatarnamecache.h"
+#include "lldiriterator.h"
 #include "llimagej2c.h"
 #include "llmemory.h"
 #include "llprimitive.h"
@@ -134,7 +135,6 @@
 #include "lltoolmgr.h"
 #include "llassetstorage.h"
 #include "llpolymesh.h"
-#include "llcachename.h"
 #include "llaudioengine.h"
 #include "llstreamingaudio.h"
 #include "llviewermenu.h"
@@ -1092,7 +1092,6 @@ bool LLAppViewer::mainLoop()
     LLSD newFrame;
 
 	const F32 memory_check_interval = 1.0f ; //second
-	const U32 low_memory_threshold_KB = 128 * 1024 ; //128MB
 
 	// Handle messages
 	while (!LLApp::isExiting())
@@ -1113,11 +1112,6 @@ bool LLAppViewer::mainLoop()
 			}
 			llcallstacks << "Available physical mem(KB): " << mAvailPhysicalMemInKB << llcallstacksendl ;
 			llcallstacks << "Available virtual mem(KB): " << mAvailVirtualMemInKB << llcallstacksendl ;
-
-			if(low_memory_threshold_KB > mAvailPhysicalMemInKB || low_memory_threshold_KB > mAvailVirtualMemInKB)
-			{
-				forceToRelieveMemory() ;
-			}
 		}
 
 		try
@@ -1351,17 +1345,29 @@ bool LLAppViewer::mainLoop()
 		}
 		catch(std::bad_alloc)
 		{			
-			outputMemoryStatistics() ;
+			{
+				llinfos << "Availabe physical memory(KB) at the beginning of the frame: " << mAvailPhysicalMemInKB << llendl ;
+				llinfos << "Availabe virtual memory(KB) at the beginning of the frame: " << mAvailVirtualMemInKB << llendl ;
+
+				LLMemoryInfo::getAvailableMemoryKB(mAvailPhysicalMemInKB, mAvailVirtualMemInKB) ;
+
+				llinfos << "Current availabe physical memory(KB): " << mAvailPhysicalMemInKB << llendl ;
+				llinfos << "Current availabe virtual memory(KB): " << mAvailVirtualMemInKB << llendl ;
+			}
 
 			//stop memory leaking simulation
 			LLFloaterMemLeak* mem_leak_instance =
 				LLFloaterReg::findTypedInstance<LLFloaterMemLeak>("mem_leaking");
 			if(mem_leak_instance)
-			{	
+			{
+				mem_leak_instance->stop() ;				
 				llwarns << "Bad memory allocation in LLAppViewer::mainLoop()!" << llendl ;
 			}
 			else
 			{
+				//output possible call stacks to log file.
+				LLError::LLCallStacks::print() ;
+
 				llerrs << "Bad memory allocation in LLAppViewer::mainLoop()!" << llendl ;
 			}
 		}
@@ -1378,7 +1384,13 @@ bool LLAppViewer::mainLoop()
 		{
 			llwarns << "Bad memory allocation when saveFinalSnapshot() is called!" << llendl ;
 
-			outputMemoryStatistics() ;
+			//stop memory leaking simulation
+			LLFloaterMemLeak* mem_leak_instance =
+				LLFloaterReg::findTypedInstance<LLFloaterMemLeak>("mem_leaking");
+			if(mem_leak_instance)
+			{
+				mem_leak_instance->stop() ;				
+			}	
 		}
 	}
 	
@@ -1389,56 +1401,6 @@ bool LLAppViewer::mainLoop()
 	llinfos << "Exiting main_loop" << llendflush;
 
 	return true;
-}
-
-//when the memory pool is in danger, 
-//we force to minimize memory consumption to avoid immediate crash
-void LLAppViewer::forceToRelieveMemory()
-{
-	static const F32 MIN_TIME_INTERVAL = 600.f ; //10 minutes
-	static LLFrameTimer timer;
-	
-	if(timer.getElapsedTimeF32() < MIN_TIME_INTERVAL)
-	{
-		return ; // do not execute this function too often
-	}
-	timer.reset() ;
-
-	llinfos << "Before relieving memory..." << llendl ;
-	outputMemoryStatistics() ;
-	//-------------------------------------------------------------
-
-	//re-do VBO to eliminate possible rendering leaking in driver.
-	gPipeline.resetVertexBuffers() ;
-	LLVertexBuffer::initClass(LLVertexBuffer::sEnableVBOs, LLVertexBuffer::sDisableVBOMapping) ;
-
-	//-------------------------------------------------------------
-	llinfos << "After relieving memory..." << llendl ;
-	outputMemoryStatistics() ;
-}
-
-void LLAppViewer::outputMemoryStatistics()
-{
-	//stop memory leaking simulation
-	LLFloaterMemLeak* mem_leak_instance =
-		LLFloaterReg::findTypedInstance<LLFloaterMemLeak>("mem_leaking");
-	if(mem_leak_instance)
-	{
-		llinfos << "memory leaking simulation is on" << llendl ;
-		mem_leak_instance->stop() ;				
-	}	
-
-	//system memory info
-	LLMemoryInfo::getAvailableMemoryKB(mAvailPhysicalMemInKB, mAvailVirtualMemInKB) ;
-	llinfos << "Current availabe physical memory(KB): " << mAvailPhysicalMemInKB << llendl ;
-	llinfos << "Current availabe virtual memory(KB): " << mAvailVirtualMemInKB << llendl ;
-		
-	//texture memory info
-	llinfos << "Total textures in memeory (MB) " << BYTES_TO_MEGA_BYTES(LLViewerTexture::sTotalTextureMemoryInBytes) << llendl ;
-	llinfos << "Total raw images in memory (MB) " << (LLImageRaw::sGlobalRawMemory >> 20) << llendl ;
-
-	//output possible call stacks to log file.
-	LLError::LLCallStacks::print() ;
 }
 
 void LLAppViewer::flushVFSIO()
@@ -3313,7 +3275,9 @@ void LLAppViewer::migrateCacheDirectory()
 			S32 file_count = 0;
 			std::string file_name;
 			std::string mask = delimiter + "*.*";
-			while (gDirUtilp->getNextFileInDir(old_cache_dir, mask, file_name))
+
+			LLDirIterator iter(old_cache_dir, mask);
+			while (iter.next(file_name))
 			{
 				if (file_name == "." || file_name == "..") continue;
 				std::string source_path = old_cache_dir + delimiter + file_name;
@@ -3534,7 +3498,8 @@ bool LLAppViewer::initCache()
 		dir = gDirUtilp->getExpandedFilename(LL_PATH_CACHE,"");
 
 		std::string found_file;
-		if (gDirUtilp->getNextFileInDir(dir, mask, found_file))
+		LLDirIterator iter(dir, mask);
+		if (iter.next(found_file))
 		{
 			old_vfs_data_file = dir + gDirUtilp->getDirDelimiter() + found_file;
 

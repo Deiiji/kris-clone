@@ -38,6 +38,7 @@
 #include "llui.h"
 #include "llviewercontrol.h"
 #include "llweb.h"
+#include "llversioninfo.h"
 
 // support secondlife:///app/search/{CATEGORY}/{QUERY} SLapps
 class LLSearchHandler : public LLCommandHandler
@@ -111,7 +112,7 @@ void LLFloaterSearch::onClose(bool app_quitting)
 {
 	// tear down the web view so we don't show the previous search
 	// result when the floater is opened next time
-	//destroy();	// S21 don't tear down the web view so the last search result persists, leaving this empty for now.
+	destroy();
 }
 
 void LLFloaterSearch::handleMediaEvent(LLPluginClassMedia *self, EMediaEvent event)
@@ -197,7 +198,15 @@ void LLFloaterSearch::search(const LLSD &key)
 
 	// get the search URL and expand all of the substitutions
 	// (also adds things like [LANGUAGE], [VERSION], [OS], etc.)
-	std::string url = gSavedSettings.getString("SearchURL");
+	std::string url;
+	if (LLVersionInfo::getChannel().find("Beta") != std::string::npos)
+	{
+		url = gSavedSettings.getString("SearchURLBeta");
+	}
+	else
+	{
+		url = gSavedSettings.getString("SearchURL");
+	}
 	url = LLWeb::expandURLSubstitutions(url, subs);
 
 	// and load the URL in the web view

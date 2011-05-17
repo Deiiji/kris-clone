@@ -368,7 +368,7 @@ void LLFloaterPostcard::sendPostcard()
 	}
 	
 	// give user feedback of the event
- //	gViewerWindow->playSnapshotAnimAndSound();
+	gViewerWindow->playSnapshotAnimAndSound();
 	LLUploadDialog::modalUploadDialog(getString("upload_message"));
 
 	// don't destroy the window until the upload is done
