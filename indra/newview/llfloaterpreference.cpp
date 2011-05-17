@@ -905,14 +905,11 @@ void LLFloaterPreference::refreshSkin(void* data) // S21
 	if (comboBox != NULL) 
 	{
 		std::string name;
-	//	gDirUtilp->getNextFileInDir(gDirUtilp->getChatLogsDir(),"*", name); // stupid hack to clear last file search
 		std::string path_name(gDirUtilp->getSkinBaseDir() + delim);
-		std::string pattern = (name+(( name == "*" ) ? "-???\?-?\?-??.xml" : "-???\?-??.xml"));/* create search pattern*/
-		// TODO: we might also want to do this for 'user skins' that can be installed in user_settings folders
 		llinfos << " reading skin folders from "<< path_name << llendl;
 		comboBox->removeall();
-		
-		LLDirIterator iter(path_name, pattern);
+		// KL bit of a refactor here probably needs a little bit more testing seems to work
+		LLDirIterator iter(path_name, "*");
 	        while (iter.next(name))
 			{
 			std::string skin_path(path_name + name + delim);
