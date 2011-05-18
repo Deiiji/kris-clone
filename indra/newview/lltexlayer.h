@@ -312,8 +312,6 @@ private:
 	BOOL					mUploadPending; 				// Whether we have received back the new baked textures
 	LLUUID					mUploadID; 						// The current upload process (null if none).
 	LLFrameTimer    		mNeedsUploadTimer; 				// Tracks time since upload was requested and performed.
-	S32						mUploadFailCount;
-	LLFrameTimer    		mUploadRetryTimer;
 
 	//--------------------------------------------------------------------
 	// Updates
@@ -365,14 +363,12 @@ struct LLBakedUploadData
 {
 	LLBakedUploadData(const LLVOAvatarSelf* avatar, 
 					  LLTexLayerSet* layerset, 
-					  const LLUUID& id,
-						bool highest_res);
+					  const LLUUID& id);
 	~LLBakedUploadData() {}
 	const LLUUID				mID;
 	const LLVOAvatarSelf*		mAvatar; // note: backlink only; don't LLPointer 
 	LLTexLayerSet*				mTexLayerSet;
    	const U64					mStartTime;	// for measuring baked texture upload time
-	const bool					mIsHighestRes;
 };
 
 #endif  // LL_LLTEXLAYER_H
