@@ -966,9 +966,9 @@ class Linux_i686Manifest(LinuxManifest):
             self.path("libfusion-1.4.so.5.0.4")
             self.path("libdirect-1.4.so.5.0.4")
             self.path("libopenjpeg.so")
-            self.path("libopenjpeg.so, libopenjpeg.so.2")
-            self.path("libopenjpeg.so, libopenjpeg.so.2.0")
-	    self.path("libopenjpeg.so, libopenjpeg.so.2.0.6")
+            self.path("libopenjpeg.so.2")
+            self.path("libopenjpeg.so.2.0")
+	    self.path("libopenjpeg.so.2.0.6")
             self.path("libalut.so")
             self.path("libopenal.so", "libopenal.so.1")
             self.path("libopenal.so", "libvivoxoal.so.1") # vivox's sdk expects this soname
