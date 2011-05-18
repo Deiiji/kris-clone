@@ -795,7 +795,7 @@ const char* LLTemplateMessageReader::getMessageName() const
 {
 	if (!mCurrentRMessageTemplate)
 	{
-		llwarns << "no mCurrentRMessageTemplate" << llendl;
+		//llwarns << "no mCurrentRMessageTemplate" << llendl; // KL this is rather spammy atm when loading inventory disbale for now
 		return "";
 	}
 	return mCurrentRMessageTemplate->mName;

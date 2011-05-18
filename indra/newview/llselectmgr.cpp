@@ -1998,7 +1998,7 @@ void LLSelectMgr::selectionSetPhysicsType(U8 type)
 			if (object->permModify())
 			{
 				object->setPhysicsShapeType(mType);
-				object->updateFlags();
+				object->updateFlags(TRUE);
 			}
 			return true;
 		}
@@ -2017,7 +2017,7 @@ void LLSelectMgr::selectionSetFriction(F32 friction)
 			if (object->permModify())
 			{
 				object->setPhysicsFriction(mFriction);
-				object->updateFlags();
+				object->updateFlags(TRUE);
 			}
 			return true;
 		}
@@ -2036,7 +2036,7 @@ void LLSelectMgr::selectionSetGravity(F32 gravity )
 			if (object->permModify())
 			{
 				object->setPhysicsGravity(mGravity);
-				object->updateFlags();
+				object->updateFlags(TRUE);
 			}
 			return true;
 		}
@@ -2055,7 +2055,7 @@ void LLSelectMgr::selectionSetDensity(F32 density )
 			if (object->permModify())
 			{
 				object->setPhysicsDensity(mDensity);
-				object->updateFlags();
+				object->updateFlags(TRUE);
 			}
 			return true;
 		}
@@ -2074,7 +2074,7 @@ void LLSelectMgr::selectionSetRestitution(F32 restitution)
 			if (object->permModify())
 			{
 				object->setPhysicsRestitution(mRestitution);
-				object->updateFlags();
+				object->updateFlags(TRUE);
 			}
 			return true;
 		}

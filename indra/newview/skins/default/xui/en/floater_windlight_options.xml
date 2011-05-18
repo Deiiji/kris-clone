@@ -1301,8 +1301,8 @@
          left="10"
          name="BHText3"
          top="4"
-         width="200">
-          Cloud base texture (requires restart).
+         width="300">
+          Cloud Texture (requires restart).
         </text>
        <combo_box
         control_name="CloudFile"
@@ -1313,7 +1313,7 @@
         name="Cloud Type"
         width="150">
           <combo_box.item
-          label="Normal"
+          label="Default"
           name="0"
           value="clouds1.tga"/>
           <combo_box.item
