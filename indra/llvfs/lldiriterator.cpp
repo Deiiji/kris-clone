@@ -26,8 +26,8 @@
 
 #include "lldiriterator.h"
 
-#include <boost/filesystem.hpp>
-#include <boost/regex.hpp>
+#include "boost/filesystem.hpp"
+#include "boost/regex.hpp"
 
 namespace fs = boost::filesystem;
 
