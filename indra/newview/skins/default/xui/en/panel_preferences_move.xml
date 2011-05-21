@@ -32,7 +32,7 @@
    label_width="100"
    label="View angle"
    left_pad="30"
-   max_val="2.97"
+   max_val="3.97"
    min_val="0.17"
    name="camera_fov"
      show_text="true"

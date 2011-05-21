@@ -1032,7 +1032,7 @@ BOOL LLWindowWin32::switchContext(BOOL fullscreen, const LLCoordScreen &size, BO
 		NULL);
 
 	//-----------------------------------------------------------------------
-	// Create GL drawing context
+	// Create GL drawing context KL add PFD_STEREO at some point for active shutter glasses ? S21
 	//-----------------------------------------------------------------------
 	static PIXELFORMATDESCRIPTOR pfd =
 	{

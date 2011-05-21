@@ -652,6 +652,17 @@
       <key>Value</key>
       <integer>1</integer>
     </map>
+    <key>ATIIgnoreRenderTargetAA</key>
+    <map>
+      <key>Comment</key>
+      <string>Allow ATI testers an override of the RT AA (danger)</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>0</integer>
+    </map>
     <key>AvatarSex</key>
     <map>
       <key>Comment</key>
@@ -13332,5 +13343,38 @@
       <key>Value</key>
       <integer>1</integer>
     </map>
+  <key>StereoMode</key>
+  <map>
+    <key>Comment</key>
+    <string>Stereo mode. false=None true=Anaglyph</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>Boolean</string>
+    <key>Value</key>
+    <integer>0</integer>
+  </map>
+  <key>StereoEyeSeparation</key>
+  <map>
+    <key>Comment</key>
+    <string>Stereo eye separation</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>F32</string>
+    <key>Value</key>
+    <real>0.065</real>
+  </map>
+  <key>StereoFocalDistance</key>
+  <map>
+    <key>Comment</key>
+    <string>Stereo focal distance</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>F32</string>
+    <key>Value</key>
+    <real>6.0</real>
+  </map>
 </map>
 </llsd>

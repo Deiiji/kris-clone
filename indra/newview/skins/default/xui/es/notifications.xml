@@ -73,7 +73,7 @@ Detalles del error: la notificación de nombre &apos;[_NAME]&apos; no se ha enco
 	</notification>
 	<notification name="LoginFailedNoNetwork">
 		No se puede conectar con [SECOND_LIFE_GRID].
-&apos;[DIAGNOSTIC]&apos;
+    &apos;[DIAGNOSTIC]&apos;
 Asegúrate de que tu conexión a Internet está funcionando adecuadamente.
 		<usetemplate name="okbutton" yestext="OK"/>
 	</notification>
@@ -1338,6 +1338,48 @@ Esta actualización no es obligatoria, pero te sugerimos instalarla para mejorar
 ¿Descargarla a tu carpeta de Programas?
 		<usetemplate name="okcancelbuttons" notext="Continuar" yestext="Descargarla"/>
 	</notification>
+	<notification name="FailedUpdateInstall">
+		Se ha producido un error al instalar la actualización del visor.
+Descarga e instala el último visor a través de
+http://secondlife.com/download.
+		<usetemplate name="okbutton" yestext="OK"/>
+	</notification>
+	<notification name="FailedRequiredUpdateInstall">
+		No hemos podido instalar una actualización necesaria. 
+No podrás iniciar sesión hasta que [APP_NAME] se haya actualizado.
+
+Descarga e instala el último visor a través de
+http://secondlife.com/download.
+		<usetemplate name="okbutton" yestext="Salir"/>
+	</notification>
+	<notification name="UpdaterServiceNotRunning">
+		Hay una actualización necesaria para la instalación de Second Life.
+
+Puedes descargar esta actualización de http://www.secondlife.com/downloads
+o instalarla ahora.
+		<usetemplate name="okcancelbuttons" notext="Salir de Second Life" yestext="Descargar e instalar ahora"/>
+	</notification>
+	<notification name="DownloadBackgroundTip">
+		Hemos descargado una actualización para la instalación de [APP_NAME].
+Versión [VERSION] [[RELEASE_NOTES_FULL_URL]; información acerca de esta actualización]
+		<usetemplate name="okcancelbuttons" notext="Más tarde..." yestext="Instalar ahora y reiniciar [NOMBRE_APL]"/>
+	</notification>
+	<notification name="DownloadBackgroundDialog">
+		Hemos descargado una actualización para la instalación de [APP_NAME].
+Versión [VERSION] [[RELEASE_NOTES_FULL_URL]; información acerca de esta actualización]
+		<usetemplate name="okcancelbuttons" notext="Más tarde..." yestext="Instalar ahora y reiniciar [APP_NAME]"/>
+	</notification>
+	<notification name="RequiredUpdateDownloadedVerboseDialog">
+		Hemos descargado una actualización de software necesaria.
+Versión [VERSION]
+
+Debemos reiniciar [APP_NAME] para instalar la actualización.
+		<usetemplate name="okbutton" yestext="OK"/>
+	</notification>
+	<notification name="RequiredUpdateDownloadedDialog">
+		Debemos reiniciar [APP_NAME] para instalar la actualización.
+		<usetemplate name="okbutton" yestext="OK"/>
+	</notification>
 	<notification name="DeedObjectToGroup">
 		Transferir este objeto al grupo hará que:
 * Reciba los L$ pagados en el objeto
@@ -1719,11 +1761,11 @@ Puedes pulsar &apos;Cambiar las Preferencias&apos; para incrementar las preferen
 		<usetemplate name="okcancelbuttons" notext="Cancelar" yestext="OK"/>
 	</notification>
 	<notification name="SetClassifiedMature">
-		¿Este anuncio tiene contenido &apos;Moderado&apos;?
+		¿Este anuncio tiene contenido moderado?
 		<usetemplate canceltext="Cancelar" name="yesnocancelbuttons" notext="No" yestext="Sí"/>
 	</notification>
 	<notification name="SetGroupMature">
-		¿Este grupo tiene contenido &apos;Moderado&apos;?
+		¿Este grupo tiene contenido moderado?
 		<usetemplate canceltext="Cancelar" name="yesnocancelbuttons" notext="No" yestext="Sí"/>
 	</notification>
 	<notification label="Confirmar el reinicio" name="ConfirmRestart">
@@ -2202,7 +2244,7 @@ Inténtalo seleccionando un trozo más pequeño de terreno.
 		Se han excluido algunos términos de tu búsqueda debido a restricciones en el contenido, según se especifica en las Normas de la Comunidad.
 	</notification>
 	<notification name="NoContentToSearch">
-		Por favor, elige al menos un tipo de contenido a buscar (&apos;PG&apos;, &apos;Mature&apos;, o &apos;Adult&apos;).
+		Por favor, elige al menos un tipo de contenido a buscar (General, Moderado o Adulto;).
 	</notification>
 	<notification name="SystemMessage">
 		[MESSAGE]

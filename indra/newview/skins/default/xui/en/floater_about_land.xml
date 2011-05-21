@@ -568,7 +568,7 @@
          top="0"
          help_topic="land_covenant_tab"
          name="land_covenant_panel"
-         >
+         word_wrap="true">
             <panel.string
              name="can_resell"
              word_wrap="true">

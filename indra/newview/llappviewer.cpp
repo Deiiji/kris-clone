@@ -309,10 +309,10 @@ BOOL gLogoutInProgress = FALSE;
 // Internal globals... that should be removed
 static std::string gArgs = "Build 8 Test";
 
-const std::string MARKER_FILE_NAME("SecondLife.exec_marker");
-const std::string ERROR_MARKER_FILE_NAME("SecondLife.error_marker");
-const std::string LLERROR_MARKER_FILE_NAME("SecondLife.llerror_marker");
-const std::string LOGOUT_MARKER_FILE_NAME("SecondLife.logout_marker");
+const std::string MARKER_FILE_NAME("KirstensS21.exec_marker");
+const std::string ERROR_MARKER_FILE_NAME("KirstensS21.error_marker");
+const std::string LLERROR_MARKER_FILE_NAME("KirstensS21.llerror_marker");
+const std::string LOGOUT_MARKER_FILE_NAME("KirstensS21.logout_marker");
 static BOOL gDoDisconnect = FALSE;
 static std::string gLaunchFileOnQuit;
 

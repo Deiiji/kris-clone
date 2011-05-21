@@ -58,6 +58,14 @@ public:
 	{
 		// currently unused
 	};
+	// KL 3D enums for future use is req..
+	enum EStereoMode
+	{
+		STEREO_MODE_NONE = 0,
+		STEREO_MODE_ANAGLYPH = 1,
+		//STEREO_MODE_ACTIVE = 2
+	};
+
 public:
 	virtual void show() = 0;
 	virtual void hide() = 0;

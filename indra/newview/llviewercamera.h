@@ -117,6 +117,11 @@ public:
 	F32 getZoomFactor() { return mZoomFactor; }                             
 	S16 getZoomSubRegion() { return mZoomSubregion; } 
 
+	// KL 3D Camera Rotations for stereo view
+	void updateStereoValues();
+	void rotateToLeftEye();
+	void rotateToRightEye();
+
 protected:
 	void calcProjection(const F32 far_distance) const;
 
@@ -135,6 +140,9 @@ protected:
 	S32					mScreenPixelArea; // Pixel area of entire window
 	F32					mZoomFactor;
 	S16					mZoomSubregion;
+
+	LLVector3		mCameraTempPosition; // KL 3D
+	LLVector3		mStereoLastPOI;
 
 public:
 };

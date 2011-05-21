@@ -467,7 +467,7 @@ Function un.RemovePassword
 DetailPrint "Removing Second Life password"
 
 SetShellVarContext current
-Delete "$APPDATA\SecondLife\user_settings\password.dat"
+Delete "$APPDATA\Kirstens S21\user_settings\password.dat"
 SetShellVarContext all
 
 FunctionEnd

@@ -102,6 +102,22 @@ glh::matrix4f gl_lookat(LLVector3 eye, LLVector3 center, LLVector3 up)
 	
 }
 
+glh::matrix4f gl_frustum(GLfloat left, GLfloat right, GLfloat bottom, GLfloat top, GLfloat zNear, GLfloat zFar)
+{
+	
+	GLfloat a = (right + left) / (right - left);
+	GLfloat b = (top + bottom) / (top - bottom);
+	GLfloat c = - (zFar + zNear) / (zFar - zNear);
+	GLfloat d = - (2 * zFar * zNear) / (zFar - zNear);
+
+
+
+
+	return glh::matrix4f( 2.f*zNear / (right-left) , 0, a, 0,
+						 0, 2.f*zNear / (top-bottom), b, 0,
+						 0, 0, c, d,
+						 0, 0, -1.f, 0);
+}
 // Build time optimization, generate this once in .cpp file
 template class LLViewerCamera* LLSingleton<class LLViewerCamera>::getInstance();
 
@@ -309,7 +325,8 @@ void LLViewerCamera::setPerspective(BOOL for_selection,
 									BOOL limit_select_distance,
 									F32 z_near, F32 z_far)
 {
-	F32 fov_y, aspect;
+	//F32 fov_y, aspect;
+	F32 fov_y; // KL S21 3D
 	fov_y = RAD_TO_DEG * getView();
 	BOOL z_default_near, z_default_far = FALSE;
 	if (z_far <= 0)
@@ -322,7 +339,8 @@ void LLViewerCamera::setPerspective(BOOL for_selection,
 		z_default_near = TRUE;
 		z_near = getNear();
 	}
-	aspect = getAspect();
+	// KL S21 3D
+	//aspect = getAspect();
 
 	// Load camera view matrix
 	glMatrixMode( GL_PROJECTION );
@@ -381,9 +399,26 @@ void LLViewerCamera::setPerspective(BOOL for_selection,
 		proj_mat = translate*proj_mat;
 	}
 
-	calcProjection(z_far); // Update the projection matrix cache
+	//calcProjection(z_far); // Update the projection matrix cache
 
-	proj_mat *= gl_perspective(fov_y,aspect,z_near,z_far);
+	//proj_mat *= gl_perspective(fov_y,aspect,z_near,z_far);
+	// KL S21 3D
+	F32 eye_separation = gSavedSettings.getF32("StereoEyeSeparation");
+	F32 focal_distance = gSavedSettings.getF32("StereoFocalDistance");
+
+	const float aspect	 = (float)width / (float)height;
+	const float rads	 = 0.01745329251994329577f * (fov_y * .5f);
+	const float wd2		 = z_near * tan(rads);
+	const float ndfl	 = z_near / focal_distance;
+
+	// define frustum
+	float left   = -(aspect * wd2) + (eye_separation/2 * ndfl);
+	float right  =  (aspect * wd2) + (eye_separation/2 * ndfl);
+	float top    =  wd2;
+	float bottom = -wd2;
+	
+	proj_mat *= gl_frustum(left, right, bottom, top, z_near, z_far);
+	// KL S21 3D -End section
 
 	glLoadMatrixf(proj_mat.m);
 
@@ -818,6 +853,57 @@ BOOL LLViewerCamera::areVertsVisible(LLViewerObject* volumep, BOOL all_verts)
 		}
 	}
 	return all_verts;
+}
+
+// KL 3D
+void LLViewerCamera::updateStereoValues()
+{
+	// get the current camera position to calculate the offsets
+	mCameraTempPosition = this->getOrigin();
+
+	// get the last point of iterest to calculate the focal point
+	mStereoLastPOI = mLastPointOfInterest;
+}
+
+void LLViewerCamera::rotateToLeftEye()
+{
+	// Calculate the new position and focal point for the camera (left eye)
+	  F32 eye_separation = gSavedSettings.getF32("StereoEyeSeparation");
+	  F32 focal_distance = gSavedSettings.getF32("StereoFocalDistance");
+	//F32 eye_separation = 2.0f;
+	//F32 focal_distance = 1.0f;
+
+	// Translate camera position of half the distance between the 2 eyes
+	LLVector3 new_pos = mCameraTempPosition + eye_separation/2 * (this->getLeftAxis());
+	
+	// New Point of Interest
+	LLVector3 dir = mStereoLastPOI - mCameraTempPosition;
+	dir.normVec();
+	LLVector3 new_poi = mCameraTempPosition + dir * focal_distance;
+    
+	// lookat target
+	this->updateCameraLocation(new_pos, getUpAxis(), new_poi);
+}
+
+void LLViewerCamera::rotateToRightEye()
+{
+	// Calculate the new position and focal point for the camera (right eye)
+
+	 F32 eye_separation = gSavedSettings.getF32("StereoEyeSeparation");
+	 F32 focal_distance = gSavedSettings.getF32("StereoFocalDistance");
+	//F32 eye_separation = 0.02f;
+	//F32 focal_distance = 1.0f;
+
+	// Translate camera position of half the distance between the 2 eyes
+	LLVector3 new_pos = mCameraTempPosition - eye_separation/2 * (this->getLeftAxis());
+
+	// New Point of Interest
+	LLVector3 dir = mStereoLastPOI - mCameraTempPosition;
+	dir.normVec();
+	LLVector3 new_poi = mCameraTempPosition + dir * focal_distance;
+
+	// lookat target
+	this->updateCameraLocation(new_pos, getUpAxis(), new_poi);
 }
 
 // changes local camera and broadcasts change

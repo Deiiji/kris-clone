@@ -7,7 +7,7 @@
 //
 // Generated from the TEXTINCLUDE 2 resource.
 //
-#include "winres.h"
+#include "windows.h"
 
 /////////////////////////////////////////////////////////////////////////////
 #undef APSTUDIO_READONLY_SYMBOLS
@@ -34,7 +34,7 @@ END
 
 2 TEXTINCLUDE 
 BEGIN
-    "#include ""winres.h""\r\n"
+    "#include ""windows.h""\r\n"
     "\0"
 END
 
@@ -129,8 +129,8 @@ TOOLSIT                 CURSOR                  "toolsit.cur"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,7,5,7
- PRODUCTVERSION 2,7,5,7
+ FILEVERSION 2,7,0,8
+ PRODUCTVERSION 2,7,0,8
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -147,12 +147,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "Kirstens Viewers"
             VALUE "FileDescription", "Kirstens S21"
-            VALUE "FileVersion", "2.7.5.7"
+            VALUE "FileVersion", "2.7.0.8"
             VALUE "InternalName", "Second Life"
-            VALUE "LegalCopyright", "Copyright © 2008-2010, Kirstenlee Cinquetti"
+            VALUE "LegalCopyright", "Copyright © 2008-2011, Kirstenlee Cinquetti"
             VALUE "OriginalFilename", "SecondLife.exe"
             VALUE "ProductName", "Kirstens S21"
-            VALUE "ProductVersion", "2.7.5.7"
+            VALUE "ProductVersion", "2.7.0.8"
         END
     END
     BLOCK "VarFileInfo"
