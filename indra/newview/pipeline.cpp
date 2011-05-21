@@ -602,7 +602,7 @@ void LLPipeline::allocateScreenBuffer(U32 resX, U32 resY)
 	   // KL allow ATI driver tweakers the ability to experiment
 	    if(gSavedSettings.getBOOL("ATIIgnoreRenderTargetAA")==TRUE)
 	    {
-	    U32 samples = llmin(gSavedSettings.getU32("RenderFSAASamples"), (U32) 4);
+	    samples = llmin(gSavedSettings.getU32("RenderFSAASamples"), (U32) 4);
 	    }
 	    else
 	    {
