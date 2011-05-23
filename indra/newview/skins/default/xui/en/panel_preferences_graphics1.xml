@@ -1795,6 +1795,53 @@
 	tool_tip="Time taken to alter focus from one place to the next"
         top_pad="5"
         width="324" />
+	<check_box
+        control_name="StereoMode"
+        height="16"
+        initial_value="true"
+        label="Toggle Anaglyph Render"
+        layout="topleft"
+        top_pad="35" 
+        left="10"
+        name="StereoMode"
+        tool_tip="Render Alternate Frames with red/cyan."
+        width="315" />
+	<slider
+        control_name="StereoEyeSeparation"
+        can_edit_text="true"
+        decimal_digits="3"
+        follows="left|top"
+        height="16"
+        increment="0.001"
+        initial_value="0.065"
+        label="Eye Seperation:"
+        label_width="160"
+        layout="topleft"
+        left="10"
+        max_val="20"
+        min_val="0.001"
+        name="StereoEyeSeperation"
+	tool_tip="Distance between left and right eye relative to focal point"
+        top_pad="5"
+        width="324" />
+	<slider
+        control_name="StereoFocalDistance"
+        can_edit_text="true"
+        decimal_digits="2"
+        follows="left|top"
+        height="16"
+        increment="0.2"
+        initial_value="6.0"
+        label="Focal Distance:"
+        label_width="160"
+        layout="topleft"
+        left="10"
+        max_val="20"
+        min_val="0"
+        name="StereoFocalDistance"
+	tool_tip="Distance from camera to a defined focal point"
+        top_pad="5"
+        width="324" />
 	</panel>
       </tab_container>
      </panel>

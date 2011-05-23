@@ -540,22 +540,7 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 	//
 	// Actually push all of our triangles to the screen.
 	//
-
-	// do render-to-texture stuff here
-	if (gPipeline.hasRenderDebugFeatureMask(LLPipeline::RENDER_DEBUG_FEATURE_DYNAMIC_TEXTURES))
-	{
-		LLAppViewer::instance()->pingMainloopTimeout("Display:DynamicTextures");
-		LLFastTimer t(FTM_UPDATE_TEXTURES);
-		if (LLViewerDynamicTexture::updateAllInstances())
-		{
-			gGL.setColorMask(true, true);
-			glClear(GL_DEPTH_BUFFER_BIT);
-		}
-	}
-
-	gViewerWindow->setup3DViewport();
-
-	if(gSavedSettings.getBOOL("StereoMode")==TRUE) // 0 = off, 1 = Anaglyph via mask 2 = active/clone-shutter mode
+		if(gSavedSettings.getBOOL("StereoMode")==TRUE) // 0 = off, 1 = Anaglyph via mask 2 = active/clone-shutter mode
 	{
 		 
 	     //*** RIGHT EYE *** KL 3D
@@ -567,6 +552,24 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 	     LLViewerCamera::getInstance()->updateStereoValues();
 	     LLViewerCamera::getInstance()->rotateToRightEye();
 	}
+
+	// do render-to-texture stuff here
+	if (gPipeline.hasRenderDebugFeatureMask(LLPipeline::RENDER_DEBUG_FEATURE_DYNAMIC_TEXTURES))
+	{
+		LLAppViewer::instance()->pingMainloopTimeout("Display:DynamicTextures");
+		LLFastTimer t(FTM_UPDATE_TEXTURES);
+		if (LLViewerDynamicTexture::updateAllInstances())
+		{
+			//gGL.setColorMask(true, true);
+			// protect the color mask change for correct anaglyph render
+			GLboolean mask[4];
+			glGetBooleanv(GL_COLOR_WRITEMASK,mask);
+			gGL.setColorMask(mask[0], mask[1], mask[2], mask[3]);
+			glClear(GL_DEPTH_BUFFER_BIT);
+		}
+	}
+
+	gViewerWindow->setup3DViewport();
 
 	gPipeline.resetFrameStats();	// Reset per-frame statistics.
 	
@@ -685,8 +688,13 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 				gResizeScreenTexture = FALSE;
 				gPipeline.resizeScreenTexture();
 			}
+			
+			// protect the color mask change for correct anaglyph render
+			GLboolean mask[4];
+			glGetBooleanv(GL_COLOR_WRITEMASK,mask);
+			gGL.setColorMask(mask[0], mask[1], mask[2], mask[3]);
 
-			gGL.setColorMask(true, true);
+			//gGL.setColorMask(true, true);
 			glClearColor(0,0,0,0);
 
 			LLGLState::checkStates();
@@ -850,7 +858,7 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 		
 		stop_glerror();
 
-		if (to_texture)
+		if (to_texture) // Ok KL masking here causes glow to bleed into next frame... :/
 		{
 			gGL.setColorMask(true, true);
 					
@@ -1001,7 +1009,7 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 	// Note that these are not the same as GL defaults...
 
 	stop_glerror();
-	F32 one[4] =	{1.f, 1.f, 1.f, 1.f};
+	F32 one[4] =	{1.f, 1.f, 1.f, 1.f}; // KL
 	glLightModelfv (GL_LIGHT_MODEL_AMBIENT,one);
 	stop_glerror();
 		
@@ -1019,10 +1027,10 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 		LLFastTimer t(FTM_UPDATE_TEXTURES);
 		if (LLViewerDynamicTexture::updateAllInstances())
 		{
+			//gGL.setColorMask(true, true);
 			GLboolean mask[4];
 			glGetBooleanv(GL_COLOR_WRITEMASK,mask);
-			//gGL.setColorMask(true, true);
-			gGL.setColorMask(mask[0],mask[1],mask[2],false); // KL
+			gGL.setColorMask(mask[0],mask[1],mask[2],mask[3]); // KL
 			glClear(GL_DEPTH_BUFFER_BIT);
 		}
 	}
@@ -1147,7 +1155,11 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 				gPipeline.resizeScreenTexture();
 			}
 
-			gGL.setColorMask(true, true);
+			// protect the color mask change for correct anaglyph render
+			GLboolean mask[4];
+			glGetBooleanv(GL_COLOR_WRITEMASK,mask);
+			gGL.setColorMask(mask[0], mask[1], mask[2], mask[3]);
+			//gGL.setColorMask(true, true);
 			glClearColor(0,0,0,0);
 
 			LLGLState::checkStates();
@@ -1281,7 +1293,7 @@ void display(BOOL rebuild, F32 zoom_factor, int subfield, BOOL for_snapshot)
 			GLboolean mask[4];
 			glGetBooleanv(GL_COLOR_WRITEMASK,mask);
 			//gGL.setColorMask(true, true);
-			gGL.setColorMask(mask[0],mask[1],mask[2],false); // KL		
+			gGL.setColorMask(mask[0],mask[1],mask[2],mask[3]); // KL		
 			if (LLPipeline::sRenderDeferred && !LLPipeline::sUnderWaterRender)
 			{
 				gPipeline.mDeferredScreen.bindTarget();
