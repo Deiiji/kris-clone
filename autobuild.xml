@@ -66,9 +66,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>efdf9056699158e5597db1c2d0e89272</string>
+              <string>69ae3b1c9cdb0ebc0d0e1ac8413e3eb7</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-SDL-1.2.15-linux-20110524.tar.bz2</string>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/SDL-1.2.14-linux-20110309.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -102,9 +102,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>2d0c93c57a940da7c83e96cb18708364</string>
+              <string>ff62946c518a247c86e1066c1e9a5855</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-apr_suite-1.4.5-linux-20110524.tar.bz2</string>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/apr_suite-1.4.2-linux-20110309.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
