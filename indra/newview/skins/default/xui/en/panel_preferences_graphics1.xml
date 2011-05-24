@@ -1795,7 +1795,7 @@
 	tool_tip="Time taken to alter focus from one place to the next"
         top_pad="5"
         width="324" />
-	<check_box
+	<!--<check_box
         control_name="StereoMode"
         height="16"
         initial_value="true"
@@ -1841,7 +1841,7 @@
         name="StereoFocalDistance"
 	tool_tip="Distance from camera to a defined focal point"
         top_pad="5"
-        width="324" />
+        width="324" />-->
 	</panel>
       </tab_container>
      </panel>

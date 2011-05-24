@@ -43,7 +43,7 @@
 #include "material_codes.h"
 #include "timing.h"
 #include "v3color.h"
-#include "v4color.h"	//better add alpha headers here to let ALPHA pool work nicer
+#include "v4color.h"
 #include "llui.h" 
 #include "llglheaders.h"
 #include "llrender.h"
@@ -1980,7 +1980,7 @@ void LLPipeline::updateCull(LLCamera& camera, LLCullResult& result, S32 water_cl
 
 	if (sUseOcclusion > 1)
 	{
-		gGL.setColorMask(false, false);
+		gGL.setColorMask(false, false); // KL update cull
 	}
 
 	glMatrixMode(GL_PROJECTION);
@@ -2088,7 +2088,7 @@ void LLPipeline::updateCull(LLCamera& camera, LLCullResult& result, S32 water_cl
 
 	if (sUseOcclusion > 1)
 	{
-		gGL.setColorMask(true, false);
+		gGL.setColorMask(true, false); // KL update cull
 	}
 
 	if (to_texture)
@@ -2169,7 +2169,7 @@ void LLPipeline::doOcclusion(LLCamera& camera)
 
 		if (hasRenderDebugMask(LLPipeline::RENDER_DEBUG_OCCLUSION))
 		{
-			gGL.setColorMask(true, false, false, false);
+			gGL.setColorMask(true, false, false, false); // KL debug
 		}
 		else
 		{
@@ -3454,7 +3454,7 @@ void LLPipeline::renderHighlights()
 
 	// Contains a list of the faces of objects that are physical or
 	// have touch-handlers.
-	mHighlightFaces.clear();
+	mHighlightFaces.clear(); // KL originally 3D patch had a color mask here see line 3337 now called from renderGeom
 
 	if (LLViewerShaderMgr::instance()->getVertexShaderLevel(LLViewerShaderMgr::SHADER_INTERFACE) > 0)
 	{
@@ -3763,7 +3763,7 @@ void LLPipeline::renderGeomDeferred(LLCamera& camera)
 
 	U32 cur_type = 0;
 
-	gGL.setColorMask(true, true);
+	gGL.setColorMask(true, true); // KL deferred
 	
 	pool_set_t::iterator iter1 = mPools.begin();
 
@@ -3831,7 +3831,7 @@ void LLPipeline::renderGeomDeferred(LLCamera& camera)
 	gGLLastMatrix = NULL;
 	glLoadMatrixd(gGLModelView);
 
-	gGL.setColorMask(true, false);
+	gGL.setColorMask(true, false); // KL deferred
 }
 
 void LLPipeline::renderGeomPostDeferred(LLCamera& camera)
@@ -3847,7 +3847,7 @@ void LLPipeline::renderGeomPostDeferred(LLCamera& camera)
 	calcNearbyLights(camera);
 	setupHWLights(NULL);
 
-	gGL.setColorMask(true, false);
+	gGL.setColorMask(true, false); // KL post
 
 	pool_set_t::iterator iter1 = mPools.begin();
 	BOOL occlude = LLPipeline::sUseOcclusion > 1;
@@ -3864,7 +3864,7 @@ void LLPipeline::renderGeomPostDeferred(LLCamera& camera)
 			gGLLastMatrix = NULL;
 			glLoadMatrixd(gGLModelView);
 			doOcclusion(camera);
-			gGL.setColorMask(true, false);
+			gGL.setColorMask(true, false); // KL post
 		}
 
 		pool_set_t::iterator iter2 = iter1;
@@ -4039,11 +4039,11 @@ void LLPipeline::renderPhysicsDisplay()
 	gGL.flush();
 	mPhysicsDisplay.bindTarget();
 	glClearColor(0,0,0,1);
-	gGL.setColorMask(true, true);
+	gGL.setColorMask(true, true); // Kl debug physics
 	mPhysicsDisplay.clear();
 	glClearColor(0,0,0,0);
 
-	gGL.setColorMask(true, false);
+	gGL.setColorMask(true, false); // KL debug Physics
 
 	for (LLWorld::region_list_t::const_iterator iter = LLWorld::getInstance()->getRegionList().begin(); 
 			iter != LLWorld::getInstance()->getRegionList().end(); ++iter)
@@ -4090,7 +4090,7 @@ void LLPipeline::renderDebug()
 
 	gGLLastMatrix = NULL;
 	glLoadMatrixd(gGLModelView);
-	gGL.setColorMask(true, false);
+	gGL.setColorMask(true, false); // KL debug
 
 	bool hud_only = hasRenderType(LLPipeline::RENDER_TYPE_HUD);
 
@@ -6996,7 +6996,7 @@ void LLPipeline::renderDeferredLighting()
 		glStencilFunc(GL_EQUAL, 1, 0xFFFFFFFF);
 		glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
 
-		gGL.setColorMask(true, true);
+		gGL.setColorMask(true, true); // KL render deferred
 		
 		//draw a cube around every light
 		LLVertexBuffer::unbind();
@@ -7585,7 +7585,7 @@ void LLPipeline::renderDeferredLighting()
 			}
 		}
 
-		gGL.setColorMask(true, true);
+		gGL.setColorMask(true, true); // KL deferred
 
 		if (LLViewerShaderMgr::instance()->getVertexShaderLevel(LLViewerShaderMgr::SHADER_DEFERRED) > 2)
 		{
@@ -7939,9 +7939,9 @@ void LLPipeline::generateWaterReflection(LLCamera& camera_in)
 		if (!LLViewerCamera::getInstance()->cameraUnderWater())
 		{	//generate planar reflection map
 
-			//disable occlusion culling for reflection map for now KL keep tabs
+			//disable occlusion culling for reflection map for now
 			S32 occlusion = LLPipeline::sUseOcclusion;
-			LLPipeline::sUseOcclusion = 0; 
+			LLPipeline::sUseOcclusion = 0;
 			gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
 			glClearColor(0,0,0,0);
 			mWaterRef.bindTarget();
@@ -8246,7 +8246,7 @@ void LLPipeline::renderShadow(glh::matrix4f& view, glh::matrix4f& proj, LLCamera
 	
 	stop_glerror();
 
-	gGL.setColorMask(false, false);
+	gGL.setColorMask(false, false); // KL shadow
 	
 	//glCullFace(GL_FRONT);
 
@@ -8295,7 +8295,7 @@ void LLPipeline::renderShadow(glh::matrix4f& view, glh::matrix4f& proj, LLCamera
 		gDeferredShadowProgram.unbind();
 	}
 	
-	gGL.setColorMask(true, true);
+	gGL.setColorMask(true, true); // KL shadow
 			
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
@@ -8709,7 +8709,7 @@ void LLPipeline::generateHighlight(LLCamera& camera)
 		LLGLDepthTest depth(GL_FALSE);
 		mHighlight.bindTarget();
 		disableLights();
-		gGL.setColorMask(true, true);
+		gGL.setColorMask(true, true); // KL Hover glow
 		mHighlight.clear();
 
 		gGL.getTexUnit(0)->bind(LLViewerFetchedTexture::sWhiteImagep);
@@ -8741,7 +8741,7 @@ void LLPipeline::generateHighlight(LLCamera& camera)
 		}
 
 		mHighlight.flush();
-		gGL.setColorMask(true, false);
+		gGL.setColorMask(true, false); // Kl hover Glow
 		gViewerWindow->setup3DViewport();
 	}
 }
@@ -8782,7 +8782,7 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 					LLPipeline::RENDER_TYPE_PASS_FULLBRIGHT_SHINY,
 					END_RENDER_TYPES);
 
-	gGL.setColorMask(false, false);
+	gGL.setColorMask(false, false); // KL sun shadow
 
 	//get sun view matrix
 	
@@ -9442,7 +9442,7 @@ void LLPipeline::generateSunShadow(LLCamera& camera)
 		glLoadMatrixf(proj[1].m);
 		glMatrixMode(GL_MODELVIEW);
 	}
-	gGL.setColorMask(true, false);
+	gGL.setColorMask(true, false); // KL Sun shadow
 
 	for (U32 i = 0; i < 16; i++)
 	{
@@ -9644,7 +9644,7 @@ void LLPipeline::generateImpostor(LLVOAvatar* avatar)
 
 		if (muted)
 		{
-			gGL.setColorMask(true, true);
+			gGL.setColorMask(true, true); // KL impostor
 		}
 		else
 		{

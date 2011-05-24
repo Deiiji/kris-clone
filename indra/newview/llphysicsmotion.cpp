@@ -123,7 +123,7 @@ protected:
         }
         void setParamValue(LLViewerVisualParam *param,
                            const F32 new_value_local,
-						   F32 behavior_maxeffect);
+                                                   F32 behavior_maxeffect);
 
         F32 toLocal(const LLVector3 &world);
         F32 calculateVelocity_local();
@@ -533,42 +533,42 @@ BOOL LLPhysicsMotion::onUpdate(F32 time)
 		// Calculate the total force 
 		//
 
-        // Spring force is a restoring force towards the original user-set breast position.
-        // F = kx
-        const F32 spring_length = position_current_local - position_user_local;
-        const F32 force_spring = -spring_length * behavior_spring;
+		// Spring force is a restoring force towards the original user-set breast position.
+		// F = kx
+		const F32 spring_length = position_current_local - position_user_local;
+		const F32 force_spring = -spring_length * behavior_spring;
 
-        // Acceleration is the force that comes from the change in velocity of the torso.
-        // F = ma
-        const F32 force_accel = behavior_gain * (acceleration_joint_local * behavior_mass);
+		// Acceleration is the force that comes from the change in velocity of the torso.
+		// F = ma
+		const F32 force_accel = behavior_gain * (acceleration_joint_local * behavior_mass);
 
 		// Gravity always points downward in world space.
 		// F = mg
 		const LLVector3 gravity_world(0,0,1);
 		const F32 force_gravity = (toLocal(gravity_world) * behavior_gravity * behavior_mass);
                 
-        // Damping is a restoring force that opposes the current velocity.
-        // F = -kv
-        const F32 force_damping = -behavior_damping * mVelocity_local;
+		// Damping is a restoring force that opposes the current velocity.
+		// F = -kv
+		const F32 force_damping = -behavior_damping * mVelocity_local;
                 
-        // Drag is a force imparted by velocity (intuitively it is similar to wind resistance)
-        // F = .5kv^2
-        const F32 force_drag = .5*behavior_drag*velocity_joint_local*velocity_joint_local*llsgn(velocity_joint_local);
+		// Drag is a force imparted by velocity (intuitively it is similar to wind resistance)
+		// F = .5kv^2
+		const F32 force_drag = .5*behavior_drag*velocity_joint_local*velocity_joint_local*llsgn(velocity_joint_local);
 
-        const F32 force_net = (force_accel + 
-                               force_gravity +
-                               force_spring + 
-                               force_damping + 
-                               force_drag);
+		const F32 force_net = (force_accel + 
+				       force_gravity +
+				       force_spring + 
+				       force_damping + 
+				       force_drag);
 
-        //
-        // End total force
-        ////////////////////////////////////////////////////////////////////////////////
+		//
+		// End total force
+		////////////////////////////////////////////////////////////////////////////////
 
         
-        ////////////////////////////////////////////////////////////////////////////////
-        // Calculate new params
-        //
+		////////////////////////////////////////////////////////////////////////////////
+		// Calculate new params
+		//
 
 		// Calculate the new acceleration based on the net force.
 		// a = F/m
@@ -588,12 +588,12 @@ BOOL LLPhysicsMotion::onUpdate(F32 time)
 		if (behavior_maxeffect == 0)
 			position_new_local = position_user_local;
 
-        // Zero out the velocity if the param is being pushed beyond its limits.
-        if ((position_new_local < 0 && velocity_new_local < 0) || 
-            (position_new_local > 1 && velocity_new_local > 0))
-        {
-                velocity_new_local = 0;
-        }
+		// Zero out the velocity if the param is being pushed beyond its limits.
+		if ((position_new_local < 0 && velocity_new_local < 0) || 
+		    (position_new_local > 1 && velocity_new_local > 0))
+		{
+			velocity_new_local = 0;
+		}
 	
 		// Check for NaN values.  A NaN value is detected if the variables doesn't equal itself.  
 		// If NaN, then reset everything.
@@ -609,44 +609,44 @@ BOOL LLPhysicsMotion::onUpdate(F32 time)
 			mPosition_world = LLVector3(0,0,0);
 		}
 
-        const F32 position_new_local_clamped = llclamp(position_new_local,
-						       0.0f,
-						       1.0f);
+		const F32 position_new_local_clamped = llclamp(position_new_local,
+							       0.0f,
+							       1.0f);
 
-        LLDriverParam *driver_param = dynamic_cast<LLDriverParam *>(mParamDriver);
-        llassert_always(driver_param);
-        if (driver_param)
-        {
-                // If this is one of our "hidden" driver params, then make sure it's
-                // the default value.
-                if ((driver_param->getGroup() != VISUAL_PARAM_GROUP_TWEAKABLE) &&
-                    (driver_param->getGroup() != VISUAL_PARAM_GROUP_TWEAKABLE_NO_TRANSMIT))
-                {
-                        mCharacter->setVisualParamWeight(driver_param,
-                                                         0,
-                                                         FALSE);
-                }
-                for (LLDriverParam::entry_list_t::iterator iter = driver_param->mDriven.begin();
-                     iter != driver_param->mDriven.end();
-                     ++iter)
-                {
-                        LLDrivenEntry &entry = (*iter);
-                        LLViewerVisualParam *driven_param = entry.mParam;
-                        setParamValue(driven_param,position_new_local_clamped, behavior_maxeffect);
-                }
-        }
+		LLDriverParam *driver_param = dynamic_cast<LLDriverParam *>(mParamDriver);
+		llassert_always(driver_param);
+		if (driver_param)
+		{
+			// If this is one of our "hidden" driver params, then make sure it's
+			// the default value.
+			if ((driver_param->getGroup() != VISUAL_PARAM_GROUP_TWEAKABLE) &&
+			    (driver_param->getGroup() != VISUAL_PARAM_GROUP_TWEAKABLE_NO_TRANSMIT))
+			{
+				mCharacter->setVisualParamWeight(driver_param,
+								 0,
+								 FALSE);
+			}
+			for (LLDriverParam::entry_list_t::iterator iter = driver_param->mDriven.begin();
+			     iter != driver_param->mDriven.end();
+			     ++iter)
+			{
+				LLDrivenEntry &entry = (*iter);
+				LLViewerVisualParam *driven_param = entry.mParam;
+				setParamValue(driven_param,position_new_local_clamped, behavior_maxeffect);
+			}
+		}
         
-        //
-        // End calculate new params
-        ////////////////////////////////////////////////////////////////////////////////
+		//
+		// End calculate new params
+		////////////////////////////////////////////////////////////////////////////////
 
-        ////////////////////////////////////////////////////////////////////////////////
-        // Conditionally update the visual params
-        //
+		////////////////////////////////////////////////////////////////////////////////
+		// Conditionally update the visual params
+		//
         
-        // Updating the visual params (i.e. what the user sees) is fairly expensive.
-        // So only update if the params have changed enough, and also take into account
-        // the graphics LOD settings.
+		// Updating the visual params (i.e. what the user sees) is fairly expensive.
+		// So only update if the params have changed enough, and also take into account
+		// the graphics LOD settings.
         
 		// For non-self, if the avatar is small enough visually, then don't update.
 		const F32 area_for_max_settings = 0.0;

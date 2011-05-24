@@ -1663,11 +1663,6 @@ void LLManipTranslate::highlightIntersection(LLVector3 normal,
 		LLGLEnable stencil(GL_STENCIL_TEST);
 		LLGLDepthTest depth (GL_TRUE, GL_FALSE, GL_ALWAYS);
 		glStencilFunc(GL_ALWAYS, 0, stencil_mask);
-
-		// KL protect the color mask change for correct anaglyph render
-		GLboolean mask[4];
-		glGetBooleanv(GL_COLOR_WRITEMASK,mask);
-
 		gGL.setColorMask(false, false);
 		gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
 		glColor4f(1,1,1,1);
@@ -1719,8 +1714,7 @@ void LLManipTranslate::highlightIntersection(LLVector3 normal,
 			LLPipeline::toggleRenderType(LLPipeline::RENDER_TYPE_CLOUDS);
 		}
 
-		//gGL.setColorMask(true, false);
-		gGL.setColorMask(mask[0], mask[1], mask[2], mask[3]); // KL
+		gGL.setColorMask(true, false);
 	}
 	gGL.color4f(1,1,1,1);
 

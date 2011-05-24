@@ -211,7 +211,7 @@ void LLDrawPoolAlpha::render(S32 pass)
 	}
 	else
 	{
-		gGL.setColorMask(true, true);
+		gGL.setColorMask(true, true); // defer render
 	}
 
 	if (LLPipeline::sAutoMaskAlphaNonDeferred)
