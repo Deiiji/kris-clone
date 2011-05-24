@@ -102,9 +102,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>ff62946c518a247c86e1066c1e9a5855</string>
+              <string>2d0c93c57a940da7c83e96cb18708364</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/apr_suite-1.4.2-linux-20110309.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-apr_suite-1.4.5-linux-20110524.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
