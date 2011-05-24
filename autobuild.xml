@@ -150,9 +150,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>0745872db83d45f4ab3bdc697d98e264</string>
+              <string>700a0b02f485c11b200cc8bff5288ddf</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-ares/rev/223275/arch/Linux/installer/ares-1.7.1-linux-20110310.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-ares-1.7.4-linux-20110524.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
