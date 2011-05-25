@@ -198,9 +198,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>fce2d6134464e9169505e0f4a4fbaf8f</string>
+              <string>a34e7fffdb94a6a4d8a2966b1f216da3</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-boost-1.46.0-linux-20110524.tar.bz2</string>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/boost-1.45.0-linux-20110310.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>

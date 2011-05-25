@@ -45,10 +45,6 @@ private:
 	boost::regex			mFilterExp;
 	fs::directory_iterator	mIter;
 	bool					mIsValid;
-	#if (LL_LINUX)
-	static std::string const convertFilenameToString(std::string const filename);
-        static std::string const convertFilenameToString(fs::path const filename);
-	#endif // (LL_LINUX)
 };
 
 LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
@@ -67,20 +63,11 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mIter = fs::directory_iterator(dir_path);
 	}
-	#if (!LL_LINUX)
 	catch (fs::basic_filesystem_error<fs::path>& e)
         {
                 llerrs << e.what() << llendl;
                 return;
         }
-	#endif
-	#if (LL_LINUX)
-	catch (fs::filesystem_error& e)
-	{
-		llerrs << e.what() << llendl;
-		return;
-	}
-	#endif
 
 	// Convert the glob mask to a regular expression
 	std::string exp = glob_to_regex(mask);
@@ -121,39 +108,17 @@ bool LLDirIterator::Impl::next(std::string &fname)
 	while (mIter != end_itr && !found)
 	{
 		boost::smatch match;
-		#if (!LL_LINUX)
 		std::string name = mIter->path().filename();
 		if (found = boost::regex_match(name, match, mFilterExp))
                 {
                         fname = name;
                 }
-		#endif
-		#if (LL_LINUX)
-		std::string const name = convertFilenameToString(mIter->path().filename());
-		if (found = boost::regex_match(name, match, mFilterExp))
-		{
-			fname = name;
-		}
-		#endif
 
 		++mIter;
 	}
 
 	return found;
 }
-
-#if (LL_LINUX)
-	/* static */ inline std::string const
-	LLDirIterator::Impl::convertFilenameToString(std::string const filename)
-	{
-		return filename;
-	}
-	/* static */ inline std::string const
-	LLDirIterator::Impl::convertFilenameToString(fs::path const filename)
-	{
-		return filename.native();
-	}
-#endif
 
 std::string glob_to_regex(const std::string& glob)
 {
