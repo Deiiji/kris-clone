@@ -26,8 +26,10 @@
 
 #include "lldiriterator.h"
 
-#include "boost/filesystem.hpp"
-#include "boost/regex.hpp"
+#define BOOST_FILESYSTEM_VERSION 3
+
+#include <boost/filesystem.hpp>
+#include <boost/regex.hpp>
 
 namespace fs = boost::filesystem;
 
@@ -63,7 +65,7 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mIter = fs::directory_iterator(dir_path);
 	}
-	catch (fs::basic_filesystem_error<fs::path>& e)
+	catch (fs::filesystem_error& e)
         {
                 llerrs << e.what() << llendl;
                 return;
@@ -108,7 +110,7 @@ bool LLDirIterator::Impl::next(std::string &fname)
 	while (mIter != end_itr && !found)
 	{
 		boost::smatch match;
-		std::string name = mIter->path().filename();
+		std::string const name = mIter->path().filename().native();
 		if (found = boost::regex_match(name, match, mFilterExp))
                 {
                         fname = name;
