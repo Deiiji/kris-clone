@@ -68,7 +68,7 @@ elseif (LINUX)
         QtWebKit
         QtOpenGL
         QtNetwork
-        QtGui
+#        QtGui
         QtCore
 #        qgif
 #        qjpeg
