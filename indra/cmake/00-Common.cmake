@@ -136,6 +136,7 @@ if (LINUX)
   add_definitions(
       -DLL_LINUX=1
       -D_REENTRANT
+      -DBOOST_SP_USE_PTHREADS
       -fexceptions
       -fno-math-errno
       -fno-strict-aliasing

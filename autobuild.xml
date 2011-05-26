@@ -198,9 +198,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>fce2d6134464e9169505e0f4a4fbaf8f</string>
+              <string>5adf5dc4d19c866fb80820b4b96656a1</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-boost-1.46.0-linux-20110524.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-boost-1.45.0-linux-20110526.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1170,9 +1170,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>c05a33ee8b6f253b5a744596dfc3707d</string>
+              <string>227aa1b350fd6a11b130ca66f334853a</string>
               <key>url</key>
-              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/llqtwebkit-linux-qt4.6-20101013.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-llqtwebkit-4.7.1-linux-20110526.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1244,7 +1244,7 @@
               <key>hash</key>
               <string>593fc39605d9d90186a44cfc1fbbf68a</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-ndof-0.3-20110422.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-ndof-0.3-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1476,7 +1476,7 @@
               <key>hash</key>
               <string>9728ebc786f8d48747784648efe00a44</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-pcre-7.6-20110422.tar.bz2</string>
+              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-pcre-7.6-20110422.tar.bz2/download</string>
             </map>
             <key>name</key>
             <string>linux</string>
