@@ -18,9 +18,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>930bdd987a321eda1838caba8cd6098f</string>
+              <string>7c546f54f6ed654f713c778af3925dd4</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-glod/rev/230348/arch/Darwin/installer/glod-1.0pre4-darwin-20110519.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-glod/rev/226566/arch/Darwin/installer/glod-1.0pre4-darwin-20110413.tar.bz2</string>
             </map>
             <key>name</key>
             <string>darwin</string>
@@ -42,9 +42,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>388cf0e292f756b4bb37696622f0bbc5</string>
+              <string>c4ae6cddc04e0b2908a301726a53922c</string>
               <key>url</key>
-              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-glod/rev/230348/arch/CYGWIN/installer/glod-1.0pre4-windows-20110519.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-glod/rev/226194/arch/CYGWIN/installer/glod-1.0pre4-windows-20110408.tar.bz2</string>
             </map>
             <key>name</key>
             <string>windows</string>
@@ -150,9 +150,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>700a0b02f485c11b200cc8bff5288ddf</string>
+              <string>0745872db83d45f4ab3bdc697d98e264</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-ares-1.7.4-linux-20110524.tar.bz2</string>
+              <string>http://automated-builds-secondlife-com.s3.amazonaws.com/hg/repo/3p-ares/rev/223275/arch/Linux/installer/ares-1.7.1-linux-20110310.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -198,9 +198,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>354a770118f1704a20f204951bf8bc65</string>
+              <string>a34e7fffdb94a6a4d8a2966b1f216da3</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-boost-1.45.0-linux-20110526.tar.bz2</string>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/boost-1.45.0-linux-20110310.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1170,9 +1170,9 @@
             <key>archive</key>
             <map>
               <key>hash</key>
-              <string>227aa1b350fd6a11b130ca66f334853a</string>
+              <string>c05a33ee8b6f253b5a744596dfc3707d</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-llqtwebkit-4.7.1-linux-20110526.tar.bz2</string>
+              <string>http://s3.amazonaws.com/viewer-source-downloads/install_pkgs/llqtwebkit-linux-qt4.6-20101013.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1244,7 +1244,7 @@
               <key>hash</key>
               <string>593fc39605d9d90186a44cfc1fbbf68a</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-ndof-0.3-20110422.tar.bz2</string>
+              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-ndof-0.3-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
@@ -1476,7 +1476,7 @@
               <key>hash</key>
               <string>9728ebc786f8d48747784648efe00a44</string>
               <key>url</key>
-              <string>http://sourceforge.net/projects/kirstensviewers/files/kirstensviewers/autobuild/kv-linux-pcre-7.6-20110422.tar.bz2/download</string>
+              <string>http://sourceforge.net/projects/sythos/files/p3/kv-linux-pcre-7.6-20110422.tar.bz2</string>
             </map>
             <key>name</key>
             <string>linux</string>
