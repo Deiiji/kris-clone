@@ -26,8 +26,6 @@
 
 #include "lldiriterator.h"
 
-#define BOOST_FILESYSTEM_VERSION 3
-
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 
@@ -53,10 +51,11 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	: mIsValid(false)
 {
 	fs::path dir_path(dirname);
+
 	// Check if path exists.
 	if (!fs::exists(dir_path))
 	{
-		llerrs << "Invalid path: \"" << dir_path.string() << "\"" << llendl;
+		llwarns << "Invalid path: \"" << dir_path.string() << "\"" << llendl;
 		return;
 	}
 
@@ -65,11 +64,11 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mIter = fs::directory_iterator(dir_path);
 	}
-	catch (fs::filesystem_error& e)
-        {
-                llerrs << e.what() << llendl;
-                return;
-        }
+	catch (fs::basic_filesystem_error<fs::path>& e)
+	{
+		llerrs << e.what() << llendl;
+		return;
+	}
 
 	// Convert the glob mask to a regular expression
 	std::string exp = glob_to_regex(mask);
@@ -101,7 +100,7 @@ bool LLDirIterator::Impl::next(std::string &fname)
 
 	if (!mIsValid)
 	{
-		llerrs << "The iterator is not correctly initialized." << llendl;
+		llwarns << "The iterator is not correctly initialized." << llendl;
 		return false;
 	}
 
@@ -110,11 +109,11 @@ bool LLDirIterator::Impl::next(std::string &fname)
 	while (mIter != end_itr && !found)
 	{
 		boost::smatch match;
-		std::string const name = mIter->path().filename().native();
+		std::string name = mIter->path().filename();
 		if (found = boost::regex_match(name, match, mFilterExp))
-                {
-                        fname = name;
-                }
+		{
+			fname = name;
+		}
 
 		++mIter;
 	}
