@@ -4,10 +4,7 @@
 		Bouton central de la souris
 	</panel.string>
 	<slider label="Volume principal" name="System Volume"/>
-	<check_box initial_value="true" name="mute_when_minimized"/>
-	<text name="mute_chb_label">
-		Couper lorsque minimisé
-	</text>
+	<check_box label="Couper quand minimisé" name="mute_when_minimized" value="true"/>
 	<slider label="Boutons" name="UI Volume"/>
 	<slider label="Ambiant" name="Wind Volume"/>
 	<slider label="Effets sonores" name="SFX Volume"/>
@@ -17,16 +14,17 @@
 	<check_box label="Activé" name="enable_media"/>
 	<slider label="Chat vocal" name="Voice Volume"/>
 	<check_box label="Activé" name="enable_voice_check"/>
+	<check_box label="Afficher le Titre/Artiste lorsqu'une chanson change" name="media_meta_data_show" tool_tip="Activer l'affichage des Titres/Artistes à l'écran lorsque le flux audio est activé" value="true"/>
 	<check_box label="Autoriser la lecture automatique du média" name="media_auto_play_btn" tool_tip="Cochez pour autoriser la lecture automatique du média" value="true"/>
 	<check_box label="Lecture du média aux autres avatars" name="media_show_on_others_btn" tool_tip="Décochez pour masquer le média aux autres avatars près de vous" value="true"/>
 	<text name="voice_chat_settings">
 		Paramètres du chat vocal
 	</text>
-	<text name="Listen from">
+	<text width="170" name="Listen from">
 		Écouter à partir de :
 	</text>
 	<radio_group name="ear_location">
-		<radio_item label="Position de la caméra" name="0"/>
+		<radio_item label="Position de la caméra" left_pad="-140" name="0"/>
 		<radio_item label="Position de l&apos;avatar" name="1"/>
 	</radio_group>
 	<check_box label="Faire bouger les lèvres de l&apos;avatar lorsqu&apos;il parle" name="enable_lip_sync"/>

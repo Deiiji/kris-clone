@@ -40,6 +40,7 @@
 #include "llmeshrepository.h"
 #include "llsky.h"
 #include "llviewercamera.h"
+#include "llviewerwindow.h" // KL
 #include "llviewerregion.h"
 #include "noise.h"
 #include "pipeline.h"
@@ -1052,6 +1053,7 @@ void LLDrawPoolAvatar::endDeferredSkinned()
 
 void LLDrawPoolAvatar::renderAvatars(LLVOAvatar* single_avatar, S32 pass)
 {
+	S32 mode = gViewerWindow->getMaskMode();
 	if (pass == -1)
 	{
 		for (S32 i = 1; i < getNumPasses(); i++)
@@ -1208,7 +1210,21 @@ void LLDrawPoolAvatar::renderAvatars(LLVOAvatar* single_avatar, S32 pass)
 	{
 		LLGLEnable blend(GL_BLEND);
 
-		gGL.setColorMask(true, true);
+		//gGL.setColorMask(true, true);
+		if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,true);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,true);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, true);
+		}
 		gGL.blendFunc(LLRender::BF_SOURCE_ALPHA,
 					  LLRender::BF_ONE_MINUS_SOURCE_ALPHA,
 					  LLRender::BF_ZERO,
@@ -1242,7 +1258,21 @@ void LLDrawPoolAvatar::renderAvatars(LLVOAvatar* single_avatar, S32 pass)
 		gGL.setColorMask(false, true);
 
 		renderRiggedGlow(avatarp);
-		gGL.setColorMask(true, false);
+		//gGL.setColorMask(true, false);
+		if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,false);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,false);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, false);
+		}
 		gGL.setSceneBlendType(LLRender::BT_ALPHA);
 		return;
 	}

@@ -429,6 +429,9 @@ bool idle_startup()
 		// Load the throttle settings
 		gViewerThrottle.load();
 
+		// Stereo Vision off at startup KL
+		gViewerWindow->setMaskMode(MASK_MODE_NONE);
+
 		if (ll_init_ares() == NULL || !gAres->isInitialized())
 		{
 			std::string diagnostic = "Could not start address resolution system";

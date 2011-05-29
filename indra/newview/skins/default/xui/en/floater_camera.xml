@@ -134,8 +134,7 @@
              image_name="Cam_Preset_Back_Off" />
            <panel_camera_item.selected_picture
              image_name="Cam_Preset_Back_On" />
-           <panel_camera_item.text
-             name="top_view_text">
+           <panel_camera_item.text name="fps_view_text">
              FPS View
            </panel_camera_item.text>
          </panel_camera_item>

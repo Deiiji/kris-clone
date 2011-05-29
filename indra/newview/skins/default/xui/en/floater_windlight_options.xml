@@ -1288,7 +1288,7 @@
         left="0"
         mouse_opaque="false"
         help_topic="cloud_texture_tab"
-        name="Clouds"
+        name="Clouds Extras"
         top="0"
         width="698">
         <text
@@ -1299,7 +1299,7 @@
          height="16"
          layout="topleft"
          left="10"
-         name="BHText3"
+         name="CloudTexture"
          top="4"
          width="300">
           Cloud Texture (requires restart).

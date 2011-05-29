@@ -63,7 +63,8 @@ public:
 	/*virtual*/ void beginRenderPass(S32 pass = 0);
 	/*virtual*/ void endRenderPass( S32 pass );
 	/*virtual*/ S32	 getNumPasses() { return 1; }
-
+	
+	
 	virtual void render(S32 pass = 0);
 	/*virtual*/ void prerender();
 
@@ -73,12 +74,14 @@ public:
 	
 	static BOOL sShowDebugAlpha;
 
+
+
 private:
 	LLGLSLShader* current_shader;
 	LLGLSLShader* target_shader;
 	LLGLSLShader* simple_shader;
-	LLGLSLShader* fullbright_shader;	
-
+	LLGLSLShader* fullbright_shader;
+	
 	// our 'normal' alpha blend function for this pass
 	LLRender::eBlendFactor mColorSFactor;
 	LLRender::eBlendFactor mColorDFactor;	

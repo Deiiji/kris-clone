@@ -132,52 +132,6 @@
      name="vbo"
      tool_tip="Enabling this on modern hardware gives a performance gain.  However, older hardware often has poor implementations of VBOs and you may get crashes when this is enabled."
      width="315" />
-     <text 
-     type="string" 
-     length="1"
-     follows="left|top"
-     height="16"
-     layout="topleft"
-     left="10" 
-     name="Enable FBO:" 
-     top_pad="10"
-     width="188">
-     Enable FBO:
-  </text>
-  <check_box 
-   control_name="RenderUseFBO"  
-   height="16"
-   initial_value="true"
-   label="Toggle Framebuffer Objects"
-   layout="topleft"
-   left_pad="10"
-   name="fbo" 
-   tool_tip="Prerequisite for deferred rendering and FSAA."
-   width="315" />
-
-<!--  <text 
-    type="string" 
-    length="1"
-    follows="left|top"
-    height="12"
-    layout="topleft"
-    left="10"
-    name="Deferred Rendering:" 
-    top_pad="10"
-    width="188">
-     Deferred Rendering:
-  </text>
-  <check_box 
-   control_name="RenderDeferred" enabled="true" follows="left|top"
-   height="16" 
-   initial_value="true"
-   label="Enable per-pixel lighting and shadows"
-   layout="topleft"
-   left_pad="10"
-   name="deferred" 
-   tool_tip="Enabling this will perform lighting calculations in screen space, enabling per pixel lighting for all lights and shadows from the sun/moon.  Requires a fast graphics card.  Might not be compatible with FSAA."
-   width="315" />
-	-->	
     <slider
      control_name="TextureMemory"
      decimal_digits="0"

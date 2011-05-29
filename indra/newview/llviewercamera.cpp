@@ -870,8 +870,6 @@ void LLViewerCamera::rotateToLeftEye()
 	// Calculate the new position and focal point for the camera (left eye)
 	  F32 eye_separation = gSavedSettings.getF32("StereoEyeSeparation");
 	  F32 focal_distance = gSavedSettings.getF32("StereoFocalDistance");
-	//F32 eye_separation = 2.0f;
-	//F32 focal_distance = 1.0f;
 
 	// Translate camera position of half the distance between the 2 eyes
 	LLVector3 new_pos = mCameraTempPosition + eye_separation/2 * (this->getLeftAxis());
@@ -891,8 +889,6 @@ void LLViewerCamera::rotateToRightEye()
 
 	 F32 eye_separation = gSavedSettings.getF32("StereoEyeSeparation");
 	 F32 focal_distance = gSavedSettings.getF32("StereoFocalDistance");
-	//F32 eye_separation = 0.02f;
-	//F32 focal_distance = 1.0f;
 
 	// Translate camera position of half the distance between the 2 eyes
 	LLVector3 new_pos = mCameraTempPosition - eye_separation/2 * (this->getLeftAxis());

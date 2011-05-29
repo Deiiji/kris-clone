@@ -38,6 +38,16 @@
 					Vue arrière
 				</panel_camera_item.text>
 			</panel_camera_item>
+			<panel_camera_item name="top_view">
+				<panel_camera_item.text name="top_view_text">
+					Vue du dessus
+				</panel_camera_item.text>
+			</panel_camera_item>
+			<panel_camera_item name="fps_view">
+				<panel_camera_item.text name="fps_view_text">
+					Vue FPS
+				</panel_camera_item.text>
+			</panel_camera_item>
 		</panel>
 		<panel name="camera_modes_list">
 			<panel_camera_item name="object_view">

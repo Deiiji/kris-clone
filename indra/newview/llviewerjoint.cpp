@@ -36,6 +36,7 @@
 #include "llmath.h"
 #include "llglheaders.h"
 #include "llrendersphere.h"
+#include "llviewerwindow.h" // KL
 #include "llvoavatar.h"
 #include "pipeline.h"
 
@@ -243,7 +244,7 @@ void LLViewerJoint::setValid( BOOL valid, BOOL recursive )
 U32 LLViewerJoint::render( F32 pixelArea, BOOL first_pass, BOOL is_dummy )
 {
 	stop_glerror();
-
+	S32 mode = gViewerWindow->getMaskMode();
 	U32 triangle_count = 0;
 
 	//----------------------------------------------------------------
@@ -284,10 +285,20 @@ U32 LLViewerJoint::render( F32 pixelArea, BOOL first_pass, BOOL is_dummy )
 				}
 				// third past respects z buffer and writes color
 				//gGL.setColorMask(true, false);
-				GLboolean mask[4];
-			    glGetBooleanv(GL_COLOR_WRITEMASK,mask);
-				gGL.setColorMask(mask[0],mask[1],mask[2],false); // KL
+				    if(mode == MASK_MODE_RIGHT)
+					{
+				    gGL.setColorMask(false,true,true,false);
+					}
 
+					if(mode == MASK_MODE_LEFT)
+					{
+					gGL.setColorMask(true,false,false,false);
+					}
+
+					if(mode == MASK_MODE_NONE)
+					{
+					 gGL.setColorMask(true, false);
+					}
 				{
 					LLGLDepthTest gls_depth(GL_TRUE, GL_FALSE);
 					triangle_count += drawShape( pixelArea, FALSE, is_dummy  );

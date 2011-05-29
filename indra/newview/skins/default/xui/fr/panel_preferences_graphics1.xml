@@ -1,102 +1,231 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <panel label="Graphiques" name="Display panel">
+<tab_container name="Graphics">
+
+<panel label="Général" name="General">
+
+	<text name="UI Size:">
+		Taille de l'interface
+		</text>
 	<text name="QualitySpeed">
-		Qualité et vitesse :
-	</text>
-	<text name="FasterText">
-		Plus rapide
-	</text>
-	<text name="BetterText">
-		Meilleure
-	</text>
-	<text name="ShadersPrefText">
-		Faible
-	</text>
-	<text name="ShadersPrefText2">
-		Moyenne
-	</text>
-	<text name="ShadersPrefText3">
-		Élevée
-	</text>
-	<text name="ShadersPrefText4">
-		Ultra
-	</text>
-	<panel label="Graphiques personnalisés" name="CustomGraphics Panel">
-		<text name="ShadersText">
-			Effets :
+		Qualité et vitesse
 		</text>
-		<check_box initial_value="true" label="Eau transparente" name="TransparentWater"/>
-		<check_box initial_value="true" label="Placage de relief et brillance" name="BumpShiny"/>
-		<check_box initial_value="true" label="Effets de base" name="BasicShaders" tool_tip="La désactivation de cette option peut éviter le plantage de certains pilotes de cartes graphiques"/>
-		<check_box initial_value="true" label="Effets atmosphériques" name="WindLightUseAtmosShaders"/>
-		<text name="reflection_label">
-			Reflets dans l&apos;eau :
+	<text name="Mintext">
+		Min.
 		</text>
-		<combo_box initial_value="true" label="Reflets dans l&apos;eau" name="Reflections">
+	<text name="Maxtext">
+		Max.
+		</text>
+	<panel label="Graphismes personnalisés" name="CustomGraphics Panel">
+	<text name="ShadersText">
+		Effets :
+		</text>
+	<check_box initial_value="true" label="Eau transparente" name="TransparentWater"/>
+	<check_box initial_value="true" label="Placage de relief et brillance" name="BumpShiny"/>
+	<check_box initial_value="true" label="Effets de base" name="BasicShaders"/>
+	<check_box initial_value="true" label="Effets atmosphériques" name="WindLightUseAtmosShaders"/>
+	<check_box initial_value="true" label="Ombres et Lumières" name="UseLightShaders"/>
+	<check_box initial_value="true" label="Occlusion ambiante" name="UseSSAO"/>
+	
+	<text name="shadows_label">
+		Ombres :
+		</text>
+	<combo_box initial_value="true" name="ShadowDetail">
 			<combo_box.item label="Minimes" name="0"/>
-			<combo_box.item label="Terrain et arbres" name="1"/>
+			<combo_box.item label="Terrains et arbres" name="1"/>
 			<combo_box.item label="Tous les objets statiques" name="2"/>
-			<combo_box.item label="Tous les objets et avatars" name="3"/>
+			<combo_box.item label="Tous les avatars et objets" name="3"/>
 			<combo_box.item label="Tout" name="4"/>
-		</combo_box>
-		<slider label="Propriétés physiques de l&apos;avatar :" name="AvatarPhysicsDetail"/>
-		<text name="AvatarPhysicsDetailText">
-			Faible
+	</combo_box>
+	<text name="reflection_label">
+		Reflets dans l'eau :
 		</text>
-		<slider label="Limite d&apos;affichage :" name="DrawDistance"/>
-		<text name="DrawDistanceMeterText2">
-			m
+	<combo_box initial_value="true" name="Reflections">
+			<combo_box.item label="Aucunes" name="0"/>
+			<combo_box.item label="Soleil/Lune" name="1"/>
+			<combo_box.item label="Soleil/Lune + Projecteurs" name="2"/>
+	</combo_box>
+	<text name="AvatarRenderingText">
+		Rendu de l'avatar :
 		</text>
-		<slider label="Nb max. de particules :" label_width="147" name="MaxParticleCount"/>
-		<slider label="Avatars max. non éloignés en 2D :" name="MaxNumberAvatarDrawn"/>
-		<slider label="Qualité post-traitement :" name="RenderPostProcess"/>
-		<text name="MeshDetailText">
-			Détails des rendus :
+	<check_box initial_value="true" label="Avatars éloignés en 2D" name="AvatarImpostors"/>
+	<check_box initial_value="true" label="Accelération du rendu" name="AvatarVertexProgram"/>
+	<check_box initial_value="true" label="Mouvement des habits" name="AvatarCloth"/>
+	
+	<slider label="Limite d'affichage :" name="DrawDistance"/>
+	<slider label="Avatars max. non éloignés en 2D :" name="MaxAvatarCount"/>
+	<slider label="Nb max. de particules :" name="MaxParticleCount"/>
+	<slider label="Qualité post-traitement :" name="RenderPostProcess"/>
+	<slider label="Qualité de la texture du terrain :" label_width="160" tool_tip="Requiert un redémarrage de S21 (Une valeur plus basse donne un rendu plus détaillé)" name="RenderTerrainTexture"/>
+	<slider label="Qualité de l'ombre :" name="ShadowResolution"/>
+	
+	<text name="MeshDetailText">
+		Détails des rendus :
 		</text>
-		<slider label="  Objets :" name="ObjectMeshDetail"/>
-		<slider label="  Flexiprims :" name="FlexibleMeshDetail"/>
-		<slider label="  Arbres :" name="TreeMeshDetail"/>
-		<slider label="  Avatars :" name="AvatarMeshDetail"/>
-		<slider label="  Relief :" name="TerrainMeshDetail"/>
-		<slider label="  Ciel :" name="SkyMeshDetail"/>
-		<text name="PostProcessText">
-			Faible
-		</text>
-		<text name="ObjectMeshDetailText">
-			Faible
-		</text>
-		<text name="FlexibleMeshDetailText">
-			Faible
-		</text>
-		<text name="TreeMeshDetailText">
-			Faible
-		</text>
-		<text name="AvatarMeshDetailText">
-			Faible
-		</text>
-		<text name="TerrainMeshDetailText">
-			Faible
-		</text>
-		<text name="SkyMeshDetailText">
-			Faible
-		</text>
-		<text name="AvatarRenderingText">
-			Rendu de l&apos;avatar :
-		</text>
-		<check_box initial_value="true" label="Avatars éloignés en 2D" name="AvatarImpostors"/>
-		<check_box initial_value="true" label="Accélération du rendu" name="AvatarVertexProgram"/>
-		<check_box initial_value="true" label="Mouvement des habits" name="AvatarCloth"/>
-		<text left="380" name="TerrainDetailText">
-			Rendu du terrain :
-		</text>
-		<radio_group name="TerrainDetailRadio">
-			<radio_item label="Bas" name="0"/>
-			<radio_item label="Haut" name="2"/>
-		</radio_group>
-		--&gt;
+	<slider label="Objets :" name="ObjectMeshDetail"/>
+	<slider label="Physiques de l'avatar :" name="AvatarPhysicsDetail"/>
+	<slider label="Prims flexibles :" name="FlexibleMeshDetail"/>
+	<slider label="Arbres :" name="TreeMeshDetail"/>
+	<slider label="Avatars :" name="AvatarMeshDetail"/>
+	<slider label="Relief :" name="TerrainMeshDetail"/>
+	<slider label="Ciel :" name="SkyMeshDetail"/>
+	
 	</panel>
+	</panel>
+	
+	
 	<button label="Appliquer" label_selected="Appliquer" name="Apply"/>
 	<button label="Réinitialiser" name="Defaults"/>
-	<button label="Avancé" name="Advanced"/>
-	<button label="Matériel" label_selected="Matériel" name="GraphicsHardwareButton"/>
+			
+	
+	<panel label="Avancé" name="Advanced">
+	<tab_container name="Advanced">
+	
+		<panel label="Éclairage" name="Lighting">
+	
+	<text name="GlowOpts">
+		Options de lueur :
+		</text>
+	
+	<slider label="Force :" name="Strength"/>
+	<slider label="Luminance min. :" name="MinLuminance"/>
+	<slider label="Chaleur :" name="Warmth"/>
+	<slider label="Largeur :" name="Width"/>
+	<slider label="Alpha max. :" name="MaxAlpha"/>
+	
+	
+	<check_box initial_value="true" label="Lumières locales" name="LocalLights"/>
+	<text name="HoverGlowText">
+		Lueur de survol :
+		</text>
+	<radio_group name="HoverGlow">
+			<radio_item label="Actif" name="On"/>
+			<radio_item label="Inactif" name="Off"/>
+	</radio_group>
+	
+	<color_swatch label="Couleur de la lueur" name="effect_color_swatch" tool_tip="CLiquez pour paramétrer la couleur de la lueur de survol"/>
+	
+	<spinner label="Luminosité" name="Brightness"/>
+	<spinner label="Durée du fondu" name="FadeTime"/>
+	<spinner label="Épaisseur" name="Thickness"/>
+	
+		</panel>
+		<panel label="Textures" name="Textures">
+	
+	<check_box initial_value="true" label="Textures HTTP" name="HTTPGet"/>
+	<check_box initial_value="false" label="Atlas des textures" name="Atlas"/>
+	<check_box initial_value="true" label="Animer les textures" name="AnimTextures"/>
+	<check_box initial_value="false" label="Audit Textures" name="TexAudit"/>
+	<check_box initial_value="true" label="Textures pleine résolution" name="FullResTextures"/>
+	<check_box initial_value="true" label="Filtrage anisotrope" name="ani"/>
+	<check_box initial_value="true" label="Atténuer les réflexions sur l'eau" name="MipMaps"/>
+	<check_box initial_value="true" label="Masque alpha non différés" name="ND Alpha"/>
+	<check_box initial_value="true" label="Masque alpha différés" name="DEF Alpha"/>
+	
+	<slider label="Adoucissement de l'alpha différé" name="RenderDeferredAlphaSoften"/>
+	<text name="TerrainDetailText">
+		Détail du relief :
+		</text>
+		
+	<radio_group name="TerrainDetailRadio">
+			<radio_item label="Bas" name="0"/>
+			<radio_item label="Haut" name="2"/>
+	</radio_group>
+	
+	<spinner label="Diviseur de résolution" label_width="130" name="resdivisor"/>
+	
+	<slider label="Mémoire pour la texture (Mo)" name="GraphicsCardTextureMemory" tool_tip="Quantité de mémoire allouée aux textures. La valeur par défaut correspond à la carte vidéo. La réduction de cette valeur peut améliorer les performance, mais aussi rendre les textures floues"/>
+	
+		</panel>
+		<panel label="Ombres" name="Shadows">
+	
+	<slider label="Taille du flou de l'ombre :" name="BlurSize"/>
+	<slider label="Distance de floutage :" name="BlurDistance"/>
+	
+	<spinner label="Échantillons de flou 1-16" label_width="180" width="200" name="Samples"/>
+	
+	<slider label="Échelle SSAO :" name="SSAOScale"/>
+	<slider label="Échelle max. SSAO :" name="SSAOMaxScale"/>
+	<slider label="Facteur SSAO :" name="SSAOFactor"/>
+	
+		</panel>
+		<panel label="Perf. matériel" name="Performance">
+	
+	<check_box label="Autoriser les fils multiples" name="MultipleThreads"/>
+	<check_box label="Afficher les prims en utilisant des bandes de triangles (MESH)" name="TriangleStrip"/>
+	<check_box label="Désactiver le préchargement des textures/sons" name="NoPreload"/>
+	<check_box label="Utiliser 'Far clip'" name="RenderUseFarClip" tool_tip="Bascule entre le mode de caméra normal où les objets ne sont plus affichés lorsque vous bougez votre caméra loin d'eux et un mode d'affichage plus du point de vue de l'avatar où tout ce qui se situe dans votre distance d'affichage est rendu même si la caméra s'éloigne"/>
+	<check_box label="Désactiver VSync" name="DisableVerticalSync"/>
+	<check_box label="Utiliser le 'Full Control Gamma' au lieu du 'Fast hardcode gamma'" tool_tip="Utiliser la correction gamma pleinement contrôlable au lieu de la correction gamma codé en dur plus rapide"/>
+	<check_box label="Utiliser STREAM_DRAW au lieu de DYNAMIC_DRAW" name="vbostream" tool_tip="Le 'dynamic draw' met à jour par image, le 'Stream draw' par rendu. Le bricolage du GPU/pilote peut altérer la bande passante graphiques"/>
+	<check_box label="Désactiver glMapBufferARB VBO (bricolage mémoire)" name="vbomembuffer" tool_tip="Test de débogage pour éviter des fuites de mémoire (voir STORM-10211)"/>
+	<check_box label="Activer OpenGL Vertex Buffer Objects" name="vbo" tool_tip="Activer cela sur les machines récentes améliore les performances. Les machines plus anciennes peuvent être munies d'implémentations pauves des VBO's et vous êtes suceptibles de planter dans ce cas"/>
+	<check_box label="Activer les objets Framebuffer" name="fbo" tool_tip="Prérequis pour le rendu différé et le FSAA"/>
+	
+	<slider label="Durée pour le rendu de l'arrière-plan" label_width="185" name="BackgroundYieldTime"/>
+
+	<text name="Antialisasing:">
+		Antialiasing :
+		</text>
+	
+	<combo_box initial_value="true" label="Antialiasing" name="fsaa">
+			<combo_box.item label="Désactivé" name="FSAADisabled"/>
+			<combo_box.item label="2x" name="2x"/>
+			<combo_box.item label="4x" name="4x"/>
+			<combo_box.item label="8x" name="8x"/>
+			<combo_box.item label="16x" name="16x"/>
+	</combo_box>
+	
+		</panel>
+		<panel label="Illumination globale" name="GI">
+	
+	<check_box label="Illumination globale" name="deferred" tool_tip="Cocher cette case active l'illumination globale dans Second Life, avec pour effet plus de contraste entre les zones sombres et brillantes et l'apparition des ombres sur l'eau. Elle requiert énormément de puissance de la part de l'ordinateur !"/>
+	
+	<slider label="Atténuation IG :" name="RenderGIAttenuation"/>
+	<slider label="Abiance IG :" name="RenderGIAmbiance"/>
+	<slider label="Luminosité IG :" name="RenderGIBrightness"/>
+	<slider label="Luminance IG :" name="RenderGILuminance"/>
+	<slider label="Luminosité du flou IFG" name="RenderGIBlurBrightness"/>
+	<slider label="Poids du bord flou IG :" name="RenderGIBlurEdgeWeight"/>
+	<slider label="Passes de flou IG :" name="RenderGIBlurPasses"/>
+	<slider label="Taille du flou IG :" name="RenderGIBlurSize"/>
+	<slider label="Échantillons de flou IG :" name="RenderGIBlurSamples"/>
+	<slider label="Bruit IG :" name="RenderGINoise"/>
+	<slider label="Incr. de flou IG :" name="RenderGIBlurInc"/>
+	<slider label="Gamme de coupure IG :" name="RenderGIRange"/>
+	
+		</panel>
+		<panel label="Divers" name="Misc">
+	
+	<check_box label="Utiliser un effet sur les particules proches" name="RenderUseShaderNearParticles"/>
+	<spinner label="Dist. du texte flottant :" name="HoverTextDistance"/>
+	
+	<text name="requires_restart_label">
+			Requiert un redémarrage
+			</text>
+			
+	<spinner label="Dist fondu de survol :" name="HoverTextFadeDistance"/>
+	
+	<text name="requires_restart_label">
+			Requiert un redémarrage
+			</text>
+			
+	<check_box label="Active l'effet de profondeur de champ" name="UseDOF" tool_tip="Rend la profondeur de champ en affichage différé"/>
+	
+	<text name="deferred_label">
+			(rendu différé)
+			</text>
+			
+	<slider label="Degrés FOV de la caméra :" name="Camera FOV" tool_tip="Champ de vue de la caméra à la verticale pour l'effet de profondeur de champ (en degrés)"/>
+	<slider label="Ouverture de la caméra f/# :" name="CameraFNum" tool_tip="Ouverture de la caméra pour la profondeur de champ."/>
+	<slider label="Longueur focale de la caméra - mm :" label_width="190" name="CameraFocal" tool_tip="Longueur focale de la caméra pour l'effet de profondeur de champ (en millimètres)"/>
+	<slider label="Format d'image de la caméra :" name="CameraAspectRatio" tool_tip="Format d'image de la caméra pour l'effet de profondeur de champ."/>
+	<slider label="Délai de transition de la mise au point de POF :" label_width="235" name="CameraFocusTrans" tool_tip="Durée pour altérer la mis au point d'un endroit à un autre"/>
+	
+		</panel>
+
+	</tab_container>
+    </panel>
+	
+</tab_container>	
 </panel>

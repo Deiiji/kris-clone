@@ -259,7 +259,6 @@ WindLightUseAtmosShaders	0	0
 RenderDeferred				0	0
 RenderDeferredSSAO			0	0
 RenderShadowDetail			0	0
-RenderUseFBO				1	0
 
 
 //

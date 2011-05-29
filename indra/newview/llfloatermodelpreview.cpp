@@ -314,7 +314,7 @@ BOOL LLFloaterModelPreview::postBuild()
 	childSetCommitCallback("pelvis_offset", onPelvisOffsetCommit, this);
 
 	childSetCommitCallback("lod_file_or_limit", refresh, this);
-	childSetCommitCallback("physics_load_radio", refresh, this);
+	childSetCommitCallback("physics_load_radio", onPhysicsLoadRadioCommit, this);
 	//childSetCommitCallback("physics_optimize", refresh, this);
 	//childSetCommitCallback("physics_use_hull", refresh, this);
 
@@ -467,6 +467,29 @@ void LLFloaterModelPreview::onPelvisOffsetCommit( LLUICtrl*, void* userdata )
 	}
 	fp->mModelPreview->calcResourceCost();
 	fp->mModelPreview->refresh();
+}
+
+//static
+void LLFloaterModelPreview::onPhysicsLoadRadioCommit( LLUICtrl*, void *userdata)
+{
+	LLFloaterModelPreview* fmp = LLFloaterModelPreview::sInstance;
+	if (fmp)
+	{
+		if (fmp->childGetValue("physics_use_lod").asBoolean())
+		{
+			onPhysicsUseLOD(NULL,NULL);
+		}
+		if (fmp->childGetValue("physics_load_from_file").asBoolean())
+		{
+			
+		}
+		LLModelPreview *model_preview = fmp->mModelPreview;
+		if (model_preview)
+		{
+			model_preview->refresh();
+			model_preview->updateStatusMessages();
+		}
+	}
 }
 
 //static
@@ -1634,7 +1657,7 @@ bool LLModelLoader::doLoadModel()
 											{
 												if (pos.getCount() <= j+2)
 												{
-													llerrs << "WTF?" << llendl;
+													llerrs << "Invalid position array size." << llendl;
 												}
 												
 												LLVector3 v(pos[j], pos[j+1], pos[j+2]);
@@ -2296,8 +2319,11 @@ void LLModelLoader::processElement(daeElement* element)
 	{
 		domFloat3 dom_value = scale->getValue();
 
+
+		LLVector3 scale_vector = LLVector3(dom_value[0], dom_value[1], dom_value[2]);
+		scale_vector.abs(); // Set all values positive, since we don't currently support mirrored meshes
 		LLMatrix4 scaling;
-		scaling.initScale(LLVector3(dom_value[0], dom_value[1], dom_value[2]));
+		scaling.initScale(scale_vector);
 
 		scaling *= mTransform;
 		mTransform = scaling;
@@ -4238,11 +4264,7 @@ void LLModelPreview::genBuffers(S32 lod, bool include_skin_weights)
 					const LLModel::weight_list& weight_list = base_mdl->getJointInfluences(pos);
 
 					LLVector4 w(0,0,0,0);
-					if (weight_list.size() > 4)
-					{
-						llerrs << "WTF?" << llendl;
-					}
-
+					
 					for (U32 i = 0; i < weight_list.size(); ++i)
 					{
 						F32 wght = llmin(weight_list[i].mWeight, 0.999999f);
@@ -4962,9 +4984,12 @@ LLFloaterModelPreview::DecompRequest::DecompRequest(const std::string& stage, LL
 	if (mdl)
 	{
 		U16 index_offset = 0;
+		U16 tri[3] ;
 
 		mPositions.clear();
 		mIndices.clear();
+		mBBox[1] = LLVector3(F32_MIN, F32_MIN, F32_MIN) ;
+		mBBox[0] = LLVector3(F32_MAX, F32_MAX, F32_MAX) ;
 
 		//queue up vertex positions and indices
 		for (S32 i = 0; i < mdl->getNumVolumeFaces(); ++i)
@@ -4978,12 +5003,28 @@ LLFloaterModelPreview::DecompRequest::DecompRequest(const std::string& stage, LL
 			for (U32 j = 0; j < face.mNumVertices; ++j)
 			{
 				mPositions.push_back(LLVector3(face.mPositions[j].getF32ptr()));
+				for(U32 k = 0 ; k < 3 ; k++)
+				{
+					mBBox[0].mV[k] = llmin(mBBox[0].mV[k], mPositions[j].mV[k]) ;
+					mBBox[1].mV[k] = llmax(mBBox[1].mV[k], mPositions[j].mV[k]) ;
+				}
 			}
 
-			for (U32 j = 0; j < face.mNumIndices; ++j)
+			updateTriangleAreaThreshold() ;
+
+			for (U32 j = 0; j+2 < face.mNumIndices; j += 3)
 			{
-				mIndices.push_back(face.mIndices[j]+index_offset);
-			}
+				tri[0] = face.mIndices[j] + index_offset ;
+				tri[1] = face.mIndices[j + 1] + index_offset ;
+				tri[2] = face.mIndices[j + 2] + index_offset ;
+				
+				if(isValidTriangle(tri[0], tri[1], tri[2]))
+				{
+					mIndices.push_back(tri[0]);
+					mIndices.push_back(tri[1]);
+					mIndices.push_back(tri[2]);
+				}
+			}			
 
 			index_offset += face.mNumVertices;
 		}

@@ -202,7 +202,7 @@ void LLDrawPoolAlpha::endRenderPass( S32 pass )
 void LLDrawPoolAlpha::render(S32 pass)
 {
 	LLFastTimer t(FTM_RENDER_ALPHA);
-
+	S32 mode = gViewerWindow->getMaskMode();
 	LLGLSPipelineAlpha gls_pipeline_alpha;
 
 	if (deferred_render && pass == 1)
@@ -211,7 +211,20 @@ void LLDrawPoolAlpha::render(S32 pass)
 	}
 	else
 	{
-		gGL.setColorMask(true, true); // defer render
+		if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,true);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,true);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, true);
+		}
 	}
 
 	if (LLPipeline::sAutoMaskAlphaNonDeferred)
@@ -275,7 +288,21 @@ void LLDrawPoolAlpha::render(S32 pass)
 
 	renderAlpha(getVertexDataMask());
 
-	gGL.setColorMask(true, false);
+	//gGL.setColorMask(true, false); // needs mask
+	if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,false);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,false);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, false);
+		}
 
 	if (deferred_render && pass == 1)
 	{

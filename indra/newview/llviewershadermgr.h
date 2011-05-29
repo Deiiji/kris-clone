@@ -343,7 +343,6 @@ extern LLGLSLShader			gWLCloudProgram;
 // Post Process Shaders
 extern LLGLSLShader			gPostColorFilterProgram;
 extern LLGLSLShader			gPostNightVisionProgram;
-extern LLGLSLShader			gPostAnaglyphVisionProgram; // S21
 
 // Deferred rendering shaders
 extern LLGLSLShader			gDeferredImpostorProgram;
@@ -375,7 +374,9 @@ extern LLGLSLShader			gDeferredAttachmentShadowProgram;
 extern LLGLSLShader			gDeferredAlphaProgram;
 extern LLGLSLShader			gDeferredFullbrightProgram;
 extern LLGLSLShader			gDeferredAvatarAlphaProgram;
-
+extern LLGLSLShader			gDeferredWLSkyProgram;
+extern LLGLSLShader			gDeferredWLCloudProgram;
+extern LLGLSLShader			gDeferredStarProgram;
 extern LLGLSLShader			gLuminanceGatherProgram;
 
 //current avatar shader parameter pointer

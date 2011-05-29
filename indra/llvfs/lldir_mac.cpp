@@ -258,7 +258,7 @@ U32 LLDir_Mac::countFilesInDir(const std::string &dirname, const std::string &ma
 	return (file_count);
 }
 
-S32 LLDir_Mac::deleteFilesInDir(const std::string &dirname, const std::string &mask)
+/*S32 LLDir_Mac::deleteFilesInDir(const std::string &dirname, const std::string &mask)
 {
 	glob_t g;
 	S32 result = 0;
@@ -288,7 +288,7 @@ S32 LLDir_Mac::deleteFilesInDir(const std::string &dirname, const std::string &m
 	}
 	
 	return(result);
-}
+} */
 
 std::string LLDir_Mac::getCurPath()
 {

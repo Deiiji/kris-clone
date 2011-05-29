@@ -1,24 +1,50 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <panel label="Déplacement" name="move_panel">
 	<slider label="Angle de vue" name="camera_fov"/>
+	<slider label="Latence de la caméra" name="camera_lag"/>
 	<slider label="Distance" name="camera_offset_scale"/>
+	<slider label="Lissage" name="camera_position_smoothing"/>
+	<slider label="Délai du zoom" name="zoomtime"/>
+	
+	<check_box initial_value="false" label="Désactiver les contraintes de la caméra" name="DisableCameraConstraints" tool_tip="Désactive les contraintes qui empêchent la caméra de se déplacer à l'infini dans toutes les directions quelque soit la distance d'affichage"/>
+	
+	<slider label="V" name="pitchfrommouse"/>
+	<slider label="H" name="yawfrommouse"/>
+	
+	<text name="Headtrackingtext">
+			Souris - Headtracking
+			</text>
+	<text name="Headtrackingtext2">
+			en degrés
+			</text>
+	
 	<text name="heading2">
 		Positionnement automatique pour :
 	</text>
+	
 	<check_box label="Construire/Modifier" name="edit_camera_movement" tool_tip="Utiliser le positionnement automatique de la caméra lorsque vous entrez en mode de modification et le quittez."/>
 	<check_box label="Apparence" name="appearance_camera_movement" tool_tip="Utiliser le positionnement automatique de la caméra en mode de modification."/>
 	<check_box initial_value="true" label="Panneau latéral" name="appearance_sidebar_positioning" tool_tip="Utiliser le positionnement automatique de la caméra pour le panneau latéral."/>
 	<check_box label="Afficher en vue subjective" name="first_person_avatar_visible"/>
+	<check_box label="Montrer la mire de visée en vue subjective" name="ShowCrosshairs"/>
+		<text name="Mouselook:">
+			Vue subjective :
+			</text>
 	<text name=" Mouse Sensitivity">
-		Sensibilité de la souris en vue subjective :
+		Sensibilité de la souris :
 	</text>
 	<check_box label="Inverser" name="invert_mouse"/>
-	<check_box label="Les touches de direction me font toujours me déplacer" name="arrow_keys_move_avatar_check"/>
-	<check_box label="Appuyer deux fois et maintenir enfoncé pour courir" name="tap_tap_hold_to_run"/>
-	<check_box label="Double-cliquer pour :" name="double_click_chkbox"/>
-	<radio_group name="double_click_action">
-		<radio_item label="Téléportation" name="radio_teleport"/>
-		<radio_item label="Pilotage auto" name="radio_autopilot"/>
-	</radio_group>
+	<check_box label="Les touches de direction me font bouger" name="arrow_keys_move_avatar_check"/>
+	<check_box label="Cliquer pour marcher (simple clic)" left="260" name="Single_click_walk"/>
+	<check_box label="Appuyer deux fois et maintenir pour courir" name="tap_tap_hold_to_run" tool_tip="Appuyer deux fois sur la touche fléchée vers le haut ou le bas et la maintenir enfoncé pour courir"/>
+	<check_box label="Bouger les lèvres de l'avatar quand il parle" left="250" name="enable_lip_sync"/>
+	
+	<text name="Doubleclick">
+			Double clic
+			</text>
+	<check_box label="Téléportation" name="DoubleclickTP" tool_tip="Cliquez deux fois n'importe où pour vous TP instantanément"/>
+	<check_box label="Pilotage auto" left="200" name="DoubleclickPilot" tool_tip="Cliquez deux fois n'importe où pour marcher vers cette position"/>
+	<check_box label="Verrouille la caméra" left="310" top_delta="0" name="AutoPilotLocksCamera" tool_tip="Verrouille la translation/rotation de la caméra durant l'auto-pilote"/>
+	
 	<button label="Autres accessoires" name="joystick_setup_button"/>
 </panel>

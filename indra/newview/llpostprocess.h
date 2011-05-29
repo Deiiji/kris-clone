@@ -247,7 +247,6 @@ private:
 	
 	/// Shader Uniforms
 	glslUniforms nightVisionUniforms;
-	glslUniforms anaglyphVisionUniforms;
 	glslUniforms toonShaderUniforms;
 	glslUniforms bloomExtractUniforms;
 	glslUniforms bloomBlurUniforms;
@@ -266,14 +265,6 @@ private:
 	/// Night Vision Functions
 	void createNightVisionShader(void);
 	void applyNightVisionShader(void);
-
-	/// Anaglyph Vision Functions
-	void createAnaglyphVisionShader(void);
-	void applyAnaglyphVisionShader(void);
-
-	// Toon Shader Functions
-	void createToonShader(void);
-	void applyToonShader(void);
 
 	/// Bloom Functions
 	void createBloomShader(void);

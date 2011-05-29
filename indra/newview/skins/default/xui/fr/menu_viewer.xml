@@ -5,6 +5,8 @@
 		<menu_item_call label="Ma Page d&apos;accueil" name="Manage My Account">
 			<menu_item_call.on_click name="ManageMyAccount_url" parameter="WebLaunchJoinNow,http://secondlife.com/account/index.php?lang=fr"/>
 		</menu_item_call>
+		<menu_item_call label="État de la grid" name="Grid Status"/>
+		<menu_item_call label="Place du marché" name="Marketplace"/>
 		<menu_item_call label="Acheter des L$" name="Buy and Sell L$"/>
 		<menu_item_call label="Mon profil" name="Profile"/>
 		<menu_item_call label="Mon apparence" name="ChangeOutfit"/>
@@ -22,6 +24,21 @@
 			<menu_item_call label="Absent" name="Set Away"/>
 			<menu_item_call label="Occupé" name="Set Busy"/>
 		</menu>
+		<menu label="Mes importations" name="Upload">
+			<menu_item_call label="Image ([COST] L$)..." name="Upload Image"/>
+			<menu_item_call label="Son ([COST] L$)..." name="Upload Sound"/>
+			<menu_item_call label="Animation ([COST] L$)..." name="Upload Animation"/>
+			<menu_item_call label="Modèle..." name="Upload Model"/>
+			<menu_item_call label="Assistant de modèle..." name="Upload Model Wizard"/>
+			<menu_item_call label="Par lot (10 L$ par fichier)..." name="Bulk Upload"/>
+		</menu>
+		<menu label="Mes fonctionnalités utiles" name="Useful Features">
+			<menu_item_call label="Arrêter les animations" name="Stop Animating My Avatar"/>
+			<menu_item_call label="Refixer les textures" name="Rebake Texture"/>
+			<menu_item_call label="Mesure du lag" name="Lag Meter"/>
+			<menu_item_call label="Barre de statistiques" name="Statistics Bar"/>
+			<menu_item_call label="Afficher le coût de rendu de l'avatar" name="Avatar Rendering Cost"/>
+		</menu>
 		<menu_item_call label="Demander le statut Admin" name="Request Admin Options"/>
 		<menu_item_call label="Quitter le statut Admin" name="Leave Admin Options"/>
 		<menu_item_call label="Quitter [APP_NAME]" name="Quit"/>
@@ -33,6 +50,7 @@
 		<menu_item_call label="Personnes près de moi" name="Active Speakers"/>
 	</menu>
 	<menu label="Monde" name="World">
+		<menu_item_check label="Afficher la barre du chat" name="Show Chatbar"/>
 		<menu_item_check label="Mini-carte" name="Mini-Map"/>
 		<menu_item_check label="Carte du monde" name="World Map"/>
 		<menu_item_check label="Rechercher" name="Search"/>
@@ -65,6 +83,10 @@
 			<menu_item_call label="Minuit" name="Midnight"/>
 			<menu_item_call label="Heure du domaine" name="Revert to Region Default"/>
 			<menu_item_call label="Éditeur d&apos;environnement" name="Environment Editor"/>
+			<menu_item_call label="Paramètres de l'eau" name="Water Settings"/>
+			<menu_item_call label="Paramètres du ciel" name="Sky settings"/>
+			<menu_item_call label="Cycle du jour" name="Day Cycle"/>
+			<menu_item_call label="Post traitement" name="Post Process"/>
 		</menu>
 	</menu>
 	<menu label="Construire" name="BuildTools">
@@ -121,9 +143,53 @@
 			<menu_item_call label="Son ([COST] L$)..." name="Upload Sound"/>
 			<menu_item_call label="Animation ([COST] L$)..." name="Upload Animation"/>
 			<menu_item_call label="Lot ([COST] L$ par fichier)..." name="Bulk Upload"/>
+			<menu_item_call label="Définir les droits de chargement par défaut" name="perm prefs"/>
 		</menu>
 		<menu_item_call label="Annuler" name="Undo"/>
 		<menu_item_call label="Refaire" name="Redo"/>
+	</menu>
+	<menu label="Film" name="Film">
+	<menu_item_check label="Afficher l'interface utilisateur" name="Show User Interface"/>
+	<menu_item_check label="Afficher les HUDs à l'écran" name="Show HUDs On Screen"/>
+	<menu_item_check label="Afficher le faisceau de sélection" name="Enable avatar selection beam"/>
+	<menu_item_check label="Jouer l'animation clavier" name="Enable typing anim for avatar"/>
+	<menu_item_check label="Faire bouger les lèvres de l'avatar" name="Enable babble loop anim"/>
+	<menu_item_check label="Niveau auto pour SpaceNavigator" name="3D joystick autolevel"/>
+	<menu_item_check label="SpaceNavigator fait bouger l'avatar" name="3D joystick moves own avatar"/>
+	<menu_item_check label="Fenêtre de configuration de SpaceNavigator" name="SpaceNavigator Settings Window"/>
+	<menu_item_check label="Pas de scripts de particules" name="Disable script say particles"/>
+	<menu_item_check label="Masquer toutes les particules" name="Hide All Particles"/>
+	<menu_item_check label="Afficher les avatars éloignés en 2D" name="Render impostors for distant avatars"/>
+	<menu_item_check label="LOD dynamique activée" name="Render dynamic LOD for distant objects"/>
+	<menu_item_check label="Occlusion Objet-Objet pour le scintillement de l'eau dans S21" name="Object-object occlusion on water flicker in S21"/>
+	<menu_item_check label="Lumières des métadonnées de rendu" name="Metadata Lights"/>
+	<menu_item_check label="Afficher les lumières locales" name="Show local lights"/>
+	<menu_item_check label="Afficher les lumières attachées" name="Render Attached Lights"/>
+	<menu label="Contrôle des effets" name="Shader Toggles">
+	<menu_item_check label="Eau transparente" name="Enable transparent water"/>
+	<menu_item_check label="Placage de relief et brillance" name="Enable bump mapping and shiny textures"/>
+	<menu_item_check label="Effets de base" name="Enable basic shaders"/>
+	<menu_item_check label="Effets atmosphériques" name="Enable Windlight shaders"/>
+	<menu_item_check label="Ombres et Lumières (Différé)" name="Enable enhanced lighting and shadowcasting"/>
+	<menu_item_check label="Effets atmosphériques en différé" name="Atmospheric in deferred, headlight off for flycam"/>
+	<menu_item_check label="Occlusion ambiante et ombres douces" name="Ambient occlusion and shadow softening"/>
+	<menu_item_check label="Afficher la profondeur de champ en différé." name="DOF in deferred, blurring of fore/background"/>
+	</menu>
+	<menu label="Désactivation des sons" name="Audio Mutes">
+	<menu_item_check label="Désactiver les sons ambients" name="Mute ambient sounds"/>
+	<menu_item_check label="Désactiver les médias" name="Mute media sound"/>
+	<menu_item_check label="Désactiver la musique" name="Mute music sound"/>
+	<menu_item_check label="Désactiver les effets sonores" name="Mute sound effects"/>
+	<menu_item_check label="Désactiver les sons de l'interface" name="Mute user interface sounds"/>
+	<menu_item_check label="Désactiver le chat vocal" name="Mute voice sounds"/>
+	</menu>
+	<menu label="Agent Enregistreur" name="Recorder">
+			<menu_item_call label="Démarrer la lecture" name="Start Playback"/>
+			<menu_item_call label="Arrêter la lecture" name="Stop Playback"/>
+			<menu_item_check label="Lecture en boucle" name="Loop Playback"/>
+			<menu_item_call label="Démarrer l'enregistrement" name="Start Record"/>
+			<menu_item_call label="Arrêter l'enregistrement " name="Stop Record"/>
+		</menu>
 	</menu>
 	<menu label="Aide" name="Help">
 		<menu_item_call label="Aide de [SECOND_LIFE]" name="Second Life Help"/>

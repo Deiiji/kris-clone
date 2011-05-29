@@ -69,10 +69,6 @@ BOOL LLFloaterPostProcess::postBuild()
 	childSetCommitCallback("wmiNightVisionNoiseSize", &LLFloaterPostProcess::onFloatControlMoved, (char*)"noise_size");
 	childSetCommitCallback("wmiNightVisionNoiseStrength", &LLFloaterPostProcess::onFloatControlMoved, (char*)"noise_strength");
 
-	/// Anaglyph Vision Callbacks
-    childSetCommitCallback("wmiAnaglyphVisionToggle", &LLFloaterPostProcess::onBoolToggle, (char*)"enable_anaglyph_vision");
-    childSetCommitCallback("wmiOffsetS", &LLFloaterPostProcess::onFloatControlMoved, (char*)"offset_s");
-    childSetCommitCallback("wmiOffsetT", &LLFloaterPostProcess::onFloatControlMoved, (char*)"offset_t");
 	/// Bloom Callbacks
 	childSetCommitCallback("wmiBloomToggle", &LLFloaterPostProcess::onBoolToggle, (char*)"enable_bloom");
 	childSetCommitCallback("wmiBloomExtract", &LLFloaterPostProcess::onFloatControlMoved, (char*)"extract_low");
@@ -224,11 +220,6 @@ void LLFloaterPostProcess::syncMenu()
 	getChild<LLUICtrl>("wmiNightVisionBrightMult")->setValue(gPostProcess->tweaks.brightMult());
 	getChild<LLUICtrl>("wmiNightVisionNoiseSize")->setValue(gPostProcess->tweaks.noiseSize());
 	getChild<LLUICtrl>("wmiNightVisionNoiseStrength")->setValue(gPostProcess->tweaks.noiseStrength());
-
-	///Sync Anaglyph Vision Menu
-    getChild<LLUICtrl>("wmiAnaglyphVisionToggle")->setValue(gPostProcess->tweaks.useAnaglyphVisionShader());
-	getChild<LLUICtrl>("wmiOffsetS")->setValue(gPostProcess->tweaks.OffsetS());
-    getChild<LLUICtrl>("wmiOffsetT")->setValue(gPostProcess->tweaks.OffsetT());
 
 	/// Sync Bloom Menu
 	getChild<LLUICtrl>("wmiBloomToggle")->setValue(LLSD(gPostProcess->tweaks.useBloomShader()));

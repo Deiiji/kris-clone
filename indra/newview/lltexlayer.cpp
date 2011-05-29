@@ -45,6 +45,7 @@
 #include "llagentwearables.h"
 #include "llwearable.h"
 #include "llviewercontrol.h"
+#include "llviewerwindow.h" // KL
 #include "llviewervisualparam.h"
 
 //#include "../tools/imdebug/imdebug.h"
@@ -277,8 +278,23 @@ void LLTexLayerSetBuffer::postRender(BOOL success)
 
 BOOL LLTexLayerSetBuffer::render()
 {
+	S32 mode = gViewerWindow->getMaskMode();
 	// Default color mask for tex layer render
-	gGL.setColorMask(true, true);
+	//gGL.setColorMask(true, true);
+	if(mode == MASK_MODE_RIGHT)
+	{
+	gGL.setColorMask(false,true,true,true);
+	}
+
+	if(mode == MASK_MODE_LEFT)
+	{
+	gGL.setColorMask(true,false,false,true);
+	}
+
+	if(mode == MASK_MODE_NONE)
+	{
+    gGL.setColorMask(true, true);
+	}
 
 	// do we need to upload, and do we have sufficient data to create an uploadable composite?
 	// TODO: When do we upload the texture if gAgent.mNumPendingQueries is non-zero?
@@ -322,7 +338,21 @@ BOOL LLTexLayerSetBuffer::render()
 	}
 
 	// reset GL state
-	gGL.setColorMask(true, true);
+	//gGL.setColorMask(true, true);
+	if(mode == MASK_MODE_RIGHT)
+	{
+	gGL.setColorMask(false,true,true,true);
+	}
+
+	if(mode == MASK_MODE_LEFT)
+	{
+	gGL.setColorMask(true,false,false,true);
+	}
+
+	if(mode == MASK_MODE_NONE)
+	{
+    gGL.setColorMask(true, true);
+	}
 	gGL.setSceneBlendType(LLRender::BT_ALPHA);
 
 	// we have valid texture data now
@@ -873,6 +903,7 @@ BOOL LLTexLayerSet::render( S32 x, S32 y, S32 width, S32 height )
 {
 	BOOL success = TRUE;
 	mIsVisible = TRUE;
+	S32 mode = gViewerWindow->getMaskMode();
 
 	if (mMaskLayerList.size() > 0)
 	{
@@ -888,7 +919,21 @@ BOOL LLTexLayerSet::render( S32 x, S32 y, S32 width, S32 height )
 
 	LLGLSUIDefault gls_ui;
 	LLGLDepthTest gls_depth(GL_FALSE, GL_FALSE);
-	gGL.setColorMask(true, true);
+	//gGL.setColorMask(true, true);
+	if(mode == MASK_MODE_RIGHT)
+	{
+	gGL.setColorMask(false,true,true,true);
+	}
+
+	if(mode == MASK_MODE_LEFT)
+	{
+	gGL.setColorMask(true,false,false,true);
+	}
+
+	if(mode == MASK_MODE_NONE)
+	{
+    gGL.setColorMask(true, true);
+	}
 
 	// clear buffer area to ensure we don't pick up UI elements
 	{
@@ -1039,6 +1084,7 @@ void LLTexLayerSet::gatherMorphMaskAlpha(U8 *data, S32 width, S32 height)
 void LLTexLayerSet::renderAlphaMaskTextures(S32 x, S32 y, S32 width, S32 height, bool forceClear)
 {
 	const LLTexLayerSetInfo *info = getInfo();
+	S32 mode = gViewerWindow->getMaskMode();
 	
 	gGL.setColorMask(false, true);
 	gGL.setSceneBlendType(LLRender::BT_REPLACE);
@@ -1092,7 +1138,21 @@ void LLTexLayerSet::renderAlphaMaskTextures(S32 x, S32 y, S32 width, S32 height,
 	gGL.getTexUnit(0)->unbind(LLTexUnit::TT_TEXTURE);
 	
 	gGL.getTexUnit(0)->setTextureBlendType(LLTexUnit::TB_MULT);
-	gGL.setColorMask(true, true);
+	//gGL.setColorMask(true, true);
+	if(mode == MASK_MODE_RIGHT)
+	{
+	gGL.setColorMask(false,true,true,true);
+	}
+
+	if(mode == MASK_MODE_LEFT)
+	{
+	gGL.setColorMask(true,false,false,true);
+	}
+
+	if(mode == MASK_MODE_NONE)
+	{
+    gGL.setColorMask(true, true);
+	}
 	gGL.setSceneBlendType(LLRender::BT_ALPHA);
 }
 
@@ -1810,7 +1870,7 @@ BOOL LLTexLayer::blendAlphaTexture(S32 x, S32 y, S32 width, S32 height)
 BOOL LLTexLayer::renderMorphMasks(S32 x, S32 y, S32 width, S32 height, const LLColor4 &layer_color)
 {
 	BOOL success = TRUE;
-
+	S32 mode = gViewerWindow->getMaskMode();
 	llassert( !mParamAlphaList.empty() );
 
 	gGL.setColorMask(false, true);
@@ -1891,8 +1951,22 @@ BOOL LLTexLayer::renderMorphMasks(S32 x, S32 y, S32 width, S32 height, const LLC
 
 
 	LLGLSUIDefault gls_ui;
+    // KL yes the code is suck but it works! needs more work
+	//gGL.setColorMask(true, true);
+	if(mode == MASK_MODE_RIGHT)
+	{
+	gGL.setColorMask(false,true,true,true);
+	}
 
-	gGL.setColorMask(true, true);
+	if(mode == MASK_MODE_LEFT)
+	{
+	gGL.setColorMask(true,false,false,true);
+	}
+
+	if(mode == MASK_MODE_NONE)
+	{
+    gGL.setColorMask(true, true);
+	}
 	
 	if (hasMorph() && success)
 	{

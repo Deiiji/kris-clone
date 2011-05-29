@@ -15,4 +15,9 @@
 	<check_box label="Liste de sélection de grille affichée à la connexion" name="show_grid_selection_check"/>
 	<check_box label="Menu Avancé affiché" name="show_advanced_menu_check"/>
 	<check_box label="Menu Développeurs affiché" name="show_develop_menu_check"/>
+	<check_box label="Désactiver le dossier Library dans l'inventaire" name="no_library"/>
+	<check_box label="Faire tourner la mini carte" name="MiniMapRotate"/>
+	
+	<spinner label="Taille max. d'un prim sur la mini carte" label_width="225" name="MaxPrimSize" tool_tip="Contrôle la taille maximum des prims affichés sur la mini carte. Les prims plus grands que cette valeur seront redimensionnés à celle-ci (en mètres)"/>
+	
 </panel>

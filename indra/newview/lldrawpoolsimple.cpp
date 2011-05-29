@@ -29,6 +29,7 @@
 #include "lldrawpoolsimple.h"
 
 #include "llviewercamera.h"
+#include "llviewerwindow.h"
 #include "lldrawable.h"
 #include "llface.h"
 #include "llsky.h"
@@ -46,6 +47,7 @@ static LLFastTimer::DeclareTimer FTM_RENDER_GRASS_DEFERRED("Deferred Grass");
 
 void LLDrawPoolGlow::render(S32 pass)
 {
+	S32 mode = gViewerWindow->getMaskMode();
 	LLFastTimer t(FTM_RENDER_GLOW);
 	LLGLEnable blend(GL_BLEND);
 	LLGLDisable test(GL_ALPHA_TEST);
@@ -70,7 +72,21 @@ void LLDrawPoolGlow::render(S32 pass)
 	gGL.setColorMask(false, true);
 	renderTexture(LLRenderPass::PASS_GLOW, getVertexDataMask());
 	
-	gGL.setColorMask(true, false);
+	if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,false);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,false);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, false);
+		}
+	//gGL.setColorMask(true, false);
 	gGL.setSceneBlendType(LLRender::BT_ALPHA);
 	
 	if (shader_level > 0 && fullbright_shader)

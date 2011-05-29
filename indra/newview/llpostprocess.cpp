@@ -200,8 +200,7 @@ void LLPostProcess::initialize(unsigned int width, unsigned int height)
 
 	checkError();
 	createNightVisionShader();
-	createAnaglyphVisionShader();
-	
+		
 	createBloomShader();
 	createColorFilterShader();
 	checkError();
@@ -211,7 +210,6 @@ inline bool LLPostProcess::shadersEnabled(void)
 {
 	return (tweaks.useColorFilter().asBoolean() ||
 			tweaks.useNightVisionShader().asBoolean() ||
-			tweaks.useAnaglyphVisionShader().asBoolean() ||
 			tweaks.useToonShader().asBoolean() ||
 			tweaks.useBloomShader().asBoolean() );
 
@@ -221,10 +219,6 @@ void LLPostProcess::applyShaders(void)
 {
 	if (tweaks.useColorFilter()){
 		applyColorFilterShader();
-		checkError();
-	}
-	if (tweaks.useAnaglyphVisionShader()){
-		applyAnaglyphVisionShader();
 		checkError();
 	}
 	
@@ -351,38 +345,6 @@ void LLPostProcess::applyBloomShader(void)
 
 }
 
-void LLPostProcess::applyAnaglyphVisionShader(void)
-{
-    //  KL
-	gPostAnaglyphVisionProgram.bind();
-
-	gGL.getTexUnit(0)->activate();
-	gGL.getTexUnit(0)->enable(LLTexUnit::TT_RECT_TEXTURE);
-
-   
-    U32 Tex = mSceneRenderTexture->getTexName() ; // Get the scene texture
-	gGL.getTexUnit(0)->bindManual(LLTexUnit::TT_RECT_TEXTURE, Tex); // Bind it
-
-    getShaderUniforms(anaglyphVisionUniforms, gPostAnaglyphVisionProgram.mProgramObject); // run the shader
-	glUniform1iARB(anaglyphVisionUniforms["leftTex"], 0);  // apply left red
-	glUniform1iARB(anaglyphVisionUniforms["rightTex"], 0); // apply right blue
-
-    glUniform1fARB(anaglyphVisionUniforms["OffsetS"], tweaks.OffsetS());
-	glUniform1fARB(anaglyphVisionUniforms["OffsetT"], tweaks.OffsetT());
-
-	
-   // LLGLEnable blend(GL_BLEND);
-	//gGL.setSceneBlendType(LLRender::BT_ADD); // Needed? KL replace or add?? GL ONE , ONE seems to be the way to go
-	LLGLDepthTest depth(GL_FALSE);
-		
-	/// Draw a screen space quad
-	drawOrthoQuad(screenW, screenH, QUAD_NORMAL);
-	gPostAnaglyphVisionProgram.unbind();
-
-}
-
-
-
 void LLPostProcess::createBloomShader(void)
 {
 	createTexture(mTempBloomTexture, unsigned(screenW * 0.5), unsigned(screenH * 0.5));
@@ -400,17 +362,6 @@ void LLPostProcess::createBloomShader(void)
 	bloomBlurUniforms["blurDirection"] = 0;
 	bloomBlurUniforms["blurWidth"] = 0;
 }
-
-void LLPostProcess::createAnaglyphVisionShader(void)
-{
-    /// Define uniform names
-	anaglyphVisionUniforms["leftTex"] = 0;  // red
-	anaglyphVisionUniforms["rightTex"] = 0;  // blue
-	anaglyphVisionUniforms["OffsetS"] = 0;
-	anaglyphVisionUniforms["OffsetT"] = 0;
-
-}
-
 
 
 void LLPostProcess::getShaderUniforms(glslUniforms & uniforms, GLhandleARB & prog)

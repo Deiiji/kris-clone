@@ -1,0 +1,24 @@
+<llsd>
+    <map>
+    <key>new_asset</key>
+        <uuid>fd34900c-05e7-e474-129b-44bdd0351a88</uuid>
+    <key>new_base_mask</key>
+        <integer>2147483647</integer>
+    <key>new_everyone_mask</key>
+        <integer>0</integer>
+    <key>new_group_mask</key>
+        <integer>0</integer>
+    <key>new_inventory_item</key>
+        <uuid>10bef23f-7940-0103-b21b-b37f5f84a79c</uuid>
+    <key>new_next_owner_mask</key>
+        <integer>532480</integer>
+    <key>new_owner_mask</key>
+        <integer>2147483647</integer>
+    <key>resource_cost</key>
+        <integer>0</integer>
+    <key>state</key>
+        <string>complete</string>
+    <key>upload_price</key>
+        <integer>0</integer>
+    </map>
+</llsd>

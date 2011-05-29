@@ -46,6 +46,7 @@
 #include "llworld.h"
 #include "pipeline.h"
 #include "llviewershadermgr.h"
+#include "llviewerwindow.h" // KL
 #include "llwaterparammanager.h"
 
 const LLUUID TRANSPARENT_WATER_TEXTURE("2bfd3884-7e27-69b9-ba3a-3e673f680004");
@@ -317,7 +318,7 @@ void LLDrawPoolWater::render(S32 pass)
 	}
 
 	glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-
+	
     if (refl_face)
 	{
 		glStencilFunc(GL_NOTEQUAL, 0, 0xFFFFFFFF);
@@ -411,7 +412,7 @@ void LLDrawPoolWater::renderOpaqueLegacyWater()
 void LLDrawPoolWater::renderReflection(LLFace* face)
 {
 	LLVOSky *voskyp = gSky.mVOSkyp;
-
+	
 	if (!voskyp)
 	{
 		return;
@@ -438,9 +439,23 @@ void LLDrawPoolWater::renderReflection(LLFace* face)
 
 void LLDrawPoolWater::shade()
 {
+	S32 mode = gViewerWindow->getMaskMode(); // KL to force a mask
 	if (!deferred_render)
 	{
-		gGL.setColorMask(true, true);
+	    if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,true);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,true);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, true);
+		} 
 	}
 
 	LLVOSky *voskyp = gSky.mVOSkyp;
@@ -491,6 +506,7 @@ void LLDrawPoolWater::shade()
 
 	F32 eyedepth = LLViewerCamera::getInstance()->getOrigin().mV[2] - gAgent.getRegion()->getWaterHeight();
 	
+	
 	if (deferred_render)
 	{
 		shader = &gDeferredWaterProgram;
@@ -501,7 +517,7 @@ void LLDrawPoolWater::shade()
 	}
 	else
 	{
-		shader = &gWaterProgram;
+	  shader = &gWaterProgram;
 	}
 
 	if (deferred_render)
@@ -680,7 +696,21 @@ void LLDrawPoolWater::shade()
 	gGL.getTexUnit(0)->enable(LLTexUnit::TT_TEXTURE);
 	if (!deferred_render)
 	{
-		gGL.setColorMask(true, false);
+		//gGL.setColorMask(true, false);
+		if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,false);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,false);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, false);
+		}
 	}
 
 }

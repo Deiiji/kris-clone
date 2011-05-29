@@ -709,10 +709,7 @@ void LLMeshRepoThread::loadMeshLOD(const LLVolumeParams& mesh_params, S32 lod)
 		if (pending != mPendingLOD.end())
 		{ //append this lod request to existing header request
 			pending->second.push_back(lod);
-			if (pending->second.size() > 4)
-			{
-				llerrs << "WTF?" << llendl;
-			} 
+			llassert(pending->second.size() <= LLModel::NUM_LODS)
 		}
 		else
 		{ //if no header request is pending, fetch header
@@ -1359,11 +1356,8 @@ void LLMeshUploadThread::DecompRequest::completed()
 		mThread->mPhysicsComplete = true;
 	}
 
-	if (mHull.size() != 1)
-	{
-		llerrs << "WTF?" << llendl;
-	}
-
+	llassert(mHull.size() == 1);
+	
 	mThread->mHullMap[mBaseModel] = mHull[0];
 }
 
@@ -1411,8 +1405,6 @@ void dumpLLSDToFile(const LLSD& content, std::string filename)
 
 void LLMeshUploadThread::wholeModelToLLSD(LLSD& dest, bool include_textures)
 {
-	// TODO where do textures go?
-
 	LLSD result;
 
 	LLSD res;
@@ -1422,88 +1414,94 @@ void LLMeshUploadThread::wholeModelToLLSD(LLSD& dest, bool include_textures)
 	result["name"] = "mesh model";
 	result["description"] = "your description here";
 
-	// TODO "optional" fields from the spec
-	
 	res["mesh_list"] = LLSD::emptyArray();
 	res["texture_list"] = LLSD::emptyArray();
+	res["instance_list"] = LLSD::emptyArray();
 	S32 mesh_num = 0;
 	S32 texture_num = 0;
 	
 	std::set<LLViewerTexture* > textures;
 	std::map<LLViewerTexture*,S32> texture_index;
 
+	std::map<LLModel*,S32> mesh_index;
+
+	S32 instance_num = 0;
+	
 	for (instance_map::iterator iter = mInstance.begin(); iter != mInstance.end(); ++iter)
 	{
 		LLMeshUploadData data;
 		data.mBaseModel = iter->first;
 		LLModelInstance& instance = *(iter->second.begin());
 		LLModel* model = instance.mModel;
-		LLSD mesh_entry;
-
-		std::string model_name = data.mBaseModel->getName();
-
-		if (!model_name.empty())
+		if (mesh_index.find(model) == mesh_index.end())
 		{
-			result["name"] = model_name;
-		}
+			// Have not seen this model before - create a new mesh_list entry for it.
+			std::string model_name = data.mBaseModel->getName();
+			if (!model_name.empty())
+			{
+				result["name"] = model_name;
+			}
 
+			std::stringstream ostr;
+			
+			LLModel::Decomposition& decomp =
+				data.mModel[LLModel::LOD_PHYSICS].notNull() ? 
+				data.mModel[LLModel::LOD_PHYSICS]->mPhysics : 
+				data.mBaseModel->mPhysics;
+
+			decomp.mBaseHull = mHullMap[data.mBaseModel];
+
+			LLSD mesh_header = LLModel::writeModel(
+				ostr,  
+				data.mModel[LLModel::LOD_PHYSICS],
+				data.mModel[LLModel::LOD_HIGH],
+				data.mModel[LLModel::LOD_MEDIUM],
+				data.mModel[LLModel::LOD_LOW],
+				data.mModel[LLModel::LOD_IMPOSTOR], 
+				decomp,
+				mUploadSkin,
+				mUploadJoints);
+
+			data.mAssetData = ostr.str();
+			std::string str = ostr.str();
+
+			res["mesh_list"][mesh_num] = LLSD::Binary(str.begin(),str.end()); 
+			mesh_index[model] = mesh_num;
+			mesh_num++;
+		}
+		
+		LLSD instance_entry;
+		
 		for (S32 i = 0; i < 5; i++)
 		{
 			data.mModel[i] = instance.mLOD[i];
 		}
-
-		mesh_entry["material"] = LL_MCODE_WOOD;
+		
+		LLVector3 pos, scale;
+		LLQuaternion rot;
+		LLMatrix4 transformation = instance.mTransform;
+		decomposeMeshMatrix(transformation,pos,rot,scale);
+		instance_entry["position"] = ll_sd_from_vector3(pos);
+		instance_entry["rotation"] = ll_sd_from_quaternion(rot);
+		instance_entry["scale"] = ll_sd_from_vector3(scale);
+		
+		instance_entry["material"] = LL_MCODE_WOOD;
 		LLPermissions perm;
 		perm.setOwnerAndGroup(gAgent.getID(), gAgent.getID(), LLUUID::null, false);
 		perm.setCreator(gAgent.getID());
-
+		
 		perm.initMasks(PERM_ITEM_UNRESTRICTED | PERM_MOVE, //base
 					   PERM_ITEM_UNRESTRICTED | PERM_MOVE, //owner
 					   LLFloaterPerms::getEveryonePerms(),
 					   LLFloaterPerms::getGroupPerms(),
 					   LLFloaterPerms::getNextOwnerPerms());
-		mesh_entry["permissions"] = ll_create_sd_from_permissions(perm);
-		mesh_entry["physics_shape_type"] = (U8)(LLViewerObject::PHYSICS_SHAPE_CONVEX_HULL);
+		instance_entry["permissions"] = ll_create_sd_from_permissions(perm);
+		instance_entry["physics_shape_type"] = (U8)(LLViewerObject::PHYSICS_SHAPE_CONVEX_HULL);
+		instance_entry["mesh"] = mesh_index[model];
 
-		std::stringstream ostr;
-
-		LLModel::Decomposition& decomp =
-			data.mModel[LLModel::LOD_PHYSICS].notNull() ? 
-			data.mModel[LLModel::LOD_PHYSICS]->mPhysics : 
-			data.mBaseModel->mPhysics;
-
-		decomp.mBaseHull = mHullMap[data.mBaseModel];
-
-		LLSD mesh_header = LLModel::writeModel(
-			ostr,  
-			data.mModel[LLModel::LOD_PHYSICS],
-			data.mModel[LLModel::LOD_HIGH],
-			data.mModel[LLModel::LOD_MEDIUM],
-			data.mModel[LLModel::LOD_LOW],
-			data.mModel[LLModel::LOD_IMPOSTOR], 
-			decomp,
-			mUploadSkin,
-			mUploadJoints);
-
-		data.mAssetData = ostr.str();
-
-		LLVector3 pos, scale;
-		LLQuaternion rot;
-		LLMatrix4 transformation = instance.mTransform;
-		decomposeMeshMatrix(transformation,pos,rot,scale);
-
-		mesh_entry["position"] = ll_sd_from_vector3(pos);
-		mesh_entry["rotation"] = ll_sd_from_quaternion(rot);
-		mesh_entry["scale"] = ll_sd_from_vector3(scale);
-
-		// TODO should be binary.
-		std::string str = ostr.str();
-		mesh_entry["mesh_data"] = LLSD::Binary(str.begin(),str.end()); 
-
-		// TODO how do textures in the list map to textures in the meshes?
 		if (mUploadTextures)
 		{
-			mesh_entry["face_list"] = LLSD::emptyArray();
+			instance_entry["face_list"] = LLSD::emptyArray();
 
 			for (S32 face_num = 0; face_num < model->getNumVolumeFaces(); face_num++)
 			{
@@ -1553,14 +1551,12 @@ void LLMeshUploadThread::wholeModelToLLSD(LLSD& dest, bool include_textures)
 				face_entry["imagerot"] = 0.0;
 				face_entry["colors"] = ll_sd_from_color4(material.mDiffuseColor);
 				face_entry["fullbright"] = material.mFullbright;
-				mesh_entry["face_list"][face_num] = face_entry;
+				instance_entry["face_list"][face_num] = face_entry;
 			}
-
 		}
 
-		res["mesh_list"][mesh_num] = mesh_entry;
-
-		mesh_num++;
+		res["instance_list"][instance_num] = instance_entry;
+		instance_num++;
 	}
 
 	result["asset_resources"] = res;
@@ -1602,11 +1598,8 @@ void LLMeshUploadThread::doWholeModelUpload()
 			physics = data.mModel[LLModel::LOD_HIGH];
 		}
 
-		if (!physics)
-		{
-			llerrs << "WTF?" << llendl;
-		}
-
+		llassert(physics != NULL);
+		
 		DecompRequest* request = new DecompRequest(physics, data.mBaseModel, this);
 		gMeshRepo.mDecompThread->submitRequest(request);
 	}
@@ -1700,7 +1693,13 @@ void LLMeshUploadThread::doIterativeUpload()
 		}
 
 		//queue up models for hull generation
-		DecompRequest* request = new DecompRequest(data.mModel[LLModel::LOD_HIGH], data.mBaseModel, this);
+		LLModel* physics = data.mModel[LLModel::LOD_PHYSICS];
+		if (physics == NULL)
+		{ //no physics model available, use high lod
+			physics = data.mModel[LLModel::LOD_HIGH];
+		}
+		
+		DecompRequest* request = new DecompRequest(physics, data.mBaseModel, this);
 		gMeshRepo.mDecompThread->submitRequest(request);
 	}
 
@@ -2452,10 +2451,6 @@ S32 LLMeshRepository::loadMesh(LLVOVolume* vobj, const LLVolumeParams& mesh_para
 				group->derefLOD(lod);
 			}
 		}
-		else
-		{
-			llerrs << "WTF?" << llendl;
-		}
 	}
 
 	return detail;
@@ -3140,11 +3135,8 @@ LLSD LLMeshUploadThread::createObject(LLModelInstance& instance)
 {
 	LLMatrix4 transformation = instance.mTransform;
 
-	if (instance.mMeshID.isNull())
-	{
-		llerrs << "WTF?" << llendl;
-	}
-
+	llassert(instance.mMeshID.notNull());
+	
 	// check for reflection
 	BOOL reflected = (transformation.determinant() < 0);
 
@@ -3484,6 +3476,12 @@ void LLPhysicsDecomp::doDecomposition()
 	LLCDMeshData mesh;
 	S32 stage = mStageID[mCurRequest->mStage];
 
+	if (LLConvexDecomposition::getInstance() == NULL)
+	{
+		// stub library. do nothing.
+		return;
+	}
+
 	//load data intoLLCD
 	if (stage == 0)
 	{
@@ -3532,11 +3530,6 @@ void LLPhysicsDecomp::doDecomposition()
 		else if (param->mType == LLCDParam::LLCD_BOOLEAN)
 		{
 			ret = LLConvexDecomposition::getInstance()->setParam(param->mName, value.asBoolean());
-		}
-
-		if (ret)
-		{
-			llerrs << "WTF?" << llendl;
 		}
 	}
 
@@ -3684,6 +3677,12 @@ void LLPhysicsDecomp::doDecompositionSingleHull()
 	
 	LLConvexDecomposition* decomp = LLConvexDecomposition::getInstance();
 
+	if (decomp == NULL)
+	{
+		//stub. do nothing.
+		return;
+	}
+
 	for (S32 i = 0; i < param_count; ++i)
 	{
 		decomp->setParam(params[i].mName, params[i].mDefault.mIntOrEnumValue);
@@ -3763,6 +3762,14 @@ void LLPhysicsDecomp::doDecompositionSingleHull()
 void LLPhysicsDecomp::run()
 {
 	LLConvexDecomposition* decomp = LLConvexDecomposition::getInstance();
+	if (decomp == NULL)
+	{
+		// stub library. Set init to true so the main thread
+		// doesn't wait for this to finish.
+		mInited = true;
+		return;
+	}
+
 	decomp->initThread();
 	mInited = true;
 
@@ -3816,6 +3823,25 @@ void LLPhysicsDecomp::run()
 	}
 
 	mDone = true;
+}
+
+void LLPhysicsDecomp::Request::updateTriangleAreaThreshold() 
+{
+	F32 range = mBBox[1].mV[0] - mBBox[0].mV[0] ;
+	range = llmin(range, mBBox[1].mV[1] - mBBox[0].mV[1]) ;
+	range = llmin(range, mBBox[1].mV[2] - mBBox[0].mV[2]) ;
+
+	mTriangleAreaThreshold = llmin(0.0002f, range * 0.000002f) ;
+}
+
+//check if the triangle area is large enough to qualify for a valid triangle
+bool LLPhysicsDecomp::Request::isValidTriangle(U16 idx1, U16 idx2, U16 idx3) 
+{
+	LLVector3 a = mPositions[idx2] - mPositions[idx1] ;
+	LLVector3 b = mPositions[idx3] - mPositions[idx1] ;
+	F32 c = a * b ;
+
+	return ((a*a) * (b*b) - c * c) > mTriangleAreaThreshold ;
 }
 
 void LLPhysicsDecomp::Request::setStatusMessage(const std::string& msg)

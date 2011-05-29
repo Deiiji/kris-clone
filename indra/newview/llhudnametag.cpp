@@ -543,7 +543,7 @@ void LLHUDNameTag::renderText(BOOL for_select)
 				x_offset += 1;
 			}
 
-			text_color = segment_iter->mColor; // removing this makes nametags colorable which is shit, as it obliterates highlighting friends...
+			text_color = segment_iter->mColor;
 			text_color.mV[VALPHA] *= alpha_factor;
 
 			hud_render_text(segment_iter->getText(), render_position, *fontp, style, shadow, x_offset, y_offset, text_color, FALSE);

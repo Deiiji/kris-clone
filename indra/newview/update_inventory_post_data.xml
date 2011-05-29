@@ -1,0 +1,22 @@
+<llsd>
+    <map>
+    <key>asset_resources</key>
+        <map />
+    <key>asset_type</key>
+        <string>mesh</string>
+    <key>description</key>
+        <string>doric_hi-Geometry</string>
+    <key>everyone_mask</key>
+        <integer>0</integer>
+    <key>folder_id</key>
+        <uuid>0ae5d1e7-f642-efb5-7f57-8c90f7d19e1b</uuid>
+    <key>group_mask</key>
+        <integer>0</integer>
+    <key>inventory_type</key>
+        <string>mesh</string>
+    <key>name</key>
+        <string>doric_hi-Geometry</string>
+    <key>next_owner_mask</key>
+        <integer>532480</integer>
+    </map>
+</llsd>

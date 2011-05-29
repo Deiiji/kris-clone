@@ -9,6 +9,7 @@
 		<radio_item label="Grande" name="radio3" value="2"/>
 	</radio_group>
 	<check_box initial_value="true" label="Jouer l&apos;animation clavier quand vous écrivez" name="play_typing_animation"/>
+	<check_box initial_value="true" label="Afficher les notifications de connexion/déconnexion dans le chat" name="OnlineOfflinetoNearbyChat"/>
 	<check_box label="M&apos;envoyer les IM par e-mail une fois déconnecté" name="send_im_to_email"/>
 	<check_box label="Activer l&apos;historique des chats et des IM en texte brut" name="plain_text_chat_history"/>
 	<check_box label="Bulles de chat" name="bubble_text_chat"/>
@@ -29,10 +30,7 @@
 	<check_box label="Chats IM" name="EnableIMChatPopups" tool_tip="Cocher cette case pour qu&apos;un popup s&apos;affiche à réception d&apos;un message instantané."/>
 	<spinner label="Durée de vie du popup Chat près de moi :" name="nearby_toasts_lifetime"/>
 	<spinner label="Disparition progressive du popup Chat près de moi :" name="nearby_toasts_fadingtime"/>
-	<check_box name="translate_chat_checkbox"/>
-	<text name="translate_chb_label">
-		Utiliser la traduction automatique lors des chats (fournie par Google)
-	</text>
+	<check_box name="translate_chat_checkbox" label="Utiliser la traduction automatique lors des chats (fournie par Google)"/>
 	<text name="translate_language_text">
 		Traduire le chat en :
 	</text>

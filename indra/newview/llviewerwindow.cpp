@@ -1578,7 +1578,7 @@ LLViewerWindow::LLViewerWindow(
 		gSavedSettings.getBOOL("DisableVerticalSync"),
 		!gHeadlessClient,
 		ignore_pixel_depth,
-		gSavedSettings.getBOOL("RenderUseFBO") ? 0 : gSavedSettings.getU32("RenderFSAASamples")); //don't use window level anti-aliasing if FBOs are enabled
+		gSavedSettings.getBOOL("RenderDeferred") ? 0 : gSavedSettings.getU32("RenderFSAASamples")); //don't use window level anti-aliasing if FBOs are enabled
 
 	if (!LLAppViewer::instance()->restoreErrorTrap())
 	{
@@ -4149,8 +4149,6 @@ BOOL LLViewerWindow::rawSnapshot(LLImageRaw *raw, S32 image_width, S32 image_hei
 	// Hide all the UI widgets first and draw a frame
 	BOOL prev_draw_ui = gPipeline.hasRenderDebugFeatureMask(LLPipeline::RENDER_DEBUG_FEATURE_UI) ? TRUE : FALSE;
 
-	//show_ui = show_ui ? TRUE : FALSE;
-
 	if ( prev_draw_ui != show_ui)
 	{
 		LLPipeline::toggleRenderDebugFeature((void*)LLPipeline::RENDER_DEBUG_FEATURE_UI);
@@ -4170,10 +4168,10 @@ BOOL LLViewerWindow::rawSnapshot(LLImageRaw *raw, S32 image_width, S32 image_hei
 	// from window
 	LLRect window_rect = show_ui ? getWindowRectRaw() : getWorldViewRectRaw(); 
 
-	S32 snapshot_width = window_rect.getWidth();
+	S32 snapshot_width  = window_rect.getWidth();
 	S32 snapshot_height = window_rect.getHeight();
 	// SNAPSHOT
-	S32 window_width = snapshot_width;
+	S32 window_width  = snapshot_width;
 	S32 window_height = snapshot_height;
 	
 	// Note: Scaling of the UI is currently *not* supported so we limit the output size if UI is requested
@@ -4200,17 +4198,17 @@ BOOL LLViewerWindow::rawSnapshot(LLImageRaw *raw, S32 image_width, S32 image_hei
 		llwarns << "over scaling UI not supported." << llendl;
 	}
 
-	S32 buffer_x_offset = llfloor(((window_width - snapshot_width) * scale_factor) / 2.f);
+	S32 buffer_x_offset = llfloor(((window_width  - snapshot_width)  * scale_factor) / 2.f);
 	S32 buffer_y_offset = llfloor(((window_height - snapshot_height) * scale_factor) / 2.f);
 
-	S32 image_buffer_x = llfloor(snapshot_width*scale_factor) ;
-	S32 image_buffer_y = llfloor(snapshot_height *scale_factor) ;
+	S32 image_buffer_x = llfloor(snapshot_width  * scale_factor) ;
+	S32 image_buffer_y = llfloor(snapshot_height * scale_factor) ;
 
 	if ((image_buffer_x > max_size) || (image_buffer_y > max_size)) // boundary check to avoid memory overflow
 	{
 		scale_factor *= llmin((F32)max_size / image_buffer_x, (F32)max_size / image_buffer_y) ;
-		image_buffer_x = llfloor(snapshot_width*scale_factor) ;
-		image_buffer_y = llfloor(snapshot_height *scale_factor) ;
+		image_buffer_x = llfloor(snapshot_width  * scale_factor) ;
+		image_buffer_y = llfloor(snapshot_height * scale_factor) ;
 	}
 	if ((image_buffer_x > 0) && (image_buffer_y > 0))
 	{
@@ -4220,7 +4218,7 @@ BOOL LLViewerWindow::rawSnapshot(LLImageRaw *raw, S32 image_width, S32 image_hei
 	{
 		return FALSE ;
 	}
-	if(raw->isBufferInvalid())
+	if (raw->isBufferInvalid())
 	{
 		return FALSE ;
 	}
@@ -4286,34 +4284,34 @@ BOOL LLViewerWindow::rawSnapshot(LLImageRaw *raw, S32 image_width, S32 image_hei
 												- (output_buffer_offset_y * (raw->getWidth()))  // ...minus buffer padding y...
 												) * raw->getComponents();
 				
-				// Ping the wathdog thread every 100 lines to keep us alive (arbitrary number, feel free to change)
-				if (out_y % 100 == 0)
-				{
-					LLAppViewer::instance()->pingMainloopTimeout("LLViewerWindow::rawSnapshot");
-				}
-				
-				if (type == SNAPSHOT_TYPE_COLOR)
-				{
-					glReadPixels(
-						subimage_x_offset, out_y + subimage_y_offset,
-						read_width, 1,
-						GL_RGB, GL_UNSIGNED_BYTE,
-						raw->getData() + output_buffer_offset
-					);
-				}
-				else // SNAPSHOT_TYPE_DEPTH
-				{
-					LLPointer<LLImageRaw> depth_line_buffer = new LLImageRaw(read_width, 1, sizeof(GL_FLOAT)); // need to store floating point values
-					glReadPixels(
-						subimage_x_offset, out_y + subimage_y_offset,
-						read_width, 1,
-						GL_DEPTH_COMPONENT, GL_FLOAT,
-						depth_line_buffer->getData()// current output pixel is beginning of buffer...
-					);
-
-					for (S32 i = 0; i < (S32)read_width; i++)
+					// Ping the watchdog thread every 100 lines to keep us alive (arbitrary number, feel free to change)
+					if (out_y % 100 == 0)
 					{
-						F32 depth_float = *(F32*)(depth_line_buffer->getData() + (i * sizeof(F32)));
+						LLAppViewer::instance()->pingMainloopTimeout("LLViewerWindow::rawSnapshot");
+					}
+				
+					if (type == SNAPSHOT_TYPE_COLOR)
+					{
+						glReadPixels(
+									 subimage_x_offset, out_y + subimage_y_offset,
+									 read_width, 1,
+									 GL_RGB, GL_UNSIGNED_BYTE,
+									 raw->getData() + output_buffer_offset
+									 );
+					}
+					else // SNAPSHOT_TYPE_DEPTH
+					{
+						LLPointer<LLImageRaw> depth_line_buffer = new LLImageRaw(read_width, 1, sizeof(GL_FLOAT)); // need to store floating point values
+						glReadPixels(
+									 subimage_x_offset, out_y + subimage_y_offset,
+									 read_width, 1,
+									 GL_DEPTH_COMPONENT, GL_FLOAT,
+									 depth_line_buffer->getData()// current output pixel is beginning of buffer...
+									 );
+
+						for (S32 i = 0; i < (S32)read_width; i++)
+						{
+							F32 depth_float = *(F32*)(depth_line_buffer->getData() + (i * sizeof(F32)));
 					
 							F32 linear_depth_float = 1.f / (depth_conversion_factor_1 - (depth_float * depth_conversion_factor_2));
 							U8 depth_byte = F32_to_U8(linear_depth_float, LLViewerCamera::getInstance()->getNear(), LLViewerCamera::getInstance()->getFar());

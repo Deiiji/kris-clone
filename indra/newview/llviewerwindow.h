@@ -49,6 +49,12 @@
 #include <boost/signals2.hpp>
 #include <boost/scoped_ptr.hpp>
 
+enum EMaskMode
+{
+	MASK_MODE_NONE = 0,
+	MASK_MODE_LEFT = 1,
+	MASK_MODE_RIGHT = 2
+};
 
 class LLView;
 class LLViewerObject;
@@ -196,6 +202,10 @@ public:
 	// ACCESSORS
 	//
 	LLRootView*			getRootView()		const;
+
+	// KL get n set the mask we wish to force
+	S32				getMaskMode() const { return mMaskMode; }
+	void			setMaskMode( S32 mode ) { mMaskMode = mode; }
 
 	// 3D world area in scaled pixels (via UI scale), use for most UI computations
 	LLRect			getWorldViewRectScaled() const;
@@ -397,6 +407,7 @@ public:
 
 protected:
 	BOOL			mActive;
+	S32				mMaskMode;
 
 	LLRect			mWindowRectRaw;				// whole window, including UI
 	LLRect			mWindowRectScaled;			// whole window, scaled by UI size

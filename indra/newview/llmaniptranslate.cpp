@@ -1651,7 +1651,7 @@ void LLManipTranslate::highlightIntersection(LLVector3 normal,
 	
 	U32 types[] = { LLRenderPass::PASS_SIMPLE, LLRenderPass::PASS_ALPHA, LLRenderPass::PASS_FULLBRIGHT, LLRenderPass::PASS_SHINY };
 	U32 num_types = LL_ARRAY_SIZE(types);
-
+	S32 mode = gViewerWindow->getMaskMode();
 	GLuint stencil_mask = 0xFFFFFFFF;
 	//stencil in volumes
 	gGL.flush();
@@ -1714,7 +1714,21 @@ void LLManipTranslate::highlightIntersection(LLVector3 normal,
 			LLPipeline::toggleRenderType(LLPipeline::RENDER_TYPE_CLOUDS);
 		}
 
-		gGL.setColorMask(true, false);
+		//gGL.setColorMask(true, false);
+		if(mode == MASK_MODE_RIGHT)
+		{
+	    gGL.setColorMask(false,true,true,false);
+		}
+
+		if(mode == MASK_MODE_LEFT)
+		{
+		gGL.setColorMask(true,false,false,false);
+		}
+
+		if(mode == MASK_MODE_NONE)
+		{
+        gGL.setColorMask(true, false);
+		} 
 	}
 	gGL.color4f(1,1,1,1);
 

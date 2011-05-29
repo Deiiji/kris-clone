@@ -124,7 +124,7 @@ void LLImageGL::checkTexSize(bool forced) const
 			}
 			else
 			{
-				llwarns << "Invalid texture bound!" << llendl; // S21
+				llerrs << "Invalid texture bound!" << llendl;
 			}
 		}
 		stop_glerror() ;
@@ -148,14 +148,14 @@ void LLImageGL::checkTexSize(bool forced) const
 			}
 			else
 			{
-				llwarns << "wrong texture size and discard level: width: " << 
+				llerrs << "wrong texture size and discard level: width: " << 
 					mWidth << " Height: " << mHeight << " Current Level: " << (S32)mCurrentDiscardLevel << llendl ;
 			}
 		}
 
 		if (error)
 		{
-			llwarns << "LLImageGL::checkTexSize failed." << llendl; // S21
+			ll_fail("LLImageGL::checkTexSize failed.");
 		}
 	}
 }
@@ -1083,11 +1083,16 @@ void LLImageGL::generateTextures(S32 numTextures, U32 *textures)
 }
 
 // static
-void LLImageGL::deleteTextures(S32 numTextures, U32 *textures)
+void LLImageGL::deleteTextures(S32 numTextures, U32 *textures, bool immediate)
 {
 	for (S32 i = 0; i < numTextures; i++)
 	{
 		sDeadTextureList.push_back(textures[i]);
+	}
+
+	if (immediate)
+	{
+		LLImageGL::deleteDeadTextures();
 	}
 }
 
@@ -1185,8 +1190,7 @@ BOOL LLImageGL::createGLTexture(S32 discard_level, const LLImageRaw* imageraw, S
 			mFormatType = GL_UNSIGNED_BYTE;
 			break;
 		  default:
-			llwarns << "Bad number of components for texture: " << (U32)getComponents() << llendl;
-		   // Ok this is intresting seems a corrupted texture on avatars can crash clients! Make this a warn.. KL
+			llerrs << "Bad number of components for texture: " << (U32)getComponents() << llendl;
 		}
 
 		calcAlphaChannelOffsetAndStride() ;
@@ -1418,7 +1422,7 @@ void LLImageGL::deleteDeadTextures()
 		{
 			if (sCurrentBoundTextures[i] == tex)
 			{
-				gGL.getTexUnit(i)->unbind(LLTexUnit::TT_TEXTURE);
+				gGL.getTexUnit(i)->unbind(gGL.getTexUnit(i)->getCurrType());
 				stop_glerror();
 			}
 		}
