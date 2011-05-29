@@ -1216,7 +1216,7 @@ bool LLAppViewer::mainLoop()
 
 				// Render scene.
 				// *TODO: Should we run display() even during gHeadlessClient?  DK 2011-02-18
-				if (!LLApp::isExiting() && !gHeadlessClient)
+				if (!LLApp::isExiting() && !gHeadlessClient )
 				{
 					pingMainloopTimeout("Main:Display");
 					gGLActive = TRUE;
@@ -3701,6 +3701,12 @@ void LLAppViewer::badNetworkHandler()
 // is destroyed.
 void LLAppViewer::saveFinalSnapshot()
 {
+	bool DOF = gSavedSettings.getBOOL("RenderUseDOF");
+	// HACK to prevent a crash on quit case when DOF is enabled at shutdown!
+	if(DOF)
+	{
+		return;
+	}
 	if (!mSavedFinalSnapshot)
 	{
 		gSavedSettings.setVector3d("FocusPosOnLogout", gAgentCamera.calcFocusPositionTargetGlobal());
