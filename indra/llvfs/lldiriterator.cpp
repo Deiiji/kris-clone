@@ -26,6 +26,8 @@
 
 #include "lldiriterator.h"
 
+#define BOOST_FILESYSTEM_VERSION 3
+
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
 
@@ -80,7 +82,7 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mFilterExp.assign(exp);
 	}
-	catch (boost::regex_error& e)
+	catch (fs::filesystem_error& e)
 	{
 		llerrs << "\"" << exp << "\" is not a valid regular expression: "
 				<< e.what() << llendl;
@@ -109,7 +111,7 @@ bool LLDirIterator::Impl::next(std::string &fname)
 	while (mIter != end_itr && !found)
 	{
 		boost::smatch match;
-		std::string name = mIter->path().filename();
+		std::string const name = mIter->path().filename().native();
 		if (found = boost::regex_match(name, match, mFilterExp))
 		{
 			fname = name;
