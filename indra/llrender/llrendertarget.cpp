@@ -153,7 +153,7 @@ void LLRenderTarget::addColorAttachment(U32 color_fmt)
 
 	stop_glerror();
 
-
+#if !LL_DARWIN
 	if (mSamples > 1)
 	{
 		glTexImage2DMultisample(LLTexUnit::getInternalType(mUsage), mSamples, color_fmt, mResX, mResY, GL_TRUE);
@@ -162,7 +162,15 @@ void LLRenderTarget::addColorAttachment(U32 color_fmt)
 	{
 		LLImageGL::setManualImage(LLTexUnit::getInternalType(mUsage), 0, color_fmt, mResX, mResY, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	}
-	
+#endif
+
+#if LL_DARWIN
+	if (mSamples > 1)
+	{
+		LLImageGL::setManualImage(LLTexUnit::getInternalType(mUsage), 0, color_fmt, mResX, mResY, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	}
+#endif
+
 	stop_glerror();
 
 	if (mSamples == 0)
@@ -235,8 +243,10 @@ void LLRenderTarget::allocateDepth()
 			LLImageGL::setManualImage(internal_type, 0, GL_DEPTH_COMPONENT32, mResX, mResY, GL_DEPTH_COMPONENT, GL_UNSIGNED_INT, NULL);
 		}
 		else
-		{
+		{// if the first method don't satisfy OSX then do sod all KL
+#if !LL_DARWIN
 			glTexImage2DMultisample(LLTexUnit::getInternalType(mUsage), mSamples, GL_DEPTH_COMPONENT32, mResX, mResY, GL_TRUE);
+#endif
 		}
 	}
 }

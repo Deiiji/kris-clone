@@ -553,7 +553,8 @@ bool LLGLManager::initGL()
 		glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS_ARB, &num_tex_image_units);
 		mNumTextureImageUnits = num_tex_image_units;
 	}
-
+// apple HATES this!! KL
+#if !LL_DARWIN
 	if (mHasTextureMultisample)
 	{
 		glGetIntegerv(GL_MAX_COLOR_TEXTURE_SAMPLES, &mMaxColorTextureSamples);
@@ -566,7 +567,7 @@ bool LLGLManager::initGL()
 	{
 		glGetIntegerv(GL_MAX_SAMPLES, &mMaxSamples);
 	}
-	
+#endif
 	setToDebugGPU();
 
 	initGLStates();
@@ -1428,7 +1429,7 @@ void LLGLState::checkTextureChannels(const std::string& msg)
 		"GL_TEXTURE_RECTANGLE_ARB",
 		"GL_TEXTURE_2D_MULTISAMPLE"
 	};
-
+#if !LL_DARWIN
 	static GLint value[] =
 	{
 		GL_TEXTURE_2D,
@@ -1442,6 +1443,22 @@ void LLGLState::checkTextureChannels(const std::string& msg)
 		GL_TEXTURE_RECTANGLE_ARB,
 		GL_TEXTURE_2D_MULTISAMPLE
 	};
+#endif
+
+#if LL_DARWIN
+	static GLint value[] =
+	{
+		GL_TEXTURE_2D,
+		GL_TEXTURE_COORD_ARRAY,
+		GL_TEXTURE_1D,
+		GL_TEXTURE_CUBE_MAP_ARB,
+		GL_TEXTURE_GEN_S,
+		GL_TEXTURE_GEN_T,
+		GL_TEXTURE_GEN_Q,
+		GL_TEXTURE_GEN_R,
+		GL_TEXTURE_RECTANGLE_ARB
+	};
+#endif
 
 	GLint stackDepth = 0;
 

@@ -598,7 +598,7 @@ void LLPipeline::allocateScreenBuffer(U32 resX, U32 resY)
 	   // KL allow ATI driver tweakers the ability to experiment
 	    if(gSavedSettings.getBOOL("ATIIgnoreRenderTargetAA")==TRUE)
 	    {
-	    U32 samples = gGLManager.getNumFBOFSAASamples(gSavedSettings.getU32("RenderFSAASamples"));
+	    samples = gGLManager.getNumFBOFSAASamples(gSavedSettings.getU32("RenderFSAASamples")); // Fix that GCC definition error
 	    }
 	    else
 	    {

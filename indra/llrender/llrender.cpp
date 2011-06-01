@@ -49,6 +49,7 @@ U32 LLRender::sUIVerts = 0;
 static const U32 LL_NUM_TEXTURE_LAYERS = 16; 
 static const U32 LL_NUM_LIGHT_UNITS = 8;
 
+#if !LL_DARWIN
 static GLenum sGLTextureType[] =
 {
 	GL_TEXTURE_2D,
@@ -56,6 +57,16 @@ static GLenum sGLTextureType[] =
 	GL_TEXTURE_CUBE_MAP_ARB,
 	GL_TEXTURE_2D_MULTISAMPLE
 };
+#endif
+
+#if LL_DARWIN
+static GLenum sGLTextureType[] =
+{
+	GL_TEXTURE_2D,
+	GL_TEXTURE_RECTANGLE_ARB,
+	GL_TEXTURE_CUBE_MAP_ARB
+};
+#endif
 
 static GLint sGLAddressMode[] =
 {	

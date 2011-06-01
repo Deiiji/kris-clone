@@ -293,6 +293,7 @@ void LLGLSLShader::mapUniform(GLint index, const vector<string> * uniforms)
 
 GLint LLGLSLShader::mapUniformTextureChannel(GLint location, GLenum type)
 {
+#if !LL_DARWIN
 	if (type >= GL_SAMPLER_1D_ARB && type <= GL_SAMPLER_2D_RECT_SHADOW_ARB ||
 		type == GL_SAMPLER_2D_MULTISAMPLE)
 	{	//this here is a texture
@@ -301,6 +302,17 @@ GLint LLGLSLShader::mapUniformTextureChannel(GLint location, GLenum type)
 		return mActiveTextureChannels++;
 	}
 	return -1;
+#endif
+
+#if LL_DARWIN
+if (type >= GL_SAMPLER_1D_ARB && type <= GL_SAMPLER_2D_RECT_SHADOW_ARB)
+	{	//this here is a texture
+		glUniform1iARB(location, mActiveTextureChannels);
+		LL_DEBUGS("ShaderLoading") << "Assigned to texture channel " << mActiveTextureChannels << LL_ENDL;
+		return mActiveTextureChannels++;
+	}
+	return -1;
+#endif
 }
 
 BOOL LLGLSLShader::mapUniforms(const vector<string> * uniforms)
