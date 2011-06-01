@@ -82,7 +82,8 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mFilterExp.assign(exp);
 	}
-	catch (fs::filesystem_error& e)
+	catch (boost::regex_error& e)
+//	catch (fs::filesystem_error& e)
 	{
 		llerrs << "\"" << exp << "\" is not a valid regular expression: "
 				<< e.what() << llendl;
