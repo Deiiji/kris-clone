@@ -66,7 +66,7 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mIter = fs::directory_iterator(dir_path);
 	}
-	catch (fs::basic_filesystem_error<fs::path>& e)
+	catch (fs::filesystem_error& e)
 	{
 		llerrs << e.what() << llendl;
 		return;
