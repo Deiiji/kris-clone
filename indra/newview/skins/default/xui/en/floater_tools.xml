@@ -292,10 +292,10 @@
 	   text_color="LtGray_50"
 	   follows="top|left"
 	   halign="left"
-	   left_pad="3"
+	   left_pad="20"
 	   name="RenderingCost"
 	   tool_tip="Shows the rendering cost calculated for this object"
-	   top_delta="11"
+	   top_delta="-18"
 	   type="string"
 	   width="100">
 	   þ: [COUNT]
@@ -789,7 +789,7 @@
      follows="left|top"
      halign="right"
      layout="topleft"
-     right="-120"
+     right="-110"
      name="linked_set_count"
      top="144"
      width="80">
@@ -2103,11 +2103,7 @@ even though the user gets a free copy.
                  label="Cylinder"
                  name="Cylinder"
                  value="Cylinder" />
-              <combo_box.item
-                 label="Mesh"
-                 name="Mesh"
-                 value="Mesh" />
-            </combo_box>
+              </combo_box>
         </panel>
         <panel
          border="false"
