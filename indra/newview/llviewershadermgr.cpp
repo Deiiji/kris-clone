@@ -195,8 +195,6 @@ LLViewerShaderMgr::LLViewerShaderMgr() :
 	mShaderList.push_back(&gDeferredWLSkyProgram);
 	mShaderList.push_back(&gDeferredWLCloudProgram);
 	mShaderList.push_back(&gDeferredStarProgram);
-	mShaderList.push_back(&gPostColorFilterProgram);	
-	mShaderList.push_back(&gPostNightVisionProgram);
 }
 
 LLViewerShaderMgr::~LLViewerShaderMgr()
