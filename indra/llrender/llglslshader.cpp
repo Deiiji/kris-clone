@@ -48,7 +48,7 @@ using std::pair;
 using std::make_pair;
 using std::string;
 
-//GLhandleARB LLGLSLShader::sCurBoundShader = 0;
+GLhandleARB LLGLSLShader::sCurBoundShader = 0;
 
 BOOL shouldChange(const LLVector4& v1, const LLVector4& v2)
 {
@@ -58,7 +58,7 @@ BOOL shouldChange(const LLVector4& v1, const LLVector4& v2)
 LLShaderFeatures::LLShaderFeatures()
 : calculatesLighting(false), isShiny(false), isFullbright(false), hasWaterFog(false),
 hasTransport(false), hasSkinning(false), hasObjectSkinning(false), hasAtmospherics(false), isSpecular(false),
-hasGamma(false), hasLighting(false), calculatesAtmospherics(false)
+hasGamma(false), hasLighting(false), calculatesAtmospherics(false), mIndexedTextureChannels(0), disableTextureIndex(false)
 {
 }
 
@@ -109,16 +109,11 @@ BOOL LLGLSLShader::createShader(vector<string> * attributes,
 	// Create program
 	mProgramObject = glCreateProgramObjectARB();
 	
-	// Attach existing objects
-	if (!LLShaderMgr::instance()->attachShaderFeatures(this))
-	{
-		return FALSE;
-	}
-
+	//compile new source
 	vector< pair<string,GLenum> >::iterator fileIter = mShaderFiles.begin();
 	for ( ; fileIter != mShaderFiles.end(); fileIter++ )
 	{
-		GLhandleARB shaderhandle = LLShaderMgr::instance()->loadShaderFile((*fileIter).first, mShaderLevel, (*fileIter).second);
+		GLhandleARB shaderhandle = LLShaderMgr::instance()->loadShaderFile((*fileIter).first, mShaderLevel, (*fileIter).second, mFeatures.mIndexedTextureChannels);
 		LL_DEBUGS("ShaderLoading") << "SHADER FILE: " << (*fileIter).first << " mShaderLevel=" << mShaderLevel << LL_ENDL;
 		if (shaderhandle > 0)
 		{
@@ -128,6 +123,12 @@ BOOL LLGLSLShader::createShader(vector<string> * attributes,
 		{
 			success = FALSE;
 		}
+	}
+
+	// Attach existing objects
+	if (!LLShaderMgr::instance()->attachShaderFeatures(this))
+	{
+		return FALSE;
 	}
 
 	// Map attributes and uniforms
@@ -151,6 +152,29 @@ BOOL LLGLSLShader::createShader(vector<string> * attributes,
 			return createShader(attributes,uniforms);
 		}
 	}
+	else if (mFeatures.mIndexedTextureChannels > 0)
+	{ //override texture channels for indexed texture rendering
+		bind();
+		S32 channel_count = mFeatures.mIndexedTextureChannels;
+
+		for (S32 i = 0; i < channel_count; i++)
+		{
+			uniform1i(llformat("tex%d", i), i);
+		}
+
+		S32 cur_tex = channel_count; //adjust any texture channels that might have been overwritten
+		for (U32 i = 0; i < mTexture.size(); i++)
+		{
+			if (mTexture[i] > -1 && mTexture[i] < channel_count)
+			{
+				llassert(cur_tex < gGLManager.mNumTextureImageUnits);
+				uniform1i(i, cur_tex);
+				mTexture[i] = cur_tex++;
+			}
+		}
+		unbind();
+	}
+
 	return success;
 }
 
@@ -295,7 +319,6 @@ void LLGLSLShader::mapUniform(GLint index, const vector<string> * uniforms)
 
 GLint LLGLSLShader::mapUniformTextureChannel(GLint location, GLenum type)
 {
-#if !LL_DARWIN
 	if (type >= GL_SAMPLER_1D_ARB && type <= GL_SAMPLER_2D_RECT_SHADOW_ARB ||
 		type == GL_SAMPLER_2D_MULTISAMPLE)
 	{	//this here is a texture
@@ -304,17 +327,6 @@ GLint LLGLSLShader::mapUniformTextureChannel(GLint location, GLenum type)
 		return mActiveTextureChannels++;
 	}
 	return -1;
-#endif
-
-#if LL_DARWIN
-if (type >= GL_SAMPLER_1D_ARB && type <= GL_SAMPLER_2D_RECT_SHADOW_ARB)
-	{	//this here is a texture
-		glUniform1iARB(location, mActiveTextureChannels);
-		LL_DEBUGS("ShaderLoading") << "Assigned to texture channel " << mActiveTextureChannels << LL_ENDL;
-		return mActiveTextureChannels++;
-	}
-	return -1;
-#endif
 }
 
 BOOL LLGLSLShader::mapUniforms(const vector<string> * uniforms)
@@ -357,7 +369,7 @@ void LLGLSLShader::bind()
 	if (gGLManager.mHasShaderObjects)
 	{
 		glUseProgramObjectARB(mProgramObject);
-
+		sCurBoundShader = mProgramObject;
 		if (mUniformsDirty)
 		{
 			LLShaderMgr::instance()->updateShaderUniforms(this);
@@ -380,6 +392,7 @@ void LLGLSLShader::unbind()
 			}
 		}
 		glUseProgramObjectARB(0);
+		sCurBoundShader = 0;
 		stop_glerror();
 	}
 }
@@ -387,6 +400,7 @@ void LLGLSLShader::unbind()
 void LLGLSLShader::bindNoShader(void)
 {
 	glUseProgramObjectARB(0);
+	sCurBoundShader = 0;
 }
 
 S32 LLGLSLShader::enableTexture(S32 uniform, LLTexUnit::eTextureType mode)

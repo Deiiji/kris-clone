@@ -56,7 +56,7 @@ BOOL LLFloaterSoundDevices::postBuild()
 {
 	LLTransientDockableFloater::postBuild();
 		
-	LLView *anchor_panel = LLBottomTray::getInstance()->getChild<LLView>("speak_flyout_btn");
+	LLView *anchor_panel = LLBottomTray::getInstance()->getChild<LLView>("flyout_btn");
 	setDockControl(new LLDockControl(anchor_panel, this, getDockTongue(), LLDockControl::TOP));
 
 	setIsChrome(TRUE);
@@ -68,6 +68,9 @@ BOOL LLFloaterSoundDevices::postBuild()
 	if (panel)
 	{
 		panel->setUseTuningMode(false);
+		getChild<LLUICtrl>("voice_input_device")->setCommitCallback(boost::bind(&LLPanelVoiceDeviceSettings::apply, panel));
+		getChild<LLUICtrl>("voice_output_device")->setCommitCallback(boost::bind(&LLPanelVoiceDeviceSettings::apply, panel));
+		getChild<LLUICtrl>("mic_volume_slider")->setCommitCallback(boost::bind(&LLPanelVoiceDeviceSettings::apply, panel));
 	}
 	return TRUE;
 }

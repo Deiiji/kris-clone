@@ -399,7 +399,6 @@ void LLFloaterWindLight::syncMenu()
 	LLPanel* panel = getChild<LLPanel>("Scattering");
 
 	tab->enableTabButton(tab->getIndexForPanel(panel), gSavedSettings.getBOOL("RenderDeferredGI"));
-
 }
 
 
@@ -868,7 +867,6 @@ void LLFloaterWindLight::onChangePresetName(LLUICtrl* ctrl)
 	if(!data.empty())
 	{
 		LLWLParamManager::instance()->loadPreset( data);
-		LL_INFOS("WindLight") << "Current inventory ID: " << LLWLParamManager::instance()->mCurParams.mInventoryID << LL_ENDL;
 		syncMenu();
 	}
 }

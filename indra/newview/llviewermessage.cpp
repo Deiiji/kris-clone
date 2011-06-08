@@ -2809,7 +2809,7 @@ void process_improved_im(LLMessageSystem *msg, void **user_data)
 			{
 				LLVector3 pos, look_at;
 				U64 region_handle;
-				U8 region_access = SIM_ACCESS_MIN;
+				U8 region_access;
 				std::string region_info = ll_safe_string((char*)binary_bucket, binary_bucket_size);
 				std::string region_access_str = LLStringUtil::null;
 				std::string region_access_icn = LLStringUtil::null;
@@ -3217,7 +3217,6 @@ void process_chat_from_simulator(LLMessageSystem *msg, void **user_data)
 	if (is_audible)
 	{
 		BOOL visible_in_chat_bubble = FALSE;
-		std::string verb;
 
 		color.setVec(1.f,1.f,1.f,1.f);
 		msg->getStringFast(_PREHASH_ChatData, _PREHASH_Message, mesg);
@@ -3266,18 +3265,19 @@ void process_chat_from_simulator(LLMessageSystem *msg, void **user_data)
 		}
 		else
 		{
+			chat.mText = "";
 			switch(chat.mChatType)
 			{
 			case CHAT_TYPE_WHISPER:
-				verb = LLTrans::getString("whisper") + " ";
+				chat.mText = LLTrans::getString("whisper") + " ";
 				break;
 			case CHAT_TYPE_DEBUG_MSG:
 			case CHAT_TYPE_OWNER:
 			case CHAT_TYPE_NORMAL:
-				verb = "";
+			case CHAT_TYPE_DIRECT:
 				break;
 			case CHAT_TYPE_SHOUT:
-				verb = LLTrans::getString("shout") + " ";
+				chat.mText = LLTrans::getString("shout") + " ";
 				break;
 			case CHAT_TYPE_START:
 			case CHAT_TYPE_STOP:
@@ -3285,13 +3285,9 @@ void process_chat_from_simulator(LLMessageSystem *msg, void **user_data)
 				break;
 			default:
 				LL_WARNS("Messaging") << "Unknown type " << chat.mChatType << " in chat!" << LL_ENDL;
-				verb = "";
 				break;
 			}
 
-
-			chat.mText = "";
-			chat.mText += verb;
 			chat.mText += mesg;
 		}
 		

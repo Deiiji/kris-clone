@@ -85,9 +85,6 @@ public:
 	 */
 	void setValidateSpeakerCallback(validate_speaker_callback_t cb);
 
-	// STONE XMPP HACK
-	LLAvatarList*		mAvatarList;
-
 protected:
 	/**
 	 * LLSpeakerMgr event handlers
@@ -255,7 +252,7 @@ private:
 	void adjustParticipant(const LLUUID& speaker_id);
 
 	LLSpeakerMgr*		mSpeakerMgr;
-	//LLAvatarList*		mAvatarList; // kl don't merge redefinition clashes with xmpp
+	LLAvatarList*		mAvatarList;
 
 	std::set<LLUUID>	mModeratorList;
 	std::set<LLUUID>	mModeratorToRemoveList;

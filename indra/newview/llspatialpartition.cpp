@@ -35,6 +35,7 @@
 #include "llvolumeoctree.h"
 #include "llviewercamera.h"
 #include "llface.h"
+#include "llfloatertools.h"
 #include "llviewercontrol.h"
 #include "llviewerregion.h"
 #include "llcamera.h"
@@ -3439,6 +3440,8 @@ void renderTextureAnim(LLDrawInfo* params)
 
 void renderBatchSize(LLDrawInfo* params)
 {
+	LLGLEnable offset(GL_POLYGON_OFFSET_FILL);
+	glPolygonOffset(-1.f, 1.f);
 	glColor3ubv((GLubyte*) &(params->mDebugColor));
 	pushVerts(params, LLVertexBuffer::MAP_VERTEX);
 }
@@ -3876,6 +3879,28 @@ public:
 				renderAgentTarget(avatar);
 			}
 			
+			if (gDebugGL)
+			{
+				for (U32 i = 0; i < drawable->getNumFaces(); ++i)
+				{
+					LLFace* facep = drawable->getFace(i);
+					U8 index = facep->getTextureIndex();
+					if (facep->mDrawInfo)
+					{
+						if (index < 255)
+						{
+							if (facep->mDrawInfo->mTextureList.size() <= index)
+							{
+								llerrs << "Face texture index out of bounds." << llendl;
+							}
+							else if (facep->mDrawInfo->mTextureList[index] != facep->getTexture())
+							{
+								llerrs << "Face texture index incorrect." << llendl;
+							}
+						}
+					}
+				}
+			}
 		}
 		
 		for (LLSpatialGroup::draw_map_t::iterator i = group->mDrawMap.begin(); i != group->mDrawMap.end(); ++i)
@@ -4248,7 +4273,29 @@ public:
 			if (vobj)
 			{
 				LLVector3 intersection;
-				if (vobj->lineSegmentIntersect(mStart, mEnd, -1, mPickTransparent, mFaceHit, &intersection, mTexCoord, mNormal, mBinormal))
+				bool skip_check = false;
+				if (vobj->isAvatar())
+				{
+					LLVOAvatar* avatar = (LLVOAvatar*) vobj;
+					if (avatar->isSelf() && LLFloater::isVisible(gFloaterTools))
+					{
+						LLViewerObject* hit = avatar->lineSegmentIntersectRiggedAttachments(mStart, mEnd, -1, mPickTransparent, mFaceHit, &intersection, mTexCoord, mNormal, mBinormal);
+						if (hit)
+						{
+							mEnd = intersection;
+							if (mIntersection)
+							{
+								*mIntersection = intersection;
+							}
+							
+							mHit = hit->mDrawable;
+							skip_check = true;
+						}
+
+					}
+				}
+
+				if (!skip_check && vobj->lineSegmentIntersect(mStart, mEnd, -1, mPickTransparent, mFaceHit, &intersection, mTexCoord, mNormal, mBinormal))
 				{
 					mEnd = intersection;  // shorten ray so we only find CLOSER hits
 					if (mIntersection)

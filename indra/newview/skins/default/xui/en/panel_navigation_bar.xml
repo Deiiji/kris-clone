@@ -86,8 +86,9 @@
 	     tool_tip="Teleport to my home location"
 	     top_delta="0"
 	     width="32" />
-          <!-- About Land Button here -->         
-	    <button
+	     
+             <!-- About Land Button here -->         
+	     <button
 	     follows="left|top"
 	     height="23"
 	     layout="topleft"
@@ -97,17 +98,16 @@
 	     tool_tip="About Land"
 	     top_delta="0"
 	     width="43">
-		 <button.init_callback
-               function="Button.SetFloaterToggle"
-               parameter="about_land" />
-		 </button>
-          <!-- end of About Land Button -->
+	     <button.init_callback
+             function="Button.SetFloaterToggle"
+             parameter="about_land" />
+	     </button>
+             <!-- end of About Land Button -->
 
-          <!-- Windlight Button here -->  
-	    <button
+             <!-- Windlight Button here -->  
+	     <button
 	     follows="left|top"
 	     height="23"
-           
 	     layout="topleft"
 	     left_pad="7"
 	     name="Sky"
@@ -115,14 +115,31 @@
 	     tool_tip="Pops up Sky Editor window"
 	     top_delta="0"
 	     width="30">
-		 <button.init_callback
-               function="Button.SetFloaterToggle"
-               parameter="env_windlight" />
-		 </button>
-          <!-- end of Windlight Button -->
-
-             <!---prefs button-->
-                     <button
+	     <button.init_callback
+             function="Button.SetFloaterToggle"
+             parameter="env_windlight" />
+	     </button>
+             <!-- end of Windlight Button -->
+	  
+             <!-- Water Button here -->  
+	     <button
+	     follows="left|top"
+	     height="23"
+	     layout="topleft"
+	     left_pad="7"
+	     name="Water"
+	     image_overlay="Waterlight_btn"
+	     tool_tip="Pops up Water Editor window"
+	     top_delta="0"
+	     width="30">
+	     <button.init_callback
+             function="Button.SetFloaterToggle"
+             parameter="env_water" />
+	     </button>
+             <!-- end of Water Button -->
+	  
+	      <!---prefs button-->
+             <button
 	     follows="left|top"
 	     height="23"
 	     layout="topleft"
@@ -132,10 +149,10 @@
 	     tool_tip="Open preferences window"
 	     top_delta="0"
 	     width="35">
-	               <button.init_callback
-                function="Button.SetFloaterToggle"
-                parameter="preferences" />
-	                 </button>
+	     <button.init_callback
+             function="Button.SetFloaterToggle"
+             parameter="preferences" />
+	     </button>
              <!-- end of Prefs Button -->
 
 	    <location_input
@@ -149,7 +166,7 @@
 	     mouse_opaque="false"
 	     name="location_combo"
 	     top_delta="0"
-	     width="170">
+	     width="147">
 	    </location_input>
 
          <combo_list

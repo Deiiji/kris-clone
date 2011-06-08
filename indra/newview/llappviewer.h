@@ -79,7 +79,6 @@ public:
     bool logoutRequestSent() { return mLogoutRequestSent; }
 
 	void writeDebugInfo();
-	void outputMemoryStatistics();
 
 	const LLOSInfo& getOSInfo() const { return mSysOSInfo; }
 
@@ -197,7 +196,6 @@ private:
 
 	bool initCache(); // Initialize local client cache.
 
-	void forceToRelieveMemory() ;
 
 	// We have switched locations of both Mac and Windows cache, make sure
 	// files migrate and old cache is cleared out.

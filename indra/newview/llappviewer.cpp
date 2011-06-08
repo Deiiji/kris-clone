@@ -306,7 +306,7 @@ BOOL gLLErrorActivated = FALSE;
 BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
-// Internal globals... that should be removed
+// Internal globals... that should be removed.
 static std::string gArgs = "Build 8 RC2";
 
 const std::string MARKER_FILE_NAME("KirstensS21.exec_marker");
@@ -688,6 +688,8 @@ bool LLAppViewer::init()
 	
 	if (!initConfiguration())
 		return false;
+
+	LL_INFOS("InitInfo") << "Configuration initialized." << LL_ENDL ;
 
 	// write Google Breakpad minidump files to our log directory
 	std::string logdir = gDirUtilp->getExpandedFilename(LL_PATH_LOGS, "");
@@ -2467,7 +2469,8 @@ bool LLAppViewer::initConfiguration()
 	// it relies on checking a marker file which will not work when running
 	// out of different directories
 
-	if (LLStartUp::getStartSLURL().isValid())
+	if (LLStartUp::getStartSLURL().isValid() &&
+		(gSavedSettings.getBOOL("SLURLPassToOtherInstance")))
 	{
 		if (sendURLToOtherInstance(LLStartUp::getStartSLURL().getSLURLString()))
 		{

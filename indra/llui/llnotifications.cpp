@@ -1532,8 +1532,7 @@ bool LLNotifications::loadVisibilityRules()
 // Add a simple notification (from XUI)
 void LLNotifications::addFromCallback(const LLSD& name)
 {
-    // altair the previous fix not needed as we handle different
-	add(LLNotification::Params().name(name.asString()));	
+	add(name.asString(), LLSD(), LLSD());
 }
 
 LLNotificationPtr LLNotifications::add(const std::string& name, 

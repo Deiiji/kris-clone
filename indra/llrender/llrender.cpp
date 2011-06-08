@@ -30,6 +30,7 @@
 
 #include "llvertexbuffer.h"
 #include "llcubemap.h"
+#include "llglslshader.h"
 #include "llimagegl.h"
 #include "llrendertarget.h"
 #include "lltexture.h"
@@ -46,10 +47,9 @@ S32	gGLViewport[4];
 U32 LLRender::sUICalls = 0;
 U32 LLRender::sUIVerts = 0;
 
-static const U32 LL_NUM_TEXTURE_LAYERS = 16; 
+static const U32 LL_NUM_TEXTURE_LAYERS = 32; 
 static const U32 LL_NUM_LIGHT_UNITS = 8;
 
-#if !LL_DARWIN
 static GLenum sGLTextureType[] =
 {
 	GL_TEXTURE_2D,
@@ -57,16 +57,6 @@ static GLenum sGLTextureType[] =
 	GL_TEXTURE_CUBE_MAP_ARB,
 	GL_TEXTURE_2D_MULTISAMPLE
 };
-#endif
-
-#if LL_DARWIN
-static GLenum sGLTextureType[] =
-{
-	GL_TEXTURE_2D,
-	GL_TEXTURE_RECTANGLE_ARB,
-	GL_TEXTURE_CUBE_MAP_ARB
-};
-#endif
 
 static GLint sGLAddressMode[] =
 {	
@@ -304,7 +294,7 @@ bool LLTexUnit::bind(LLImageGL* texture, bool for_rendering, bool forceBind)
 		glBindTexture(sGLTextureType[texture->getTarget()], mCurrTexture);
 		texture->updateBindStats(texture->mTextureMemory);		
 		mHasMipMaps = texture->mHasMipMaps;
-		if (texture->mTexOptionsDirty)
+		if (mIndex == 0 && texture->mTexOptionsDirty)
 		{
 			texture->mTexOptionsDirty = false;
 			setTextureAddressMode(texture->mAddressMode);
@@ -414,6 +404,7 @@ void LLTexUnit::unbind(eTextureType type)
 		activate();
 		mCurrTexture = 0;
 		glBindTexture(sGLTextureType[type], 0);
+		stop_glerror();
 	}
 }
 

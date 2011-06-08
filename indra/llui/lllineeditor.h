@@ -63,7 +63,7 @@ public:
 	struct MaxLength : public LLInitParam::Choice<MaxLength>
 	{
 		Alternative<S32> bytes, chars;
-		
+		// This may not be required anymore but allow more chars for bigger copy pasta's into local
 		MaxLength() : bytes("max_length_bytes", 1016),
 					  chars("max_length_chars", 0) 
 		{}

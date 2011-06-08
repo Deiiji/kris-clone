@@ -2215,7 +2215,7 @@ This is usually a temporary failure. Please customize and save the wearable agai
    icon="alertmodal.tga"
    name="YouHaveBeenLoggedOut"
    type="alertmodal">
-Sucks to be you! You have been logged out of [SECOND_LIFE]
+Oh Joy! You have been logged out of [SECOND_LIFE]
             [MESSAGE]
     <usetemplate
      name="okcancelbuttons"
@@ -5235,6 +5235,20 @@ You don&apos;t have permission to view this notecard.
    type="notifytip">
 Insufficient permissions to rez object.
   <tag>fail</tag>
+  </notification>
+
+  <notification
+   icon="notifytip.tga"
+   name="IMAcrossParentEstates"
+   type="notifytip">
+Unable to send IM across parent estates.
+  </notification>
+
+  <notification
+   icon="notifytip.tga"
+   name="TransferInventoryAcrossParentEstates"
+   type="notifytip">
+Unable to transfer inventory across parent estates.
   </notification>
 
   <notification

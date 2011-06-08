@@ -719,6 +719,17 @@
       <key>Value</key>
       <integer>0</integer>
     </map>
+    <key>BrowserEnableJSObject</key>
+    <map>
+      <key>Comment</key>
+      <string>(WARNING: Advanced feature. Use if you are aware of the implications). Enable or disable the viewer to Javascript bridge object.</string>
+      <key>Persist</key>
+      <integer>0</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>0</integer>
+    </map>
     <key>BlockAvatarAppearanceMessages</key>
         <map>
         <key>Comment</key>
@@ -7239,7 +7250,7 @@
     <key>Type</key>
     <string>S32</string>
     <key>Value</key>
-    <integer>1</integer>
+    <integer>4</integer>
   </map>
 
   <key>OctreeAlphaDistanceFactor</key>
@@ -7252,7 +7263,7 @@
     <string>Vector3</string>
     <key>Value</key>
     <array>
-      <real>0.05</real>
+      <real>0.1</real>
       <real>0.0</real>
       <real>0.0</real>
     </array>
@@ -7280,7 +7291,7 @@
     <string>Vector3</string>
     <key>Value</key>
     <array>
-      <real>0.05</real>
+      <real>0.01</real>
       <real>0.0</real>
       <real>0.0</real>
     </array>
@@ -7639,6 +7650,17 @@
       <key>Value</key>
       <integer>0</integer>
     </map>
+  <key>RenderMaxTextureIndex</key>
+  <map>
+    <key>Comment</key>
+    <string>Maximum texture index to use for indexed texture rendering.</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>U32</string>
+    <key>Value</key>
+    <integer>6</integer>
+  </map>
     <key>RenderDebugTextureBind</key>
     <map>
       <key>Comment</key>
@@ -9136,7 +9158,7 @@
       <key>Type</key>
       <string>Boolean</string>
       <key>Value</key>
-      <integer>1</integer>
+      <integer>0</integer>
     </map>
   <key>RenderUseStreamVBO</key>
   <map>
@@ -12906,6 +12928,17 @@
 		<key>Value</key>
 		<integer>1</integer>
 	</map>
+    <key>SLURLPassToOtherInstance</key>
+    <map>
+    <key>Comment</key>
+    <string>Pass execution to prevoius viewer instances if there is a given slurl</string>
+    <key>Persist</key>
+    <integer>1</integer>
+    <key>Type</key>
+    <string>Boolean</string>
+    <key>Value</key>
+    <integer>1</integer>
+    </map>
     <key>soundsbeacon</key>
     <map>
       <key>Comment</key>
