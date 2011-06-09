@@ -2464,6 +2464,7 @@ even though the user gets a free copy.
              initial_value="0"
              label="Density"
              label_width="70"
+             label_wrap="true"
              layout="topleft"
              left_delta="0"
              max_val="22587"
@@ -2484,7 +2485,7 @@ even though the user gets a free copy.
              max_val="1"
              min_val="0"
              name="Physics Restitution"
-             top_pad="4"
+             top_pad="8"
              width="132" />
         </panel>
          <panel

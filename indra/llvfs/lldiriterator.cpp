@@ -26,7 +26,7 @@
 
 #include "lldiriterator.h"
 
-#define BOOST_FILESYSTEM_VERSION 3
+//#define BOOST_FILESYSTEM_VERSION 3 Altair MAKE this LINUX specific... it breaks windows builds :/
 
 #include <boost/filesystem.hpp>
 #include <boost/regex.hpp>
@@ -66,7 +66,7 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 	{
 		mIter = fs::directory_iterator(dir_path);
 	}
-	catch (fs::filesystem_error& e)
+	catch (fs::basic_filesystem_error<fs::path>& e)
 	{
 		llerrs << e.what() << llendl;
 		return;
@@ -83,7 +83,6 @@ LLDirIterator::Impl::Impl(const std::string &dirname, const std::string &mask)
 		mFilterExp.assign(exp);
 	}
 	catch (boost::regex_error& e)
-//	catch (fs::filesystem_error& e)
 	{
 		llerrs << "\"" << exp << "\" is not a valid regular expression: "
 				<< e.what() << llendl;
@@ -112,7 +111,7 @@ bool LLDirIterator::Impl::next(std::string &fname)
 	while (mIter != end_itr && !found)
 	{
 		boost::smatch match;
-		std::string const name = mIter->path().filename().native();
+		std::string name = mIter->path().filename();
 		if (found = boost::regex_match(name, match, mFilterExp))
 		{
 			fname = name;

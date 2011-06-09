@@ -1518,8 +1518,7 @@ void render_hud_attachments()
 
 		S32 use_occlusion = LLPipeline::sUseOcclusion;
 		LLPipeline::sUseOcclusion = 0;
-		LLPipeline::sDisableShaders = TRUE;
-		
+				
 		//cull, sort, and render hud objects
 		static LLCullResult result;
 		LLSpatialGroup::sNoDelete = TRUE;
@@ -1559,7 +1558,6 @@ void render_hud_attachments()
 			gPipeline.toggleRenderDebugFeature((void*) LLPipeline::RENDER_DEBUG_FEATURE_UI);
 		}
 		LLPipeline::sUseOcclusion = use_occlusion;
-		LLPipeline::sDisableShaders = FALSE;
 	}
 	glMatrixMode(GL_PROJECTION);
 	glPopMatrix();
