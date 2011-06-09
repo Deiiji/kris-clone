@@ -125,6 +125,9 @@ void LLDrawPoolAlpha::beginPostDeferredPass(S32 pass)
 	{
 		simple_shader = &gDeferredAlphaProgram;
 		fullbright_shader = &gObjectFullbrightProgram;
+
+		//prime simple shader (loads shadow relevant uniforms)
+		gPipeline.bindDeferredShader(*simple_shader);
 	}
 	else
 	{
@@ -316,11 +319,6 @@ void LLDrawPoolAlpha::render(S32 pass)
 		gGL.setSceneBlendType(LLRender::BT_ALPHA);
 	}
 
-	if (deferred_render && current_shader != NULL)
-	{
-		gPipeline.unbindDeferredShader(*current_shader);
-	}
-
 	if (sShowDebugAlpha)
 	{
 		if(gPipeline.canUseWindLightShaders()) 
@@ -372,8 +370,7 @@ void LLDrawPoolAlpha::renderAlpha(U32 mask)
 {
 	BOOL initialized_lighting = FALSE;
 	BOOL light_enabled = TRUE;
-	S32 diffuse_channel = 0;
-
+	
 	BOOL use_shaders = gPipeline.canUseVertexShaders();
 		
 	for (LLCullResult::sg_list_t::iterator i = gPipeline.beginAlphaGroups(); i != gPipeline.endAlphaGroups(); ++i)
@@ -437,29 +434,11 @@ void LLDrawPoolAlpha::renderAlpha(U32 mask)
 				if(use_shaders && (current_shader != target_shader))
 				{
 					llassert(target_shader != NULL);
-					if (deferred_render && current_shader != NULL)
-					{
-						gPipeline.unbindDeferredShader(*current_shader);
-						diffuse_channel = 0;
-					}
 					current_shader = target_shader;
-					if (deferred_render)
-					{
-						gPipeline.bindDeferredShader(*current_shader);
-						diffuse_channel = current_shader->enableTexture(LLViewerShaderMgr::DIFFUSE_MAP);
-					}
-					else
-					{
-						current_shader->bind();
-					}
+					current_shader->bind();
 				}
 				else if (!use_shaders && current_shader != NULL)
 				{
-					if (deferred_render)
-					{
-						gPipeline.unbindDeferredShader(*current_shader);
-						diffuse_channel = 0;
-					}
 					LLGLSLShader::bindNoShader();
 					current_shader = NULL;
 				}
@@ -536,12 +515,8 @@ void LLDrawPoolAlpha::renderAlpha(U32 mask)
 		}
 	}
 
-	if (deferred_render && current_shader != NULL)
-	{
-		gPipeline.unbindDeferredShader(*current_shader);
-		LLVertexBuffer::unbind();	
-	}
-	
+	LLVertexBuffer::unbind();	
+		
 	if (!light_enabled)
 	{
 		gPipeline.enableLightsDynamic();
