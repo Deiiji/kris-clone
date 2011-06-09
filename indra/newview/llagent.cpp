@@ -199,6 +199,7 @@ LLAgent::LLAgent() :
 	mFrameAgent(),
 
 	mIsBusy(FALSE),
+	mIsAutorespond(FALSE),
 
 	mControlFlags(0x00000000),
 	mbFlagsDirty(FALSE),
@@ -1219,6 +1220,38 @@ void LLAgent::clearBusy()
 BOOL LLAgent::getBusy() const
 {
 	return mIsBusy;
+}
+
+//-----------------------------------------------------------------------------
+// setAutorespond()
+//-----------------------------------------------------------------------------
+void LLAgent::setAutorespond()
+{
+	mIsAutorespond = TRUE;
+	if (gAutorespondMenu)
+	{
+		gAutorespondMenu->setLabel(LLTrans::getString("AvatarSetNotAutorespond"));
+	}
+}
+
+//-----------------------------------------------------------------------------
+// clearAutorespond()
+//-----------------------------------------------------------------------------
+void LLAgent::clearAutorespond()
+{
+	mIsAutorespond = FALSE;
+	if (gAutorespondMenu)
+	{
+		gAutorespondMenu->setLabel(LLTrans::getString("AvatarSetAutorespond"));
+	}
+}
+
+//-----------------------------------------------------------------------------
+// getAutorespond()
+//-----------------------------------------------------------------------------
+BOOL LLAgent::getAutorespond() const
+{
+	return mIsAutorespond;
 }
 
 

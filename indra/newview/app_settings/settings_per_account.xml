@@ -14,7 +14,7 @@
     <key>BusyModeResponse</key>
         <map>
         <key>Comment</key>
-            <string>Auto response to instant messages while in busy mode.</string>
+            <string>Auto response to instant messages while in busy or autorespond mode.</string>
         <key>Persist</key>
             <integer>1</integer>
         <key>Type</key>

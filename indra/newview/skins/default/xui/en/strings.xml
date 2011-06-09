@@ -1923,6 +1923,8 @@ Returns a string with the requested data about the region
 	<string name="AvatarSetAway">Away</string>
 	<string name="AvatarSetNotBusy">Not Busy</string>
 	<string name="AvatarSetBusy">Busy</string>
+	<string name="AvatarSetNotAutorespond">Autorespond Active</string>
+	<string name="AvatarSetAutorespond">Autorespond</string>
 
 	<!-- Wearable Types -->
 	<string name="shape">Shape</string>
