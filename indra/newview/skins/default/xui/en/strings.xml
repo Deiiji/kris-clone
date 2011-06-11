@@ -32,7 +32,7 @@
 	<string name="LoginAuthenticating">Authenticating client</string>
 	<string name="LoginMaintenance">Performing account maintenance...</string>
 	<string name="LoginAttempt">Previous login attempt failed. Logging in, attempt [NUMBER]</string>
-	<string name="LoginPrecaching">Loading simulator data...</string>
+	<string name="LoginPrecaching">Loading simulator scene data...</string>
 	<string name="LoginInitializingBrowser">Initializing embedded web browser...</string>
   <string name="LoginInitializingMultimedia">Initializing media system...</string>
   <string name="LoginInitializingFonts">Loading font cache...</string>

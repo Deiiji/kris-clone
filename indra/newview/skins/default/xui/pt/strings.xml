@@ -426,6 +426,9 @@
 	<string name="symbolic folder link">
 		link da pasta
 	</string>
+	<string name="mesh">
+		mesh
+	</string>
 	<string name="AvatarAway">
 		Distante
 	</string>
@@ -1153,6 +1156,9 @@
 	<string name="InvFolder Accessories">
 		Acessórios
 	</string>
+	<string name="InvFolder Meshes">
+		Meshes:
+	</string>
 	<string name="InvFolder Friends">
 		Amigos
 	</string>
@@ -1466,8 +1472,8 @@
 	<string name="Unknown">
 		(Desconhecido)
 	</string>
-	<string name="SummaryForTheWeek" value="Resumo para esta semana, com início em"/>
-	<string name="NextStipendDay" value="Próximo dia de salário é"/>
+	<string name="SummaryForTheWeek" value="Resumo para esta semana, com início em "/>
+	<string name="NextStipendDay" value=". Próximo dia de salário é "/>
 	<string name="GroupIndividualShare" value="Grupo       Divisão individualI"/>
 	<string name="GroupColumn" value="Grupo"/>
 	<string name="Balance">

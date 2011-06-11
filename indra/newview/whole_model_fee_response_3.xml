@@ -1,0 +1,10 @@
+<llsd>
+    <map>
+    <key>private-uploader</key>
+        <string>http://localhost:12045/asset-upload/new-agent-inventory.wsgi?region_id=f75ff6a1-ebd5-4e50-ad35-d6f2b6184562&amp;name=tank2&amp;asset_host=asset.aditi.lindenlab.com&amp;expected_upload_price=146&amp;description=your+description+here&amp;inv_data_port=12044&amp;inventory_type=object&amp;asset_port=80&amp;sim_host_internal_ip=10.7.0.112&amp;inv_data_host=int.sim7025.aditi.lindenlab.com&amp;agent_id=0ee0a2c1-765e-4ff1-840e-b986d3c4236f&amp;sim_host=localhost&amp;action=upload&amp;sim_port=13000&amp;data_port=12032&amp;data_host=int.sim7025.aditi.lindenlab.com&amp;asset_type=mesh&amp;folder_id=61002079-5d78-41af-b481-02fa88c5cfb6</string>
+    <key>state</key>
+        <string>upload</string>
+    <key>uploader</key>
+        <string>https://sim7025.aditi.lindenlab.com:12043/cap/302f1f92-9948-00cd-f6ab-dd6d0f88009e</string>
+    </map>
+</llsd>

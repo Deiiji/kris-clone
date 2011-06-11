@@ -2419,12 +2419,25 @@ bool LLVolume::unpackVolumeFaces(std::istream& is, S32 size)
 
 		for (U32 i = 0; i < face_count; ++i)
 		{
+			LLVolumeFace& face = mVolumeFaces[i];
+
+			if (mdl[i].has("NoGeometry"))
+			{ //face has no geometry, continue
+				face.resizeIndices(3);
+				face.resizeVertices(1);
+				memset(face.mPositions, 0, sizeof(LLVector4a));
+				memset(face.mNormals, 0, sizeof(LLVector4a));
+				memset(face.mTexCoords, 0, sizeof(LLVector2));
+				memset(face.mIndices, 0, sizeof(U16)*3);
+				continue;
+			}
+
 			LLSD::Binary pos = mdl[i]["Position"];
 			LLSD::Binary norm = mdl[i]["Normal"];
 			LLSD::Binary tc = mdl[i]["TexCoord0"];
 			LLSD::Binary idx = mdl[i]["TriangleList"];
 
-			LLVolumeFace& face = mVolumeFaces[i];
+			
 
 			//copy out indices
 			face.resizeIndices(idx.size()/2);
@@ -2629,14 +2642,20 @@ bool LLVolume::unpackVolumeFaces(std::istream& is, S32 size)
 			LLVector4a& min = face.mExtents[0];
 			LLVector4a& max = face.mExtents[1];
 
-			min.clear();
-			max.clear();
-			min = max = face.mPositions[0];
-
-			for (S32 i = 1; i < face.mNumVertices; ++i)
+			if (face.mNumVertices < 3)
+			{ //empty face, use a dummy 1cm (at 1m scale) bounding box
+				min.splat(-0.005f);
+				max.splat(0.005f);
+			}
+			else
 			{
-				min.setMin(min, face.mPositions[i]);
-				max.setMax(max, face.mPositions[i]);
+				min = max = face.mPositions[0];
+
+				for (S32 i = 1; i < face.mNumVertices; ++i)
+				{
+					min.setMin(min, face.mPositions[i]);
+					max.setMax(max, face.mPositions[i]);
+				}
 			}
 		}
 	}
@@ -5493,6 +5512,8 @@ LLVolumeFace::LLVolumeFace() :
 	mOctree(NULL)
 {
 	mExtents = (LLVector4a*) ll_aligned_malloc_16(sizeof(LLVector4a)*3);
+	mExtents[0].splat(-0.5f);
+	mExtents[1].splat(0.5f);
 	mCenter = mExtents+2;
 }
 

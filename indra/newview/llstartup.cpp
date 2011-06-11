@@ -1429,7 +1429,7 @@ bool idle_startup()
 	//---------------------------------------------------------------------
 	if (STATE_AGENT_SEND == LLStartUp::getStartupState())
 	{
-		LL_DEBUGS("AppInit") << "Connecting to simulation..." << LL_ENDL;
+		LL_DEBUGS("AppInit") << "Connecting to region..." << LL_ENDL;
 		set_startup_status(0.60f, LLTrans::getString("LoginConnectingToRegion"), gAgent.mMOTD);
 		// register with the message system so it knows we're
 		// expecting this message
@@ -1943,7 +1943,6 @@ bool idle_startup()
 		// Start automatic replay if the flag is set.
 		if (gSavedSettings.getBOOL("StatsAutoRun") || gAgentPilot.getReplaySession())
 		{
-			//LLUUID id;
 			LL_DEBUGS("AppInit") << "Starting automatic playback" << LL_ENDL;
 			gAgentPilot.startPlayback();
 		}
@@ -3000,7 +2999,7 @@ bool process_login_success_response()
 		gAgent.setHomePosRegion(region_handle, position);
 	}
 	// KL text some response
-	text = "www.kirstensviewer.com";
+	text = "For the latest updates and news visit www.kirstensviewer.com";
 	if(!text.empty())
 	{
 	gAgent.mMOTD.assign(text);

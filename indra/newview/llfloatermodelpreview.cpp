@@ -178,6 +178,80 @@ std::string lod_label_name[NUM_LOD+1] =
 	"I went off the end of the lod_label_name array.  Me so smart."
 };
 
+
+#define LL_DEGENERACY_TOLERANCE  1e-7f
+
+inline F32 dot3fpu(const LLVector4a& a, const LLVector4a& b)
+{
+    volatile F32 p0 = a[0] * b[0];
+    volatile F32 p1 = a[1] * b[1];
+    volatile F32 p2 = a[2] * b[2];
+    return p0 + p1 + p2;
+}
+
+bool ll_is_degenerate(const LLVector4a& a, const LLVector4a& b, const LLVector4a& c, F32 tolerance = LL_DEGENERACY_TOLERANCE)
+{
+        // small area check
+        {
+                LLVector4a edge1; edge1.setSub( a, b );
+                LLVector4a edge2; edge2.setSub( a, c );
+                //////////////////////////////////////////////////////////////////////////
+                /// Linden Modified
+                //////////////////////////////////////////////////////////////////////////
+
+                // If no one edge is more than 10x longer than any other edge, we weaken
+                // the tolerance by a factor of 1e-4f.
+
+                LLVector4a edge3; edge3.setSub( c, b );
+				const F32 len1sq = edge1.dot3(edge1).getF32();
+                const F32 len2sq = edge2.dot3(edge2).getF32();
+                const F32 len3sq = edge3.dot3(edge3).getF32();
+                bool abOK = (len1sq <= 100.f * len2sq) && (len1sq <= 100.f * len3sq);
+                bool acOK = (len2sq <= 100.f * len1sq) && (len1sq <= 100.f * len3sq);
+                bool cbOK = (len3sq <= 100.f * len1sq) && (len1sq <= 100.f * len2sq);
+                if ( abOK && acOK && cbOK )
+                {
+                        tolerance *= 1e-4f;
+                }
+
+                //////////////////////////////////////////////////////////////////////////
+                /// End Modified
+                //////////////////////////////////////////////////////////////////////////
+
+                LLVector4a cross; cross.setCross3( edge1, edge2 );
+
+                LLVector4a edge1b; edge1b.setSub( b, a );
+                LLVector4a edge2b; edge2b.setSub( b, c );
+                LLVector4a crossb; crossb.setCross3( edge1b, edge2b );
+
+                if ( ( cross.dot3(cross).getF32() < tolerance ) || ( crossb.dot3(crossb).getF32() < tolerance ))
+                {
+                        return true;
+                }
+        }
+
+        // point triangle distance check
+        {
+                LLVector4a Q; Q.setSub(a, b);
+                LLVector4a R; R.setSub(c, b);
+
+                const F32 QQ = dot3fpu(Q, Q);
+                const F32 RR = dot3fpu(R, R);
+                const F32 QR = dot3fpu(R, Q);
+
+                volatile F32 QQRR = QQ * RR;
+                volatile F32 QRQR = QR * QR;
+                F32 Det = (QQRR - QRQR);
+
+                if( Det == 0.0f )
+                {
+                        return true;
+                }
+        }
+
+        return false;
+}
+
 bool validate_face(const LLVolumeFace& face)
 {
 	for (U32 i = 0; i < face.mNumIndices; ++i)
@@ -188,6 +262,31 @@ bool validate_face(const LLVolumeFace& face)
 			return false;
 		}
 	}
+
+	if (face.mNumIndices % 3 != 0 || face.mNumIndices == 0)
+	{
+		llwarns << "Face has invalid number of indices." << llendl;
+		return false;
+	}
+
+	/*const LLVector4a scale(0.5f);
+
+	for (U32 i = 0; i < face.mNumIndices; i+=3)
+	{
+		U16 idx1 = face.mIndices[i];
+		U16 idx2 = face.mIndices[i+1];
+		U16 idx3 = face.mIndices[i+2];
+
+		LLVector4a v1; v1.setMul(face.mPositions[idx1], scale);
+		LLVector4a v2; v2.setMul(face.mPositions[idx2], scale);
+		LLVector4a v3; v3.setMul(face.mPositions[idx3], scale);
+
+		if (ll_is_degenerate(v1,v2,v3))
+		{
+			llwarns << "Degenerate face found!" << llendl;
+			return false;
+		}
+	}*/
 
 	return true;
 }
@@ -1187,11 +1286,7 @@ void stretch_extents(LLModel* model, LLMatrix4& mat, LLVector3& min, LLVector3& 
 
 void LLModelLoader::run()
 {
-	if (!doLoadModel())
-	{
-		mPreview = NULL;
-	}
-
+	doLoadModel();
 	doOnIdleOneTime(boost::bind(&LLModelLoader::loadModelCallback,this));
 }
 
@@ -1322,7 +1417,7 @@ bool LLModelLoader::doLoadModel()
 			if(model->getStatus() != LLModel::NO_ERRORS)
 			{
 				setLoadState(ERROR_PARSING + model->getStatus()) ;
-				return true ; //abort
+				return false; //abort
 			}
 
 			if (model.notNull() && validate_model(model))
@@ -2794,7 +2889,7 @@ LLModelPreview::~LLModelPreview()
 {
 	if (mModelLoader)
 	{
-		delete mModelLoader;
+		mModelLoader->mPreview = NULL;
 		mModelLoader = NULL;
 	}
 	//*HACK : *TODO : turn this back on when we understand why this crashes
@@ -3372,7 +3467,7 @@ void LLModelPreview::resetPreviewTarget()
 		mPreviewScale = (mModelLoader->mExtents[1] - mModelLoader->mExtents[0]) * 0.5f;
 	}
 
-	setPreviewTarget(mPreviewScale.magVec()*2.f);
+	setPreviewTarget(mPreviewScale.magVec()*10.f);
 }
 
 void LLModelPreview::generateNormals()
@@ -3890,7 +3985,35 @@ void LLModelPreview::updateStatusMessages()
 		mMaxTriangleLimit = total_tris[LLModel::LOD_HIGH];
 	}
 
+	bool has_degenerate = false;
 
+	{//check for degenerate triangles in physics mesh
+		U32 lod = LLModel::LOD_PHYSICS;
+		const LLVector4a scale(0.5f);
+		for (U32 i = 0; i < mModel[lod].size() && !has_degenerate; ++i)
+		{ //for each model in the lod
+			if (mModel[lod][i]->mPhysics.mHull.empty())
+			{ //no decomp exists
+				S32 cur_submeshes = mModel[lod][i]->getNumVolumeFaces();
+				for (S32 j = 0; j < cur_submeshes && !has_degenerate; ++j)
+				{ //for each submesh (face), add triangles and vertices to current total
+					const LLVolumeFace& face = mModel[lod][i]->getVolumeFace(j);
+					for (S32 k = 0; k < face.mNumIndices && !has_degenerate; )
+					{
+						LLVector4a v1; v1.setMul(face.mPositions[face.mIndices[k++]], scale);
+						LLVector4a v2; v2.setMul(face.mPositions[face.mIndices[k++]], scale);
+						LLVector4a v3; v3.setMul(face.mPositions[face.mIndices[k++]], scale);
+
+						if (ll_is_degenerate(v1,v2,v3))
+						{
+							has_degenerate = true;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 	mFMP->childSetTextArg("submeshes_info", "[SUBMESHES]", llformat("%d", total_submeshes[LLModel::LOD_HIGH]));
 
 	std::string mesh_status_na = mFMP->getString("mesh_status_na");
@@ -3991,7 +4114,10 @@ void LLModelPreview::updateStatusMessages()
 
 		for (U32 j = 0; upload_ok && j < mdl->mPhysics.mHull.size(); ++j)
 		{
-			upload_ok = upload_ok && mdl->mPhysics.mHull[i].size() <= 256;
+			if (mdl->mPhysics.mHull[j].size() > 256)
+			{
+				upload_ok = false;
+			}
 		}
 	}
 
@@ -4015,7 +4141,7 @@ void LLModelPreview::updateStatusMessages()
 	}
 	
 	const BOOL confirmed_checkbox = mFMP->getChild<LLCheckBoxCtrl>("confirm_checkbox")->getValue().asBoolean();
-	if ( upload_ok && !errorStateFromLoader && skinAndRigOk && confirmed_checkbox)
+	if ( upload_ok && !errorStateFromLoader && skinAndRigOk && !has_degenerate && confirmed_checkbox)
 	{
 		mFMP->childEnable("ok_btn");
 	}
@@ -4590,7 +4716,7 @@ BOOL LLModelPreview::render()
 	LLVector3 target_pos = mPreviewTarget+offset;
 
 	F32 z_near = 0.001f;
-	F32 z_far = mCameraDistance+mPreviewScale.magVec()+mCameraOffset.magVec();
+	F32 z_far = mCameraDistance*10.0f+mPreviewScale.magVec()+mCameraOffset.magVec();
 
 	if (skin_weight)
 	{
@@ -4740,39 +4866,43 @@ BOOL LLModelPreview::render()
 
 						LLModel::Decomposition& physics = model->mPhysics;
 
-						if (physics.mMesh.empty())
-						{ //build vertex buffer for physics mesh
-							gMeshRepo.buildPhysicsMesh(physics);
-						}
-							
-						if (!physics.mMesh.empty())
-						{ //render hull instead of mesh
+						if (!physics.mHull.empty())
+						{
 							render_mesh = false;
-							for (U32 i = 0; i < physics.mMesh.size(); ++i)
-							{
-								if (explode > 0.f)
+
+							if (physics.mMesh.empty())
+							{ //build vertex buffer for physics mesh
+								gMeshRepo.buildPhysicsMesh(physics);
+							}
+						
+							if (!physics.mMesh.empty())
+							{ //render hull instead of mesh
+								for (U32 i = 0; i < physics.mMesh.size(); ++i)
 								{
-									gGL.pushMatrix();
+									if (explode > 0.f)
+									{
+										gGL.pushMatrix();
 
-									LLVector3 offset = model->mHullCenter[i]-model->mCenterOfHullCenters;
-									offset *= explode;
+										LLVector3 offset = model->mHullCenter[i]-model->mCenterOfHullCenters;
+										offset *= explode;
 
-									gGL.translatef(offset.mV[0], offset.mV[1], offset.mV[2]);
-								}
+										gGL.translatef(offset.mV[0], offset.mV[1], offset.mV[2]);
+									}
 
-								static std::vector<LLColor4U> hull_colors;
+									static std::vector<LLColor4U> hull_colors;
 
-								if (i+1 >= hull_colors.size())
-								{
-									hull_colors.push_back(LLColor4U(rand()%128+127, rand()%128+127, rand()%128+127, 255));
-								}
+									if (i+1 >= hull_colors.size())
+									{
+										hull_colors.push_back(LLColor4U(rand()%128+127, rand()%128+127, rand()%128+127, 255));
+									}
 
-									glColor4ubv(hull_colors[i].mV);
-								LLVertexBuffer::drawArrays(LLRender::TRIANGLES, physics.mMesh[i].mPositions, physics.mMesh[i].mNormals);
+										glColor4ubv(hull_colors[i].mV);
+									LLVertexBuffer::drawArrays(LLRender::TRIANGLES, physics.mMesh[i].mPositions, physics.mMesh[i].mNormals);
 
-								if (explode > 0.f)
-								{
-									gGL.popMatrix();
+									if (explode > 0.f)
+									{
+										gGL.popMatrix();
+									}
 								}
 							}
 						}
@@ -4798,9 +4928,10 @@ BOOL LLModelPreview::render()
 
 							glColor3f(1.f, 1.f, 0.f);
 
-							glLineWidth(3.f);
+							glLineWidth(2.f);
 							glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 							buffer->drawRange(LLRender::TRIANGLES, 0, buffer->getNumVerts()-1, buffer->getNumIndices(), 0);
+
 							glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 							glLineWidth(1.f);
 						}
@@ -4809,6 +4940,80 @@ BOOL LLModelPreview::render()
 					gGL.popMatrix();
 				}
 
+				glLineWidth(3.f);
+				glPointSize(8.f);
+				gPipeline.enableLightsFullbright(LLColor4::white);
+				//show degenerate triangles
+				LLGLDepthTest depth(GL_TRUE, GL_TRUE, GL_ALWAYS);
+				LLGLDisable cull(GL_CULL_FACE);
+				glColor4f(1.f,0.f,0.f,1.f);
+				const LLVector4a scale(0.5f);
+
+				for (LLMeshUploadThread::instance_list::iterator iter = mUploadData.begin(); iter != mUploadData.end(); ++iter)
+				{
+					LLModelInstance& instance = *iter;
+
+					LLModel* model = instance.mLOD[LLModel::LOD_PHYSICS];
+
+					if (!model)
+					{
+						continue;
+					}
+
+					gGL.pushMatrix();
+					LLMatrix4 mat = instance.mTransform;
+
+					glMultMatrixf((GLfloat*) mat.mMatrix);
+
+
+					LLPhysicsDecomp* decomp = gMeshRepo.mDecompThread;
+					if (decomp)
+					{
+						LLMutexLock(decomp->mMutex);
+
+						LLModel::Decomposition& physics = model->mPhysics;
+
+						if (physics.mHull.empty())
+						{
+							if (mVertexBuffer[LLModel::LOD_PHYSICS].empty())
+							{
+								genBuffers(LLModel::LOD_PHYSICS, false);
+							}
+							
+							for (U32 i = 0; i < mVertexBuffer[LLModel::LOD_PHYSICS][model].size(); ++i)
+							{
+								LLVertexBuffer* buffer = mVertexBuffer[LLModel::LOD_PHYSICS][model][i];
+
+								buffer->setBuffer(LLVertexBuffer::MAP_VERTEX | LLVertexBuffer::MAP_NORMAL | LLVertexBuffer::MAP_TEXCOORD0);
+
+								LLStrider<LLVector3> pos_strider; 
+								buffer->getVertexStrider(pos_strider, 0);
+								LLVector4a* pos = (LLVector4a*) pos_strider.get();
+							
+								LLStrider<U16> idx;
+								buffer->getIndexStrider(idx, 0);
+
+								for (U32 i = 0; i < buffer->getNumIndices(); i += 3)
+								{
+									LLVector4a v1; v1.setMul(pos[*idx++], scale);
+									LLVector4a v2; v2.setMul(pos[*idx++], scale);
+									LLVector4a v3; v3.setMul(pos[*idx++], scale);
+
+									if (ll_is_degenerate(v1,v2,v3))
+									{
+										buffer->draw(LLRender::LINE_LOOP, 3, i);
+										buffer->draw(LLRender::POINTS, 3, i);
+									}
+								}
+							}
+						}
+					}
+
+					gGL.popMatrix();
+				}
+				glLineWidth(1.f);
+				glPointSize(1.f);
+				gPipeline.enableLightsPreview();
 				gGL.setSceneBlendType(LLRender::BT_ALPHA);
 			}
 		}
@@ -5094,54 +5299,7 @@ LLFloaterModelPreview::DecompRequest::DecompRequest(const std::string& stage, LL
 	mParams = sInstance->mDecompParams;
 
 	//copy out positions and indices
-	if (mdl)
-	{
-		U16 index_offset = 0;
-		U16 tri[3] ;
-
-		mPositions.clear();
-		mIndices.clear();
-		mBBox[1] = LLVector3(F32_MIN, F32_MIN, F32_MIN) ;
-		mBBox[0] = LLVector3(F32_MAX, F32_MAX, F32_MAX) ;
-
-		//queue up vertex positions and indices
-		for (S32 i = 0; i < mdl->getNumVolumeFaces(); ++i)
-		{
-			const LLVolumeFace& face = mdl->getVolumeFace(i);
-			if (mPositions.size() + face.mNumVertices > 65535)
-			{
-				continue;
-			}
-
-			for (U32 j = 0; j < face.mNumVertices; ++j)
-			{
-				mPositions.push_back(LLVector3(face.mPositions[j].getF32ptr()));
-				for(U32 k = 0 ; k < 3 ; k++)
-				{
-					mBBox[0].mV[k] = llmin(mBBox[0].mV[k], mPositions[j].mV[k]) ;
-					mBBox[1].mV[k] = llmax(mBBox[1].mV[k], mPositions[j].mV[k]) ;
-				}
-			}
-
-			updateTriangleAreaThreshold() ;
-
-			for (U32 j = 0; j+2 < face.mNumIndices; j += 3)
-			{
-				tri[0] = face.mIndices[j] + index_offset ;
-				tri[1] = face.mIndices[j + 1] + index_offset ;
-				tri[2] = face.mIndices[j + 2] + index_offset ;
-				
-				if(isValidTriangle(tri[0], tri[1], tri[2]))
-				{
-					mIndices.push_back(tri[0]);
-					mIndices.push_back(tri[1]);
-					mIndices.push_back(tri[2]);
-				}
-			}			
-
-			index_offset += face.mNumVertices;
-		}
-	}
+	assignData(mdl) ;	
 }
 
 void LLFloaterModelPreview::setStatusMessage(const std::string& msg)

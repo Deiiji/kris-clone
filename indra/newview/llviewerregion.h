@@ -275,6 +275,12 @@ public:
 	F32 getLandHeightRegion(const LLVector3& region_pos);
 
 	void getInfo(LLSD& info);
+	
+	bool meshRezEnabled() const;
+	bool meshUploadEnabled() const;
+
+	void getSimulatorFeatures(LLSD& info);	
+	void setSimulatorFeatures(const LLSD& info);
 
 	typedef enum
 	{
@@ -400,6 +406,8 @@ private:
 	bool	mCapabilitiesReceived;
 
 	BOOL mReleaseNotesRequested;
+	
+	LLSD mSimulatorFeatures;
 };
 
 inline BOOL LLViewerRegion::getAllowDamage() const

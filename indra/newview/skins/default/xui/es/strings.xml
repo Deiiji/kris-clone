@@ -724,13 +724,13 @@
 		Controlar su cámara
 	</string>
 	<string name="SIM_ACCESS_PG">
-		&apos;PG&apos;
+		General
 	</string>
 	<string name="SIM_ACCESS_MATURE">
-		&apos;Mature&apos;
+		Moderado
 	</string>
 	<string name="SIM_ACCESS_ADULT">
-		&apos;Adult&apos;
+		Adulto
 	</string>
 	<string name="SIM_ACCESS_DOWN">
 		Desconectado
@@ -1466,8 +1466,8 @@
 	<string name="Unknown">
 		(Desconocido)
 	</string>
-	<string name="SummaryForTheWeek" value="Resumen de esta semana, empezando el"/>
-	<string name="NextStipendDay" value="El próximo día de pago es el"/>
+	<string name="SummaryForTheWeek" value="Resumen de esta semana, empezando el "/>
+	<string name="NextStipendDay" value=". El próximo día de pago es el "/>
 	<string name="GroupIndividualShare" value="Grupo       Aportaciones individuales"/>
 	<string name="GroupColumn" value="Grupo"/>
 	<string name="Balance">

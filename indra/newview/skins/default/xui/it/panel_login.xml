@@ -11,12 +11,19 @@
 			<text name="username_text">
 				Nome utente:
 			</text>
-			<line_editor label="Nome utente" name="username_edit" tool_tip="Nome utente [SECOND_LIFE]"/>
+			<combo_box name="username_combo" tool_tip="Il nome utente che hai scelto durante la registrazione, come robby12 o Stella Soleggiato"/>
 			<text name="password_text">
 				Password:
 			</text>
 			<check_box label="Ricorda password" name="remember_check"/>
 			<button label="Accedi" name="connect_btn"/>
+			<text name="mode_selection_text">
+				Modalità:
+			</text>
+			<combo_box name="mode_combo" tool_tip="Seleziona la modalità. Seleziona Di base per esplorare facilmente e rapidamente e per la chat. Seleziona Avanzata per accedere ad altre funzionalità.">
+				<combo_box.item label="Di base" name="Basic"/>
+				<combo_box.item label="Avanzate" name="Advanced"/>
+			</combo_box>
 			<text name="start_location_text">
 				Inizia da:
 			</text>
@@ -31,7 +38,7 @@
 				Iscriviti
 			</text>
 			<text name="forgot_password_text">
-				Hai dimenticato il nome o la password?
+				Hai dimenticato il nome utente o la password?
 			</text>
 			<text name="login_help">
 				Ti serve aiuto con la fase di accesso?

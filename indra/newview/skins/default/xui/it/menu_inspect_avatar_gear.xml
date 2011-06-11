@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu name="Gear Menu">
+<toggleable_menu name="Gear Menu">
 	<menu_item_call label="Vedi profilo" name="view_profile"/>
 	<menu_item_call label="Aggiungi amico" name="add_friend"/>
 	<menu_item_call label="IM" name="im"/>
@@ -11,9 +11,11 @@
 	<menu_item_call label="Segnala" name="report"/>
 	<menu_item_call label="Congela" name="freeze"/>
 	<menu_item_call label="Espelli" name="eject"/>
+	<menu_item_call label="Espelli" name="kick"/>
+	<menu_item_call label="CSR" name="csr"/>
 	<menu_item_call label="Debug delle texture" name="debug"/>
 	<menu_item_call label="Trova sulla mappa" name="find_on_map"/>
 	<menu_item_call label="Zoom avanti" name="zoom_in"/>
 	<menu_item_call label="Paga" name="pay"/>
 	<menu_item_call label="Condividi" name="share"/>
-</menu>
+</toggleable_menu>

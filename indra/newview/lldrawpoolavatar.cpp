@@ -460,14 +460,6 @@ S32 LLDrawPoolAvatar::getNumPasses()
 	{
 		return 10;
 	}
-	if (LLPipeline::sImpostorRender)
-	{
-		return 1;
-	}
-	else 
-	{
-		return 3;
-	}
 }
 
 
@@ -1447,7 +1439,7 @@ void LLDrawPoolAvatar::updateRiggedFaceVertexBuffer(LLVOAvatar* avatar, LLFace* 
 
 void LLDrawPoolAvatar::renderRigged(LLVOAvatar* avatar, U32 type, bool glow)
 {
-	if (avatar->isSelf() && !gAgent.needsRenderAvatar())
+	if (avatar->isSelf() && !gAgent.needsRenderAvatar() || !gMeshRepo.meshRezEnabled())
 	{
 		return;
 	}

@@ -161,11 +161,14 @@ public:
 
 		virtual void setStatusMessage(const std::string& msg);
 
+		bool isValid() const {return mPositions.size() > 2 && mIndices.size() > 2 ;}
+
 	protected:
 		//internal use
 		LLVector3 mBBox[2] ;
 		F32 mTriangleAreaThreshold ;
 
+		void assignData(LLModel* mdl) ;
 		void updateTriangleAreaThreshold() ;
 		bool isValidTriangle(U16 idx1, U16 idx2, U16 idx3) ;
 	};
@@ -393,8 +396,6 @@ public:
 	BOOL            mDiscarded ;
 
 	LLHost			mHost;
-	std::string		mUploadObjectAssetCapability;
-	std::string		mNewInventoryCapability;
 	std::string		mWholeModelFeeCapability;
 	std::string		mWholeModelUploadURL;
 
@@ -413,12 +414,10 @@ public:
 
 	void uploadTexture(LLTextureUploadData& data);
 	void doUploadTexture(LLTextureUploadData& data);
-	void sendCostRequest(LLTextureUploadData& data);
 	void priceResult(LLTextureUploadData& data, const LLSD& content);
 	void onTextureUploaded(LLTextureUploadData& data);
 
 	void uploadModel(LLMeshUploadData& data);
-	void sendCostRequest(LLMeshUploadData& data);
 	void doUploadModel(LLMeshUploadData& data);
 	void onModelUploaded(LLMeshUploadData& data);
 	void createObjects(LLMeshUploadData& data);
@@ -432,7 +431,6 @@ public:
 	BOOL isDiscarded();
 
 	void doWholeModelUpload();
-	void doIterativeUpload();
 
 	void wholeModelToLLSD(LLSD& dest, bool include_textures);
 
@@ -482,6 +480,10 @@ public:
 	
 	void buildHull(const LLVolumeParams& params, S32 detail);
 	void buildPhysicsMesh(LLModel::Decomposition& decomp);
+	
+	bool meshUploadEnabled();
+	bool meshRezEnabled();
+	
 
 	LLSD& getMeshHeader(const LLUUID& mesh_id);
 

@@ -307,7 +307,7 @@ BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
 // Internal globals... that should be removed.
-static std::string gArgs = "Build 8 RC2";
+static std::string gArgs = "Build 8 RC2a";
 
 const std::string MARKER_FILE_NAME("KirstensS21.exec_marker");
 const std::string ERROR_MARKER_FILE_NAME("KirstensS21.error_marker");
@@ -3293,7 +3293,7 @@ void LLAppViewer::migrateCacheDirectory()
 			// Migrate inventory cache to avoid pain to inventory database after mass update
 			S32 file_count = 0;
 			std::string file_name;
-			std::string mask = delimiter + "*.*";
+			std::string mask = "*.*";
 
 			LLDirIterator iter(old_cache_dir, mask);
 			while (iter.next(file_name))
@@ -3453,6 +3453,7 @@ bool LLAppViewer::initCache()
 	const S64 MIN_CACHE_SIZE = 64 * MB;
 	const S64 MAX_CACHE_SIZE = 9984ll * MB;
 	const S64 MAX_VFS_SIZE = 1024 * MB; // 1 GB
+
 	S64 cache_size = (S64)(gSavedSettings.getU32("CacheSize")) * MB;
 	cache_size = llclamp(cache_size, MIN_CACHE_SIZE, MAX_CACHE_SIZE);
 
@@ -3508,10 +3509,10 @@ bool LLAppViewer::initCache()
 		do
 		{
 			new_salt = rand();
-		} while( new_salt == old_salt );
+		} while(new_salt == old_salt);
 	}
 
-	old_vfs_data_file = gDirUtilp->getExpandedFilename(LL_PATH_CACHE,VFS_DATA_FILE_BASE) + llformat("%u",old_salt);
+	old_vfs_data_file = gDirUtilp->getExpandedFilename(LL_PATH_CACHE, VFS_DATA_FILE_BASE) + llformat("%u", old_salt);
 
 	// make sure this file exists
 	llstat s;
@@ -3520,12 +3521,11 @@ bool LLAppViewer::initCache()
 	{
 		// doesn't exist, look for a data file
 		std::string mask;
-		mask = gDirUtilp->getDirDelimiter();
-		mask += VFS_DATA_FILE_BASE;
+		mask = VFS_DATA_FILE_BASE;
 		mask += "*";
 
 		std::string dir;
-		dir = gDirUtilp->getExpandedFilename(LL_PATH_CACHE,"");
+		dir = gDirUtilp->getExpandedFilename(LL_PATH_CACHE, "");
 
 		std::string found_file;
 		LLDirIterator iter(dir, mask);
@@ -3542,7 +3542,7 @@ bool LLAppViewer::initCache()
 		}
 	}
 
-	old_vfs_index_file = gDirUtilp->getExpandedFilename(LL_PATH_CACHE,VFS_INDEX_FILE_BASE) + llformat("%u",old_salt);
+	old_vfs_index_file = gDirUtilp->getExpandedFilename(LL_PATH_CACHE, VFS_INDEX_FILE_BASE) + llformat("%u", old_salt);
 
 	stat_result = LLFile::stat(old_vfs_index_file, &s);
 	if (stat_result)
