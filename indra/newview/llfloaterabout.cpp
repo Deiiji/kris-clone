@@ -288,11 +288,12 @@ static std::string get_viewer_release_notes_url()
 {
 	// return a URL to the release notes for this viewer, such as:
 	// http://wiki.secondlife.com/wiki/Release_Notes/Second Life Beta Viewer/2.1.0
-	std::string url = LLTrans::getString("RELEASE_NOTES_BASE_URL");
-	if (! LLStringUtil::endsWith(url, "/"))
-		url += "/";
-	url += LLVersionInfo::getChannel() + "/";
-	url += LLVersionInfo::getShortVersion();
+	//std::string url = LLTrans::getString("RELEASE_NOTES_BASE_URL");
+	//if (! LLStringUtil::endsWith(url, "/"))
+	//	url += "/";
+	//url += LLVersionInfo::getChannel() + "/";
+	//url += LLVersionInfo::getShortVersion();
+	std::string url = "http://www.kirstensviewer.com/S21/#releasenotes";
 	return LLWeb::escapeURL(url);
 }
 
