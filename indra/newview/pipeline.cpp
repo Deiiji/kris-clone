@@ -781,31 +781,7 @@ void LLPipeline::updateRenderDeferred()
 //static
 void LLPipeline::refreshRenderDeferred()
 {
-	static BOOL physics_shapes_is_on = FALSE ;
-	static BOOL render_glow_copy = FALSE ;
-
-	if(gPipeline.hasRenderDebugMask(LLPipeline::RENDER_DEBUG_PHYSICS_SHAPES))
-	{
-		if(!physics_shapes_is_on)
-		{
-			physics_shapes_is_on = TRUE ;
-			render_glow_copy = sRenderGlow ;
-		}
-
-		//turn the deferred rendering and glow off when draw physics shapes.
-		sRenderDeferred = FALSE ;
-		sRenderGlow = FALSE ;
-	}
-	else
-	{
-		if(physics_shapes_is_on)
-		{
-			physics_shapes_is_on = FALSE ;
-			sRenderGlow = render_glow_copy ;
-		}
-
-		updateRenderDeferred() ;
-	}
+	updateRenderDeferred();
 }
 
 void LLPipeline::releaseGLBuffers()
@@ -5969,7 +5945,6 @@ LLSpatialPartition* LLPipeline::getSpatialPartition(LLViewerObject* vobj)
 	return NULL;
 }
 
-
 void LLPipeline::resetVertexBuffers(LLDrawable* drawable)
 {
 	if (!drawable || drawable->isDead())
@@ -6115,7 +6090,8 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 {
 	LLMemType mt_ru(LLMemType::MTYPE_PIPELINE_RENDER_BLOOM);
 	if (!(gPipeline.canUseVertexShaders() &&
-		sRenderGlow))
+		sRenderGlow) ||
+		(!sRenderDeferred && hasRenderDebugMask(LLPipeline::RENDER_DEBUG_PHYSICS_SHAPES)))
 	{
 		return;
 	}
@@ -6161,67 +6137,7 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 
 	gGL.setColorMask(true, true); // Render bloom this cannot be masked for 3d here.
 	glClearColor(0,0,0,0);
-
-	/*if (for_snapshot)
-	{
-		gGL.getTexUnit(0)->bind(&mGlow[1]);
-		{
-			//LLGLEnable stencil(GL_STENCIL_TEST);
-			//glStencilFunc(GL_NOTEQUAL, 255, 0xFFFFFFFF);
-			//glStencilOp(GL_KEEP, GL_KEEP, GL_KEEP);
-			//LLGLDisable blend(GL_BLEND);
-
-			// If the snapshot is constructed from tiles, calculate which
-			// tile we're in.
-
-			//from LLViewerCamera::setPerpsective
-			if (zoom_factor > 1.f)
-			{
-				int pos_y = subfield / llceil(zoom_factor);
-				int pos_x = subfield - (pos_y*llceil(zoom_factor));
-				F32 size = 1.f/zoom_factor;
-
-				tc1.set(pos_x*size, pos_y*size);
-				tc2 = tc1 + LLVector2(size,size);
-			}
-			else
-			{
-				tc2.set(1,1);
-			}
-			
-			LLGLEnable blend(GL_BLEND);
-			gGL.setSceneBlendType(LLRender::BT_ADD);
-			
-				
-			gGL.begin(LLRender::TRIANGLE_STRIP);
-			gGL.color4f(1,1,1,1);
-			gGL.texCoord2f(tc1.mV[0], tc1.mV[1]);
-			gGL.vertex2f(-1,-1);
-			
-			gGL.texCoord2f(tc1.mV[0], tc2.mV[1]);
-			gGL.vertex2f(-1,1);
-			
-			gGL.texCoord2f(tc2.mV[0], tc1.mV[1]);
-			gGL.vertex2f(1,-1);
-			
-			gGL.texCoord2f(tc2.mV[0], tc2.mV[1]);
-			gGL.vertex2f(1,1);
-
-			gGL.end();
-
-			gGL.flush();
-			gGL.setSceneBlendType(LLRender::BT_ALPHA);
-		}
-
-		gGL.flush();
-		glMatrixMode(GL_PROJECTION);
-		glPopMatrix();
-		glMatrixMode(GL_MODELVIEW);
-		glPopMatrix();
-
-		return;
-	}*/
-	
+		
 	{
 		{
 			LLFastTimer ftm(FTM_RENDER_BLOOM_FBO);
@@ -6349,9 +6265,9 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 	
 	LLVertexBuffer::unbind();
 
-	if (LLPipeline::sRenderDeferred && !LLViewerCamera::getInstance()->cameraUnderWater())
+	if (LLPipeline::sRenderDeferred)
 	{
-		bool dof_enabled = true;
+		bool dof_enabled = !LLViewerCamera::getInstance()->cameraUnderWater();
 
 		LLGLSLShader* shader = &gDeferredPostProgram;
 		if (LLViewerShaderMgr::instance()->getVertexShaderLevel(LLViewerShaderMgr::SHADER_DEFERRED) > 2)
@@ -6359,7 +6275,7 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 			shader = &gDeferredGIFinalProgram;
 			dof_enabled = false;
 		}
-		else if (LLToolMgr::getInstance()->inBuildMode() || !gSavedSettings.getBOOL("RenderUseDOF"))
+		else if (!dof_enabled || LLToolMgr::getInstance()->inBuildMode() || !gSavedSettings.getBOOL("RenderUseDOF"))
 		{ //squish focal length when in build mode (or if DoF is disabled) so DoF doesn't make editing objects difficult
 			shader = &gDeferredPostNoDoFProgram;
 			dof_enabled = false;
@@ -6577,6 +6493,8 @@ void LLPipeline::renderBloom(BOOL for_snapshot, F32 zoom_factor, int subfield)
 
 	if (hasRenderDebugMask(LLPipeline::RENDER_DEBUG_PHYSICS_SHAPES))
 	{
+		gGL.setColorMask(true, false);
+
 		LLVector2 tc1(0,0);
 		LLVector2 tc2((F32) gViewerWindow->getWorldViewWidthRaw()*2,
 				  (F32) gViewerWindow->getWorldViewHeightRaw()*2);

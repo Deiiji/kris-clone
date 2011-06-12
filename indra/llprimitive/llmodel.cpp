@@ -1482,7 +1482,6 @@ LLSD LLModel::writeModel(
 					//position + normal
 					for (U32 k = 0; k < 3; ++k)
 					{ //for each component
-
 						//convert to 16-bit normalized across domain
 						U16 val = (U16) (((pos[k]-min_pos.mV[k])/pos_range.mV[k])*65535);
 
@@ -1526,7 +1525,6 @@ LLSD LLModel::writeModel(
 				//write out face data
 				mdl[model_names[idx]][i]["PositionDomain"]["Min"] = min_pos.getValue();
 				mdl[model_names[idx]][i]["PositionDomain"]["Max"] = max_pos.getValue();
-
 				mdl[model_names[idx]][i]["TexCoord0Domain"]["Min"] = min_tc.getValue();
 				mdl[model_names[idx]][i]["TexCoord0Domain"]["Max"] = max_tc.getValue();
 
@@ -2095,7 +2093,7 @@ void LLModel::Decomposition::fromLLSD(LLSD& decomp)
 
 	if (decomp.has("BoundingVerts"))
 	{
-		const LLSD::Binary& position = decomp["BundingVerts"].asBinary();
+		const LLSD::Binary& position = decomp["BoundingVerts"].asBinary();
 
 		U16* p = (U16*) &position[0];
 
@@ -2131,7 +2129,7 @@ void LLModel::Decomposition::fromLLSD(LLSD& decomp)
 	{
 		//empty base hull mesh to indicate decomposition has been loaded
 		//but contains no base hull
-		mBaseHullMesh.clear();;
+		mBaseHullMesh.clear();
 	}
 }
 
@@ -2253,6 +2251,8 @@ LLSD LLModel::Decomposition::asLLSD() const
 
 		ret["Positions"] = p;
 	}
+
+	llassert(!mBaseHull.empty());
 
 	if (!mBaseHull.empty())
 	{

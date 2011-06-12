@@ -1001,7 +1001,15 @@ LLPointer<LLImageJ2C> LLViewerTextureList::convertToUploadFile(LLPointer<LLImage
 		(raw_image->getWidth() * raw_image->getHeight() <= LL_IMAGE_REZ_LOSSLESS_CUTOFF * LL_IMAGE_REZ_LOSSLESS_CUTOFF))
 		compressedImage->setReversible(TRUE);
 	
-	compressedImage->encode(raw_image, 0.0f);
+
+     compressedImage->encode(raw_image, 0.0f);
+	
+	if (!compressedImage->encode(raw_image, 0.0f))
+	{
+		llinfos << "convertToUploadFile : encode returns with error!!" << llendl;
+		// Clear up the pointer so we don't leak that one
+		compressedImage = NULL;
+	}
 	
 	return compressedImage;
 }
