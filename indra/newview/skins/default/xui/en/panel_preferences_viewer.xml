@@ -408,10 +408,20 @@
 	top_pad="1"
 	width="256" />
 	<check_box
+	control_name="UsePieMenu"
+	height="16"
+	initial_value="false"
+	label="Use Pie Menus"
+	layout="topleft"
+	left="5"
+	name="UsePieMenu"
+	top_pad="1"
+	width="256" />
+	<check_box
 	control_name="MiniMapChatRing"
 	height="16"
 	initial_value="false"
-	label="Display a ring on the Minimap indicating local chat range"
+	label="Minimap ring for chat ranges"
 	layout="topleft"
 	left="5"
 	name="MiniMapChatRing"

@@ -604,6 +604,9 @@ set(viewer_SOURCE_FILES
     llxmlrpclistener.cpp
     llxmlrpctransaction.cpp
     noise.cpp
+    piemenu.cpp
+    pieseparator.cpp
+    pieslice.cpp
     pipeline.cpp
     qtoolalign.cpp
     llstreamtitles.cpp
@@ -1156,6 +1159,9 @@ set(viewer_HEADER_FILES
     llxmlrpctransaction.h
     macmain.h
     noise.h
+    piemenu.h
+    pieseparator.h
+    pieslice.h
     pipeline.h
     qtoolalign.h
     VertexCache.h

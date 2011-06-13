@@ -634,13 +634,16 @@
      reference="White" />
     <color
      name="PieMenuBgColor"
-     value="0.24 0.24 0.24 0.59" />
+     value="0 0 0 0.75" />
+     <color
+     name="PieMenuTextColor"
+     value="1 1 1 0.85" />
     <color
      name="PieMenuLineColor"
-     value="0 0 0 0.5" />
+     value="0.24 0.24 0.24 0.5" />
     <color
      name="PieMenuSelectedColor"
-     value="0.72 0.72 0.74 0.3" />
+     reference="EmphasisColor_35" />
     <color
      name="PropertyColorAuction"
      value="0.5 0 1 0.4" />
