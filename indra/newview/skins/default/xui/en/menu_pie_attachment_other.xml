@@ -63,12 +63,12 @@
             <pie_slice.on_visible
                 function="Avatar.EnableFreezeEject"/>
         </pie_slice>
-        <pie_slice
+   <!--     <pie_slice
             label="Give Card"
             name="Add Calling Card">
             <pie_slice.on_click
                 function="Avatar.AddContact" />
-        </pie_slice>
+        </pie_slice> -->
         <pie_slice
             label="Invite to Group"
             name="Group Invite...">
@@ -125,6 +125,14 @@
             <pie_slice.on_enable
                 function="Avatar.EnableCall" />
         </pie_slice>
+        <pie_slice
+            enabled="true"
+            label="Derender"
+            name="Derender">
+            <pie_slice.on_click
+                function="Object.Derender" />
+        </pie_slice>
+
     </pie_menu>
 
     <pie_slice

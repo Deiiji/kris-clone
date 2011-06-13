@@ -121,7 +121,13 @@
         name="Object Pie More 2">
 
         <pie_separator />
- 
+        <pie_slice
+            enabled="true"
+            label="Derender"
+            name="Derender">
+            <pie_slice.on_click
+                function="Object.Derender" />
+        </pie_slice>
         <pie_slice
             enabled="false"
             label="Report..."

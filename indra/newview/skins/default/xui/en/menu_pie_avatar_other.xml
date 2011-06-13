@@ -63,12 +63,12 @@
             <pie_slice.on_visible
                 function="Avatar.EnableFreezeEject"/>
         </pie_slice>
-        <pie_slice
+ <!--       <pie_slice
             label="Give Card"
             name="Add Calling Card">
             <pie_slice.on_click
                 function="Avatar.AddContact" />
-        </pie_slice>
+        </pie_slice> -->
         <pie_slice
             label="Invite to Group"
             name="Group Invite...">
@@ -90,7 +90,7 @@
             name="Avatar Pie More 2"
             label="More >">
 
-            <!-- ## Zi: Is this the right thing to use for avatar textures? KL yes it is-->
+            <!-- KL yes it is-->
             <pie_slice
                 label="Debug Textures"
                 name="Debug...">
@@ -126,6 +126,14 @@
             <pie_slice.on_enable
                 function="Avatar.EnableInspect" />
         </pie_slice>
+        <pie_slice
+            enabled="true"
+            label="Derender"
+            name="Derender">
+            <pie_slice.on_click
+                function="Object.Derender" />
+        </pie_slice>
+
     </pie_menu>
 
     <pie_slice

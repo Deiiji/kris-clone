@@ -34,13 +34,13 @@
                 function="Object.EnableTouch"
                 name="EnableTouch"/>
         </pie_slice>
-<!--        <pie_slice
+        <pie_slice
             enabled="true"
             label="Derender"
             name="Derender">
             <pie_slice.on_click
                 function="Object.Derender" />
-        </pie_slice> -->
+        </pie_slice>
         <pie_separator name="inspect_placeholder" />
 
     </pie_menu>
