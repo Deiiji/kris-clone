@@ -504,6 +504,9 @@
     <color
      name="MapTrackDisabledColor"
      value="0.5 0 0 1" />
+     <color
+     name="MapChatRingColor"
+     value="0.6 0.2 0.8 0.3" />
     <color
      name="MenuBarBgColor"
      reference="DkGray" />

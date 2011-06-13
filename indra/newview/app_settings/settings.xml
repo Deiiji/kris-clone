@@ -5735,7 +5735,18 @@
       <key>Type</key>
       <string>F32</string>
       <key>Value</key>
-      <real>256.0</real>
+      <real>16.0</real>
+    </map>
+    <key>MiniMapChatRing</key>
+    <map>
+      <key>Comment</key>
+      <string>Display chat distance ring on mini map</string>
+      <key>Persist</key>
+      <integer>1</integer>
+      <key>Type</key>
+      <string>Boolean</string>
+      <key>Value</key>
+      <integer>0</integer>
     </map>
     <key>MiniMapRotate</key>
     <map>
@@ -6127,7 +6138,7 @@
       <key>Comment</key>
       <string>Default width of buttons in the toast. 
       Notes:
-      If required width will be less then this one, a button will be reshaped to default size , otherwise to required
+      If required width will be less than this one, a button will be reshaped to default size , otherwise to required
       Change of this parameter will affect the layout of buttons in notification toast.</string>
       <key>Persist</key>
       <integer>1</integer>

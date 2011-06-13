@@ -407,6 +407,16 @@
 	name="ParticipantListShowIcons"
 	top_pad="1"
 	width="256" />
+	<check_box
+	control_name="MiniMapChatRing"
+	height="16"
+	initial_value="false"
+	label="Display a ring on the Minimap indicating local chat range"
+	layout="topleft"
+	left="5"
+	name="MiniMapChatRing"
+	top_pad="1"
+	width="256" />
         <check_box
 	control_name="OpenSidePanelsInFloaters"
 	height="16"
