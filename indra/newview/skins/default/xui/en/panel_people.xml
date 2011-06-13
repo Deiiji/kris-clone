@@ -160,20 +160,20 @@ Looking for people to hang out with? Try the [secondlife:///app/worldmap World M
                   function="People.addFriend" />
              </button>
               <slider
-          control_name="NearMeRange"
-          decimal_digits="0"
-          follows="bottom|left"
-          height="16"
-          increment="1"
-          initial_value="96"
-          label="Range(m):"
-          label_width="65"
-          layout="topleft"
-          max_val="512"
-          min_val="32"
-          name="NearMeRange"
-          left_pad="10"
-          width="220" />
+          	control_name="NearMeRange"
+        	  decimal_digits="0"
+        	  follows="bottom|left"
+        	  height="20"
+        	  increment="1"
+        	  initial_value="96"
+        	  label="Range(m):"
+       		   label_width="65"
+       		   layout="topleft"
+       		   max_val="512"
+       		   min_val="32"
+        	  name="NearMeRange"
+        	  left_pad="10"
+        	  width="220" />
              <icon
              follows="bottom|left|right"
              height="25"
