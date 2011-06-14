@@ -307,7 +307,7 @@ BOOL gLogoutInProgress = FALSE;
 
 ////////////////////////////////////////////////////////////
 // Internal globals... that should be removed.
-static std::string gArgs = "Build 8 RC2a";
+static std::string gArgs = "Build 8 RC2b";
 
 const std::string MARKER_FILE_NAME("KirstensS21.exec_marker");
 const std::string ERROR_MARKER_FILE_NAME("KirstensS21.error_marker");

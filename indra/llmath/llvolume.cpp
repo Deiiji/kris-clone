@@ -3253,7 +3253,7 @@ void LLVolume::sculpt(U16 sculpt_width, U16 sculpt_height, S8 sculpt_components,
 		{
 			F32 area = sculptGetSurfaceArea();
 
-			const F32 SCULPT_MAX_AREA = 32.f;
+			const F32 SCULPT_MAX_AREA = 256.f; // KL 32.f was making A LOT of secondlife look like balls.. upping the limit somewhat
 
 			if (area < SCULPT_MIN_AREA || area > SCULPT_MAX_AREA)
 			{
