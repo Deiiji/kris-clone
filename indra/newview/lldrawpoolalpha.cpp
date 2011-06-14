@@ -321,16 +321,20 @@ void LLDrawPoolAlpha::render(S32 pass)
 
 	if (sShowDebugAlpha)
 	{
-		if(gPipeline.canUseWindLightShaders()) 
-		{
-			LLGLSLShader::bindNoShader();
+	 	if(mVertexShaderLevel > 0) 
+		{ // KL  we are using anything above basic shaders so use this ... as we are most likely batching textures
+			renderAlphaHighlight(LLVertexBuffer::MAP_VERTEX |
+							LLVertexBuffer::MAP_TEXTURE_INDEX);
 		}
+		else
+		{ // KL This is the old method
 		gPipeline.enableLightsFullbright(LLColor4(1,1,1,1));
 		glColor4f(1,0,0,1);
 		LLViewerFetchedTexture::sSmokeImagep->addTextureStats(1024.f*1024.f);
 		gGL.getTexUnit(0)->bind(LLViewerFetchedTexture::sSmokeImagep, TRUE) ;
 		renderAlphaHighlight(LLVertexBuffer::MAP_VERTEX |
 							LLVertexBuffer::MAP_TEXCOORD0);
+		}
 	}
 }
 
@@ -358,6 +362,21 @@ void LLDrawPoolAlpha::renderAlphaHighlight(U32 mask)
 				{
 					params.mGroup->rebuildMesh();
 				}
+                // KL Batching Textures, taken from renderAlpha and fiddled to enable highlighting transparent to work
+				if (params.mTextureList.size() > 1)
+				{
+				    gPipeline.enableLightsFullbright(LLColor4(1,1,1,1)); // not sure on this
+                    glColor4f(1,0,0,1);
+                    // KL someone set us up the bomb... make your peace					 
+					for (U32 i = 0; i < params.mTextureList.size(); ++i)
+					{
+						if (params.mTextureList[i].notNull())
+						{
+							gGL.getTexUnit(i)->bind(LLViewerFetchedTexture::sSmokeImagep, TRUE);
+						}
+					}
+				}
+			
 				params.mVertexBuffer->setBuffer(mask);
 				params.mVertexBuffer->drawRange(params.mDrawMode, params.mStart, params.mEnd, params.mCount, params.mOffset);
 				gPipeline.addTrianglesDrawn(params.mCount, params.mDrawMode);
