@@ -1208,7 +1208,7 @@ BOOL LLViewerShaderMgr::loadShadersDeferred()
 		{
 			if (multisample)
 			{
-				fragment = "deferred/sunlightSSAOMSF.glsl";
+				fragment = "deferred/sunLightSSAOMSF.glsl";
 			}
 			else
 			{
@@ -1219,7 +1219,7 @@ BOOL LLViewerShaderMgr::loadShadersDeferred()
 		{
 			if (multisample)
 			{
-				fragment = "deferred/sunlightMSF.glsl";
+				fragment = "deferred/sunLightMSF.glsl";
 			}
 			else
 			{
